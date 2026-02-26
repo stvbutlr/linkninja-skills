@@ -271,10 +271,12 @@ If no voice profile exists, draft in a neutral professional tone and suggest run
 
 When drafting for multiple conversations at once, use the batch pattern:
 
-1. `search(filter, compact=true)` — find conversations
-2. `fetch(id)` each — read threads
+1. `search(filter, compact=true)` -- find conversations
+2. `fetch(id)` each -- read threads
 3. Draft personalized responses per situation
-4. `bulk_classify(updates=[...])` — save all drafts in one call (max 100)
+4. `update_conversation(id, draft_message, ai_notes)` -- save each draft (one call per conversation)
+
+`bulk_classify` does NOT support `draft_message`. Use it for non-draft batch updates (stage, tags, ai_notes, reminder, archive). Drafts always go through `update_conversation`.
 
 See **batch-drafting** for the full batch workflow.
 

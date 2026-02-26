@@ -122,24 +122,19 @@ For each prospect, craft a personalized opener. Fetch context where available:
 fetch(id="<conversation_id>")
 ```
 
-Draft all messages in one bulk call:
+Save each draft individually, then batch the stage/tag updates:
 
 ```
+// Save drafts one at a time (bulk_classify does not support draft_message)
+update_conversation(id="abc", draft_message="Hey Sarah -- noticed you're scaling your SDR team...", ai_notes="Cold open. Referenced headline: 'VP Sales scaling SDR team'. Campaign: Mar 2026 workshop.")
+update_conversation(id="def", draft_message="Hey James -- saw your post about outbound challenges...", ai_notes="Cold open. Referenced recent post about outbound. Campaign: Mar 2026 workshop.")
+// ...repeat for each prospect
+
+// Batch stage and tag updates
 bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "Hey Sarah -- noticed you're scaling your SDR team...",
-    stage: "opening",
-    tags: ["campaign-mar-2026"],
-    ai_notes: "Cold open. Referenced headline: 'VP Sales scaling SDR team'. Campaign: Mar 2026 workshop."
-  },
-  {
-    id: "def",
-    draft_message: "Hey James -- saw your post about outbound challenges...",
-    stage: "opening",
-    tags: ["campaign-mar-2026"],
-    ai_notes: "Cold open. Referenced recent post about outbound. Campaign: Mar 2026 workshop."
-  }
+  {id: "abc", stage: "opening", tags: ["campaign-mar-2026"]},
+  {id: "def", stage: "opening", tags: ["campaign-mar-2026"]},
+  ...
 ])
 ```
 
@@ -153,8 +148,8 @@ Follow the day-by-day plan in `references/campaign-week.md`. Summary:
 
 | Day | Primary Actions | Key Tool Calls |
 |-----|----------------|---------------|
-| Day 1 | Send 20-30 opening DMs (from drafts) | `bulk_classify` for drafts |
-| Days 2-3 | Reply to responses, follow up non-replies, send 15-20 more opens | `search(my_turn=true)`, `fetch`, `bulk_classify` |
+| Day 1 | Send 20-30 opening DMs (from drafts) | `update_conversation` per draft, `bulk_classify` for stage/tags |
+| Days 2-3 | Reply to responses, follow up non-replies, send 15-20 more opens | `search(my_turn=true)`, `fetch`, `update_conversation` per draft |
 | Days 3-4 | Qualify engaged prospects, invite to event/call | `update_conversation(stage="qualified")` |
 | Day 5 | Final follow-ups, confirm attendees, door-open messages | `search(tags=["campaign-..."])` |
 

@@ -60,7 +60,7 @@ The skills are plain markdown files. Clone the repo and point your agent at the 
 git clone https://github.com/stvbutlr/linkninja-skills.git
 ```
 
-## Skills Catalog (12 Skills)
+## Skills Catalog (19 Skills)
 
 ### Daily Operations
 
@@ -69,7 +69,6 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 | [full-morning-triage](skills/full-morning-triage/) | Automated daily pipeline review — drafts replies, rescues cold leads, classifies new conversations | "run my morning", "triage my pipeline", "what should I do today" |
 | [dm-writing](skills/dm-writing/) | Situation-specific DM crafting for any conversation stage | "help me write a DM", "draft a message", "what should I say" |
 | [batch-drafting](skills/batch-drafting/) | Draft personalized messages for multiple conversations at once | "batch draft", "draft follow-ups for everyone" |
-| [pipeline-health-check](skills/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "where am I losing deals" |
 
 ### Setup & Configuration
 
@@ -86,13 +85,26 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 | [prospect-scan](skills/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns | "find prospects", "scan my connections" |
 | [campaign-launch](skills/campaign-launch/) | Plan and execute structured outreach campaigns with scoring | "launch a campaign", "run an outreach campaign" |
 | [cold-rescue](skills/cold-rescue/) | Revive cold and ghosted conversations with value-add re-engagement | "rescue cold conversations", "re-engage" |
+| [smart-tagging](skills/smart-tagging/) | Tag conversations by ICP fit, buying signals, and situational patterns | "tag my conversations", "who are my decision makers" |
+
+### Pipeline Management
+
+| Skill | Description | Triggers |
+|-------|-------------|----------|
+| [pipeline-cleanup](skills/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
+| [stage-review](skills/stage-review/) | Audit stage accuracy — reclassify conversations that are in the wrong stage | "review my stages", "audit my classifications" |
+| [conversation-summarizer](skills/conversation-summarizer/) | Generate or refresh AI summaries and notes across conversations in batch | "summarize my conversations", "update summaries" |
+| [reminder-engine](skills/reminder-engine/) | Bulk reminder management — follow-up cadences, overdue audits, reminder cleanup | "set reminders", "what's overdue", "bulk reminders" |
 
 ### Analysis & Optimization
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [won-deal-analysis](skills/won-deal-analysis/) | Find patterns in won deals, compare with losses, refine ICP from data | "analyze won deals", "why am I winning" |
-| [pipeline-cleanup](skills/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
+| [pipeline-health-check](skills/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "pipeline health" |
+| [reply-rate-analysis](skills/reply-rate-analysis/) | Analyze opening-to-reply conversion rates and message patterns | "analyze my reply rate", "which openers worked" |
+| [stage-conversion-analysis](skills/stage-conversion-analysis/) | Stage-by-stage conversion funnel — find where deals stall and why | "stage conversion analysis", "where am I losing deals" |
+| [won-deal-analysis](skills/won-deal-analysis/) | Find patterns in won deals, refine ICP from success data | "analyze won deals", "why am I winning" |
+| [lost-deal-analysis](skills/lost-deal-analysis/) | Analyze loss patterns, drop-off stages, and common objections | "analyze lost deals", "why am I losing" |
 
 ## How Skills Work Together
 
@@ -108,6 +120,9 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
     │                │ │profile-  │ │configuration    │
     └────────┬───────┘ │setup     │ └─────────────────┘
              │         └────┬─────┘
+    ┌────────▼───────┐      │
+    │ smart-tagging  │      │
+    └────────┬───────┘      │
     ┌────────▼───────┐      │
     │campaign-launch │      │
     └────────┬───────┘      │
@@ -125,13 +140,29 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
     └───────────────────────────────────────────┘
              │
     ┌────────▼──────────────────────────────────┐
-    │           Analysis                         │
+    │           Pipeline Management              │
     │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │pipeline-health-  │  │won-deal-      │  │
-    │  │check             │  │analysis       │──┼─→ Feeds back
+    │  │pipeline-cleanup  │  │stage-review   │  │
+    │  └──────────────────┘  └───────────────┘  │
+    │  ┌──────────────────┐  ┌───────────────┐  │
+    │  │conversation-     │  │reminder-      │  │
+    │  │summarizer        │  │engine         │  │
+    │  └──────────────────┘  └───────────────┘  │
+    └───────────────────────────────────────────┘
+             │
+    ┌────────▼──────────────────────────────────┐
+    │           Analysis & Optimization          │
+    │  ┌──────────────────┐  ┌───────────────┐  │
+    │  │pipeline-health-  │  │reply-rate-    │  │
+    │  │check             │  │analysis       │  │
+    │  └──────────────────┘  └───────────────┘  │
+    │  ┌──────────────────┐  ┌───────────────┐  │
+    │  │stage-conversion- │  │won-deal-      │  │
+    │  │analysis          │  │analysis       │──┼─→ Feeds back
     │  └──────────────────┘  └───────────────┘  │   to ICP
     │  ┌──────────────────┐                     │
-    │  │pipeline-cleanup  │                     │
+    │  │lost-deal-        │                     │
+    │  │analysis          │                     │
     │  └──────────────────┘                     │
     └───────────────────────────────────────────┘
 ```
@@ -140,9 +171,12 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 1. `icp-definition` → configure your targeting
 2. `voice-profile-setup` → so AI drafts sound like you
 3. `prospect-scan` → find people to message
-4. `campaign-launch` → structured outreach push
-5. `full-morning-triage` → daily pipeline management
-6. `won-deal-analysis` → learn from results → refine ICP
+4. `smart-tagging` → tag by ICP fit and buying signals
+5. `campaign-launch` → structured outreach push
+6. `full-morning-triage` → daily pipeline management
+7. `stage-review` → audit classification accuracy
+8. `reply-rate-analysis` → learn what messages work
+9. `won-deal-analysis` + `lost-deal-analysis` → learn from results → refine ICP
 
 ## Context Prerequisites
 

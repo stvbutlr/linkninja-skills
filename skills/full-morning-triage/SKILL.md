@@ -103,14 +103,12 @@ Read the full thread. Identify the situation (see **dm-writing** for the 7 situa
 - Reference something real from the conversation
 - Keep it short (2-4 sentences)
 
-Collect all drafts, then save in one call:
+Save each draft individually (`bulk_classify` does not support `draft_message`):
 
 ```
-bulk_classify(updates=[
-  {id: "<id1>", draft_message: "Hey Sarah, ...", ai_notes: "Replied to her pricing question. Reframed around ROI. Next: wait for budget confirmation."},
-  {id: "<id2>", draft_message: "Hey James, ...", ai_notes: "Acknowledged interest, asked qualifying question about timeline."},
-  ...
-])
+update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Replied to her pricing question. Reframed around ROI. Next: wait for budget confirmation.")
+update_conversation(id="<id2>", draft_message="Hey James, ...", ai_notes="Acknowledged interest, asked qualifying question about timeline.")
+// ...repeat for each conversation
 ```
 
 Track count: **N hot lead drafts saved.**
@@ -126,11 +124,16 @@ For each, `fetch(id)` and read the thread. Draft a value-add follow-up — never
 - An article or resource connected to something they mentioned
 - A specific question about something they told the user earlier
 
-Save drafts with 3-day reminders:
+Save each draft individually, then batch the reminders:
 
 ```
+// Save drafts one at a time
+update_conversation(id="<id1>", draft_message="Hey [name], ...", ai_notes="Re-engagement: shared insight about [topic they mentioned]. This is follow-up attempt #[N].")
+// ...repeat for each
+
+// Batch reminders
 bulk_classify(updates=[
-  {id: "<id>", draft_message: "Hey [name], ...", reminder: "in 3 days", ai_notes: "Re-engagement: shared insight about [topic they mentioned]. This is follow-up attempt #[N]."},
+  {id: "<id1>", reminder: "in 3 days"},
   ...
 ])
 ```
@@ -167,12 +170,17 @@ search(freshness="they_ghosted", stage="chatting", compact=true)
 | Opening ghost, 14+ days, 2+ follow-ups | Archive as `ghosted` |
 | Any stage, clearly not ICP | Archive as `not_a_fit` |
 
-Save all ghost updates in one call:
+Save drafts individually, then batch archives and reminders:
 
 ```
+// Save re-engagement drafts one at a time
+update_conversation(id="<id1>", draft_message="...", ai_notes="Re-engagement attempt #2. Shared different angle.")
+// ...repeat for each draft
+
+// Batch archives and reminders (no draft_message)
 bulk_classify(updates=[
-  {id: "<id>", draft_message: "...", reminder: "in 7 days", ai_notes: "Re-engagement attempt #2. Shared different angle."},
-  {id: "<id>", archive: {archived: true, reason: "ghosted"}, ai_notes: "No reply after 3 follow-ups over 4 weeks. Archiving."},
+  {id: "<id1>", reminder: "in 7 days"},
+  {id: "<id2>", archive: {archived: true, reason: "ghosted"}, ai_notes: "No reply after 3 follow-ups over 4 weeks. Archiving."},
   ...
 ])
 ```

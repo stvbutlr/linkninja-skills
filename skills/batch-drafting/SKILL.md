@@ -6,8 +6,8 @@ description: >
   pending replies. Use when the user says "draft messages for", "batch draft",
   "draft follow-ups for everyone", "process my pipeline", "draft for all my qualified
   leads", "write messages for my cold conversations", or "draft campaign follow-ups".
-  Reads each conversation, crafts a personalized response, saves all drafts in one
-  bulk call. Related: dm-writing for individual message guidance per situation,
+  Reads each conversation, crafts a personalized response, saves each draft via
+  update_conversation. Related: dm-writing for individual message guidance per situation,
   full-morning-triage for complete pipeline processing, cold-rescue for targeted
   re-engagement, campaign-launch for outreach campaign setup.
 metadata:
@@ -17,7 +17,7 @@ metadata:
 
 # Batch Drafting
 
-Draft personalized messages for 5, 20, or 100 conversations in one session. Read each thread, craft a response matched to the situation, save all drafts in a single bulk call. The user reviews and sends from their dashboard.
+Draft personalized messages for 5, 20, or 100 conversations in one session. Read each thread, craft a response matched to the situation, save each draft via `update_conversation`. The user reviews and sends from their dashboard.
 
 ## Before Starting
 
@@ -59,14 +59,12 @@ fetch(id="<conversation_id>")
 
 Read the full thread. Determine the DM situation (see **dm-writing**). Draft a personalized response.
 
-**Step 3:** Save all drafts:
+**Step 3:** Save each draft individually (draft messages must be saved one at a time via `update_conversation`):
 
 ```
-bulk_classify(updates=[
-  {id: "<id1>", draft_message: "Hey Sarah, ...", ai_notes: "Replied to pricing question. Reframed around ROI. Next: wait for budget confirmation."},
-  {id: "<id2>", draft_message: "Hey James, ...", ai_notes: "Acknowledged timeline concern. Proposed 30-min call. Next: confirm time."},
-  ...
-])
+update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Replied to pricing question. Reframed around ROI. Next: wait for budget confirmation.")
+update_conversation(id="<id2>", draft_message="Hey James, ...", ai_notes="Acknowledged timeline concern. Proposed 30-min call. Next: confirm time.")
+// ...repeat for each conversation
 ```
 
 ### Pattern 2: Draft Re-Engagement for Cold
@@ -89,12 +87,18 @@ search(freshness="cold", my_turn=true, compact=true)
 | 2nd | Different angle — new question or industry observation | `in 7 days` |
 | 3rd | Door-open: "No worries if timing's off..." | `in 30 days` |
 
-**Step 4:**
+**Step 4:** Save each draft individually, then batch the reminders:
 
 ```
+// Save drafts one at a time
+update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Re-engagement #1. Shared insight about [topic]. Last discussed: [what].")
+update_conversation(id="<id2>", draft_message="Hey James, ...", ai_notes="Re-engagement #2. New angle: [what]. Previous follow-up was [date].")
+// ...repeat for each
+
+// Batch reminders
 bulk_classify(updates=[
-  {id: "<id1>", draft_message: "Hey Sarah, ...", reminder: "in 3 days", ai_notes: "Re-engagement #1. Shared insight about [topic]. Last discussed: [what]."},
-  {id: "<id2>", draft_message: "Hey James, ...", reminder: "in 7 days", ai_notes: "Re-engagement #2. New angle: [what]. Previous follow-up was [date]."},
+  {id: "<id1>", reminder: "in 3 days"},
+  {id: "<id2>", reminder: "in 7 days"},
   ...
 ])
 ```
@@ -113,13 +117,11 @@ search(tags=["campaign-q1"], my_turn=true, compact=true)
 
 **Step 3:** Draft responses that reference the campaign context while staying personalized to each conversation.
 
-**Step 4:**
+**Step 4:** Save each draft individually:
 
 ```
-bulk_classify(updates=[
-  {id: "<id1>", draft_message: "...", ai_notes: "Campaign Q1 follow-up. Referenced [their specific situation]. Stage: [current]."},
-  ...
-])
+update_conversation(id="<id1>", draft_message="...", ai_notes="Campaign Q1 follow-up. Referenced [their specific situation]. Stage: [current].")
+// ...repeat for each conversation
 ```
 
 ### Pattern 4: Draft for All Pending
@@ -143,10 +145,12 @@ search(my_turn=true, compact=true)
 
 For each, `fetch(id)` and draft based on the DM situation.
 
-**Step 3:** Save all at once:
+**Step 3:** Save each draft individually:
 
 ```
-bulk_classify(updates=[...all drafts...])
+update_conversation(id="<id1>", draft_message="...", ai_notes="...")
+update_conversation(id="<id2>", draft_message="...", ai_notes="...")
+// ...repeat for each conversation
 ```
 
 ### Pattern 5: Draft by Freshness + Stage Combination
@@ -182,12 +186,14 @@ For every draft, follow these rules:
 
 ## Handling Scale
 
-| Conversations | Approach |
-|--------------|----------|
-| 1-5 | Process individually with `update_conversation` |
-| 6-100 | Batch with `bulk_classify` (one call) |
-| 101-200 | Split into two `bulk_classify` calls |
-| 200+ | Consider filtering to highest-priority segment first |
+Draft messages must be saved individually via `update_conversation` because `bulk_classify` does not support `draft_message`. Non-draft updates (stage, tags, reminders, archive) can still be batched.
+
+| Conversations | Drafts | Non-Draft Updates |
+|--------------|--------|-------------------|
+| 1-5 | `update_conversation` per draft | `update_conversation` or `bulk_classify` |
+| 6-100 | `update_conversation` per draft | `bulk_classify` (one call) |
+| 101-200 | `update_conversation` per draft | Split into two `bulk_classify` calls |
+| 200+ | Filter to highest-priority segment first | Split into `bulk_classify` calls of max 100 |
 
 **Pagination:** If `search` returns `has_more: true`, fetch the next page before starting drafts:
 
@@ -195,7 +201,7 @@ For every draft, follow these rules:
 search(stage="qualified", my_turn=true, compact=true, page=2)
 ```
 
-**Batch limits:** `bulk_classify` accepts max 100 updates per call. If you have 150 conversations, split into two calls of 75 each.
+**Batch limits:** `bulk_classify` accepts max 100 updates per call (for non-draft fields). Drafts are always one at a time via `update_conversation`.
 
 ## Workflow Summary
 
@@ -205,9 +211,11 @@ search(stage="qualified", my_turn=true, compact=true, page=2)
    └─ Handle has_more pagination
 3. fetch(id) for each                         → Read full threads
 4. Draft personalized message per situation   → Apply dm-writing rules
-5. bulk_classify(updates=[...])               → Save all drafts + ai_notes
+5. update_conversation(id, draft_message,     → Save each draft individually
+   ai_notes) for each conversation
+6. bulk_classify(updates=[...])               → Batch non-draft updates (reminders, tags, stage)
    └─ Split if > 100
-6. Report to user                             → Count of drafts saved
+7. Report to user                             → Count of drafts saved
 ```
 
 ## Report Template

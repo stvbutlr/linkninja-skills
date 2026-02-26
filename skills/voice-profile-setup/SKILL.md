@@ -210,19 +210,19 @@ update_conversation(
 )
 ```
 
-### Step 3: Batch update if many
+### Step 3: Save re-drafted messages
 
-If more than 5 drafts need re-voicing, use `bulk_classify`:
+Draft messages require `update_conversation` -- one call per conversation:
 
 ```
-bulk_classify(updates=[
-  {id: "abc", draft_message: "[re-voiced draft]", ai_notes: "Re-drafted to match voice profile."},
-  {id: "def", draft_message: "[re-voiced draft]", ai_notes: "Re-drafted to match voice profile."},
-  ...
-])
+update_conversation(
+  id="abc",
+  draft_message="[re-voiced draft]",
+  ai_notes="Re-drafted to match voice profile. Changed: [what was adjusted]."
+)
 ```
 
-Max 100 per call. Handle `has_more` if paginating search results.
+Repeat for each conversation. `bulk_classify` does not support `draft_message`.
 
 ## Guidelines
 

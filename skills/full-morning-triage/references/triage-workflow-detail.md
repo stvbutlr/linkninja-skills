@@ -74,26 +74,28 @@ Draft each message following dm-principles:
 - 2-4 sentences max
 - Include an easy out where appropriate
 
-## Step 6: Save Hot Lead Drafts (Batch)
+## Step 6: Save Hot Lead Drafts (Individual)
+
+Draft messages must be saved one at a time via `update_conversation` (`bulk_classify` does not support `draft_message`):
 
 ```
-bulk_classify(updates=[
-  {
-    id: "conv_abc",
-    draft_message: "Hey Sarah, great question on pricing. For a team your size, most clients see ROI within the first quarter. Want me to walk you through the numbers for a 50-person org?",
-    ai_notes: "Replied to pricing question. Reframed around ROI. She's VP Sales at mid-market SaaS. Next: wait for budget confirmation."
-  },
-  {
-    id: "conv_def",
-    draft_message: "Hey Marcus, that's a good point about the timeline. Most teams in your situation start seeing results in 60-90 days. Is Q2 still your target?",
-    ai_notes: "Acknowledged timeline concern. Confirmed realistic timeline. He mentioned Q2 deadline. Next: if Q2 confirmed, propose call."
-  },
-  {
-    id: "conv_ghi",
-    draft_message: "That's a real bottleneck. Are you finding the issue is more about sourcing quality candidates, or about getting them productive once they start?",
-    ai_notes: "They mentioned hiring 5 SDRs. Asked deepening question to surface specific pain. Stage: chatting. Next: qualify based on answer."
-  }
-])
+update_conversation(
+  id="conv_abc",
+  draft_message="Hey Sarah, great question on pricing. For a team your size, most clients see ROI within the first quarter. Want me to walk you through the numbers for a 50-person org?",
+  ai_notes="Replied to pricing question. Reframed around ROI. She's VP Sales at mid-market SaaS. Next: wait for budget confirmation."
+)
+
+update_conversation(
+  id="conv_def",
+  draft_message="Hey Marcus, that's a good point about the timeline. Most teams in your situation start seeing results in 60-90 days. Is Q2 still your target?",
+  ai_notes="Acknowledged timeline concern. Confirmed realistic timeline. He mentioned Q2 deadline. Next: if Q2 confirmed, propose call."
+)
+
+update_conversation(
+  id="conv_ghi",
+  draft_message="That's a real bottleneck. Are you finding the issue is more about sourcing quality candidates, or about getting them productive once they start?",
+  ai_notes="They mentioned hiring 5 SDRs. Asked deepening question to surface specific pain. Stage: chatting. Next: qualify based on answer."
+)
 ```
 
 Record: **N hot lead drafts saved.**
@@ -124,22 +126,28 @@ Never send:
 - "Bumping this"
 - "Did you see my last message?"
 
-## Step 8: Save Cold Rescue Drafts (Batch)
+## Step 8: Save Cold Rescue Drafts (Individual) + Batch Reminders
+
+Save each draft individually, then batch the reminders:
 
 ```
+// Drafts one at a time
+update_conversation(
+  id="conv_jkl",
+  draft_message="Hey James, was working with another team this week who had the same ramp-time problem you mentioned. They found that restructuring the first 30 days made the biggest difference. Thought you'd find that interesting.",
+  ai_notes="Re-engagement attempt #1. Shared relevant insight about SDR ramp time. Last topic was onboarding challenges."
+)
+
+update_conversation(
+  id="conv_mno",
+  draft_message="Hey Lisa, saw this piece on Q1 demand gen trends and thought of our conversation about scaling your pipeline. Worth a look if you have 2 minutes.",
+  ai_notes="Re-engagement attempt #1. Shared relevant resource tied to her pipeline scaling comment."
+)
+
+// Batch reminders
 bulk_classify(updates=[
-  {
-    id: "conv_jkl",
-    draft_message: "Hey James, was working with another team this week who had the same ramp-time problem you mentioned. They found that restructuring the first 30 days made the biggest difference. Thought you'd find that interesting.",
-    reminder: "in 3 days",
-    ai_notes: "Re-engagement attempt #1. Shared relevant insight about SDR ramp time. Last topic was onboarding challenges."
-  },
-  {
-    id: "conv_mno",
-    draft_message: "Hey Lisa, saw this piece on Q1 demand gen trends and thought of our conversation about scaling your pipeline. Worth a look if you have 2 minutes.",
-    reminder: "in 3 days",
-    ai_notes: "Re-engagement attempt #1. Shared relevant resource tied to her pipeline scaling comment."
-  }
+  {id: "conv_jkl", reminder: "in 3 days"},
+  {id: "conv_mno", reminder: "in 3 days"}
 ])
 ```
 
@@ -183,32 +191,30 @@ For each, `fetch(id)` and apply the decision table:
 | opening | < 14 days | 0-1 | Draft one more follow-up |
 | Any stage | Any | Any — clearly not ICP | Archive as `not_a_fit` |
 
-## Step 10: Save Ghost Updates (Batch)
+## Step 10: Save Ghost Updates (Drafts Individual, Archives Batched)
+
+Save re-engagement drafts one at a time, then batch archives and reminders:
 
 ```
+// Drafts one at a time
+update_conversation(
+  id="conv_pqr",
+  draft_message="Hey Sarah, I remember you mentioned the SDR ramp issue was becoming urgent. Was working on something related this week and thought of you. No rush — just wanted to share if useful.",
+  ai_notes="Re-engagement attempt #2 for qualified ghost. She had budget signals. Shared new angle. If no reply after this, send door-open in 7 days."
+)
+
+update_conversation(
+  id="conv_stu",
+  draft_message="No worries if the timing's off on this, Marcus. Thought of you when a client in fintech mentioned a similar challenge. Happy to pick this up whenever makes sense.",
+  ai_notes="Door-open message. 3rd attempt. Qualified ghost, 16 days silent. If no reply, archive at 30-day reminder."
+)
+
+// Batch reminders and archives
 bulk_classify(updates=[
-  {
-    id: "conv_pqr",
-    draft_message: "Hey Sarah, I remember you mentioned the SDR ramp issue was becoming urgent. Was working on something related this week and thought of you. No rush — just wanted to share if useful.",
-    reminder: "in 7 days",
-    ai_notes: "Re-engagement attempt #2 for qualified ghost. She had budget signals. Shared new angle. If no reply after this, send door-open in 7 days."
-  },
-  {
-    id: "conv_stu",
-    draft_message: "No worries if the timing's off on this, Marcus. Thought of you when a client in fintech mentioned a similar challenge. Happy to pick this up whenever makes sense.",
-    reminder: "in 30 days",
-    ai_notes: "Door-open message. 3rd attempt. Qualified ghost, 16 days silent. If no reply, archive at 30-day reminder."
-  },
-  {
-    id: "conv_vwx",
-    archive: {archived: true, reason: "ghosted"},
-    ai_notes: "No reply after 3 follow-ups over 4 weeks. Opening stage. Archiving."
-  },
-  {
-    id: "conv_yza",
-    archive: {archived: true, reason: "not_a_fit"},
-    ai_notes: "Recruiter pitching staffing services. Not a prospect."
-  }
+  {id: "conv_pqr", reminder: "in 7 days"},
+  {id: "conv_stu", reminder: "in 30 days"},
+  {id: "conv_vwx", archive: {archived: true, reason: "ghosted"}, ai_notes: "No reply after 3 follow-ups over 4 weeks. Opening stage. Archiving."},
+  {id: "conv_yza", archive: {archived: true, reason: "not_a_fit"}, ai_notes: "Recruiter pitching staffing services. Not a prospect."}
 ])
 ```
 

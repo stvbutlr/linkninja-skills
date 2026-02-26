@@ -81,11 +81,16 @@ For borderline cases: when unsure between archive and re-engage, check these tie
 
 For re-engagement candidates, draft a personalized message. Reference something specific from the conversation thread. Never "just checking in."
 
-Submit all stale decisions in one batch:
+Save re-engagement drafts individually, then batch archives and reminders:
 
 ```
+// Save drafts one at a time (bulk_classify does not support draft_message)
+update_conversation(id="abc", draft_message="Hey Sarah, been thinking about what you said about onboarding speed...", ai_notes="Re-engagement. Had buying signals (budget mentioned) before going quiet 3 weeks ago.")
+// ...repeat for each re-engagement draft
+
+// Batch archives, reminders, and other non-draft updates
 bulk_classify(updates=[
-  {"id": "abc", "draft_message": "Hey Sarah, been thinking about what you said about onboarding speed...", "reminder": "in 7 days", "ai_notes": "Re-engagement. Had buying signals (budget mentioned) before going quiet 3 weeks ago."},
+  {"id": "abc", "reminder": "in 7 days"},
   {"id": "def", "archive": {"archived": true, "reason": "ghosted"}, "ai_notes": "No reply after 3 follow-ups over 5 weeks. No buying signals in thread."},
   {"id": "ghi", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Recruiter pitching staffing services. Not a prospect."},
   {"id": "jkl", "archive": {"archived": true, "reason": "later"}, "reminder": "in 60 days", "ai_notes": "Said 'maybe Q3.' Setting 60-day reminder to re-engage."},
@@ -112,8 +117,12 @@ For each, a quick check is sufficient. If you already loaded context from Phase 
 - **Can't tell:** Archive as `ghosted`.
 
 ```
+// Save re-engagement drafts one at a time
+update_conversation(id="pqr", draft_message="Hey Alex, came across this [resource] and thought of you given your work in [their field]...", ai_notes="Final re-engagement attempt. Matches ICP but never replied to opener. New angle with value-add.")
+
+// Batch archives and reminders
 bulk_classify(updates=[
-  {"id": "pqr", "draft_message": "Hey Alex, came across this [resource] and thought of you given your work in [their field]...", "reminder": "in 5 days", "ai_notes": "Final re-engagement attempt. Matches ICP but never replied to opener. New angle with value-add."},
+  {"id": "pqr", "reminder": "in 5 days"},
   {"id": "stu", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Student account. Not ICP."},
   {"id": "vwx", "archive": {"archived": true, "reason": "ghosted"}, "ai_notes": "No reply to opener after 3 weeks. Generic headline, can't determine ICP fit."}
 ])
@@ -228,7 +237,7 @@ After all phases, summarize results:
 - For re-engagement drafts, reference something specific from the conversation. Never "just checking in."
 - If `pipeline_stats` shows zero stale/ghosted, skip to Phase 3 (unclassified) or tell the user the pipeline is clean.
 - If ICP is not defined, be conservative on borderline archive decisions. Flag uncertain cases for the user.
-- Combine operations: one `bulk_classify` call can set stage, tags, summary, ai_notes, draft_message, reminder, and archive all at once.
+- `bulk_classify` supports stage, tags, summary, ai_notes, reminder, and archive. Draft messages must be saved individually via `update_conversation`.
 - For the hybrid approach (Phase 3), let the server-side job run while you manually review edge cases. Don't wait idle.
 
 ## Related Skills

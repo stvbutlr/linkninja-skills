@@ -2,11 +2,11 @@
 
 ## What This Is
 
-A collection of Claude skills for LinkNinja MCP users. Each skill in `skills/` gives Claude expert-level guidance for a specific LinkedIn sales pipeline workflow. Skills are activated by natural language triggers and chain LinkNinja's 17 MCP tools into compound workflows.
+A collection of AI agent skills for LinkNinja MCP users. Each skill in `skills/` provides expert-level guidance for a specific LinkedIn sales pipeline workflow. Skills are activated by natural language triggers and chain LinkNinja's 17 MCP tools into compound workflows.
 
 ## Structure
 
-- `skills/` — 12 skills, each in its own directory with a SKILL.md
+- `skills/` — 16 skills, each in its own directory with a SKILL.md
 - `references/` — Shared reference docs loaded on demand by any skill
 - Skills are flat (no category subdirectories)
 
@@ -36,7 +36,7 @@ A collection of Claude skills for LinkNinja MCP users. Each skill in `skills/` g
 | `export` | Bulk export conversations with transcripts (paginated, max 500/page) |
 | `classify` | Update classification for a conversation (deprecated — use update_conversation) |
 | `update_conversation` | Update stage, tags, notes, draft_message, reminder, archive |
-| `bulk_classify` | Bulk update conversations (max 100 per call) |
+| `bulk_classify` | Bulk update conversations — stage, tags, summary, ai_notes, reminder, archive (max 100, NO draft_message) |
 | `connections` | List LinkedIn connections (query, detailed, message_status) |
 | `scan_connections` | Server-side headline keyword scan across all connections (up to 30k) |
 | `tag_connections` | Add/remove tags on connections |

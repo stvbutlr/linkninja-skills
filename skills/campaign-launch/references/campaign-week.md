@@ -21,20 +21,19 @@ scan_connections(tags=["campaign-<tag>"], has_conversation=false, limit=30)
 fetch(id="<conversation_id>")
 ```
 
-4. Batch draft personalized opening messages:
+4. Draft personalized opening messages (one per conversation):
 
 ```
-bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "[personalized opener]",
-    stage: "opening",
-    tags: ["campaign-<tag>"],
-    ai_notes: "Campaign opener. Referenced: [what was personalized]. Offer: [campaign offer]."
-  },
-  ...
-])
+update_conversation(
+  id="<id>",
+  draft_message="[personalized opener]",
+  stage="opening",
+  tags=["campaign-<tag>"],
+  ai_notes="Campaign opener. Referenced: [what was personalized]. Offer: [campaign offer]."
+)
 ```
+
+Repeat for each prospect. `draft_message` requires `update_conversation` -- `bulk_classify` does not support it.
 
 ### Afternoon
 
@@ -72,18 +71,17 @@ search(my_turn=true, freshness="fresh", tags=["campaign-<tag>"])
 fetch(id="<conversation_id>")
 ```
 
-3. Draft personalized responses:
+3. Draft personalized responses (one per conversation):
 
 ```
-bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "[response to their reply]",
-    ai_notes: "Replied to opener. They asked about [X]. Responding with [approach]."
-  },
-  ...
-])
+update_conversation(
+  id="<id>",
+  draft_message="[response to their reply]",
+  ai_notes="Replied to opener. They asked about [X]. Responding with [approach]."
+)
 ```
+
+Repeat for each reply. `draft_message` requires `update_conversation`.
 
 ### Afternoon
 
@@ -117,15 +115,14 @@ search(stage="opening", tags=["campaign-<tag>"], my_turn=false)
 Draft follow-ups that add value -- an insight, a relevant resource, a question tied to their situation:
 
 ```
-bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "[value-add follow-up]",
-    ai_notes: "Follow-up #1. No reply to opener. Adding value: [what]."
-  },
-  ...
-])
+update_conversation(
+  id="<id>",
+  draft_message="[value-add follow-up]",
+  ai_notes="Follow-up #1. No reply to opener. Adding value: [what]."
+)
 ```
+
+Repeat for each non-reply. `draft_message` requires `update_conversation`.
 
 ### Afternoon
 
@@ -162,16 +159,15 @@ search(my_turn=true, freshness="fresh")
 2. For qualified prospects, draft invitation messages:
 
 ```
-bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "[specific invitation to event/call/offer]",
-    stage: "qualified",
-    ai_notes: "Campaign invite. Qualified signal: [X]. Inviting to [event] on [date]."
-  },
-  ...
-])
+update_conversation(
+  id="<id>",
+  draft_message="[specific invitation to event/call/offer]",
+  stage="qualified",
+  ai_notes="Campaign invite. Qualified signal: [X]. Inviting to [event] on [date]."
+)
 ```
+
+Repeat for each qualified prospect. `draft_message` requires `update_conversation`.
 
 ### Afternoon
 

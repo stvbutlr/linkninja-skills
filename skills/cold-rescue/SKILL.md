@@ -111,21 +111,16 @@ For conversations worth re-engaging, draft messages that follow these rules:
 
 Once you have triaged and drafted for a batch, apply updates in bulk:
 
-**Re-engage batch:**
+**Re-engage batch** (drafts saved individually, then reminders batched):
 ```
+// Save drafts one at a time (bulk_classify does not support draft_message)
+update_conversation(id="abc", draft_message="Hey Sarah -- was thinking about your onboarding challenge...", ai_notes="Cold rescue. Last active 3 weeks ago. Had real engagement: she mentioned onboarding ramp time was killing productivity. Re-engaging with new insight.")
+update_conversation(id="def", draft_message="Hey James -- something reminded me of our scaling conversation...", ai_notes="Cold rescue. Qualified but ghosted 2 weeks ago. Was discussing SDR team scaling. High-priority re-engage.")
+
+// Batch reminders
 bulk_classify(updates=[
-  {
-    id: "abc",
-    draft_message: "Hey Sarah -- was thinking about your onboarding challenge...",
-    reminder: "7 days from now",
-    ai_notes: "Cold rescue. Last active 3 weeks ago. Had real engagement: she mentioned onboarding ramp time was killing productivity. Re-engaging with new insight."
-  },
-  {
-    id: "def",
-    draft_message: "Hey James -- something reminded me of our scaling conversation...",
-    reminder: "7 days from now",
-    ai_notes: "Cold rescue. Qualified but ghosted 2 weeks ago. Was discussing SDR team scaling. High-priority re-engage."
-  }
+  {id: "abc", reminder: "7 days from now"},
+  {id: "def", reminder: "7 days from now"}
 ])
 ```
 
@@ -199,19 +194,18 @@ fetch(id="<conversation_id>")
 
 ### Step 3: Unarchive and draft
 
-For conversations worth reviving:
+For conversations worth reviving, unarchive in batch, then save drafts individually:
 
 ```
+// Batch unarchive + stage updates
 bulk_classify(updates=[
-  {
-    id: "abc",
-    archive: {archived: false},
-    stage: "chatting",
-    draft_message: "Hey [name] -- it's been a while. [Seasonal hook or new development]. How did things go with [thing from original conversation]?",
-    reminder: "7 days",
-    ai_notes: "Re-engagement sprint. Originally archived as 'later' on [date]. Reason: [reason]. Re-engaging because [justification]."
-  }
+  {id: "abc", archive: {archived: false}, stage: "chatting", reminder: "7 days", ai_notes: "Re-engagement sprint. Originally archived as 'later' on [date]. Reason: [reason]. Re-engaging because [justification]."},
+  ...
 ])
+
+// Save drafts one at a time (bulk_classify does not support draft_message)
+update_conversation(id="abc", draft_message="Hey [name] -- it's been a while. [Seasonal hook or new development]. How did things go with [thing from original conversation]?")
+// ...repeat for each conversation
 ```
 
 ### Step 4: Track sprint results
@@ -258,7 +252,7 @@ For each cold conversation, ask in order:
 - Reference something specific from the previous conversation. Generic re-opens get generic silence.
 - Follow the 2-touch rule for re-engagement: if re-engage attempt + one follow-up both fail, archive.
 - When you ghosted them, own it. A brief "slipped through the cracks" builds more trust than pretending it didn't happen.
-- Batch processing is the key to throughput. Triage first, then batch all updates in one `bulk_classify` call.
+- Batch processing is the key to throughput. Triage first, save drafts individually via `update_conversation`, then batch non-draft updates (reminders, archives, tags) via `bulk_classify`.
 - Do not re-engage more than 20-30 conversations at once. The user needs to handle replies.
 
 ## Related Skills

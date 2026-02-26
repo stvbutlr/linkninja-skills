@@ -32,7 +32,7 @@ Skills should reference these rather than duplicating the content.
 Every skill starts with `get_context()`. If required context fields are empty, the skill must stop and help the user configure first — either inline or by directing them to the dashboard settings.
 
 Users can configure context two ways:
-1. **Through Claude:** "Tell me about your ideal client" → `update_context()`
+1. **Through the AI agent:** "Tell me about your ideal client" → `update_context()`
 2. **Through the dashboard:** Settings → AI Profile at `/pipeline-ai`
 
 ## Writing Standards
@@ -48,7 +48,7 @@ Users can configure context two ways:
 
 - **Draft-only.** Never pretend to send messages. Always save as drafts via `draft_message`.
 - **Always explain reasoning.** Include `ai_notes` with every draft and classification.
-- **Batch-first.** Use `bulk_classify` for multiple updates, not individual `update_conversation` loops.
+- **Batch-first.** Use `bulk_classify` for multiple updates (stage, tags, summary, ai_notes, reminder, archive). Note: `bulk_classify` does NOT support `draft_message` — use `update_conversation` individually for drafts.
 - **Respect limits.** `bulk_classify` max 100 per call. `start_batch_classify` max 500 per job.
 - **Handle pagination.** If `has_more` is true on `search` or `export`, fetch the next page.
 - **Use compact mode.** Pass `compact=true` on `search` when you only need IDs.

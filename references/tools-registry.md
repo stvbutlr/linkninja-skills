@@ -140,13 +140,15 @@ Archive reasons: `not_a_fit`, `ghosted`, `later`, `client`, `competitor`, `netwo
 
 ### `bulk_classify`
 
-Bulk update multiple conversations in one call. Max 100 per call.
+Bulk update multiple conversations in one call. Max 100 per call. **Does NOT support `draft_message`** — use `update_conversation` for drafts.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `updates` | array | Yes | Array of update objects (same fields as `update_conversation`) |
+| `updates` | array | Yes | Array of update objects |
 
-Each update object: `{id, stage, tags, summary, ai_notes, draft_message, reminder, archive}`. All fields optional except `id`.
+Each update object: `{id, stage, tags, notes, ai_notes, summary, reminder, archive}`. All fields optional except `id`.
+
+**Not supported in `bulk_classify`:** `draft_message`. To save AI drafts, use `update_conversation` for each conversation individually.
 
 ### `classify` *(deprecated)*
 

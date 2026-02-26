@@ -112,7 +112,7 @@ Bulk export conversations with optional transcripts. Paginated.
 | `unclassified_only` | boolean | No | Only unclassified conversations |
 | `include_archived` | boolean | No | Include archived |
 | `format` | string | No | `json` (default) or `csv` (returns download URL) |
-| `limit` | integer | No | Max per page (default 50, max 500) |
+| `limit` | integer | No | Max per page (default 200, max 500) |
 | `page` | integer | No | Page number |
 
 **Returns:** Array of conversations. If `has_more` is true, fetch next page. CSV format returns a download URL valid for 1 hour.
@@ -235,6 +235,13 @@ Check progress of a batch classification job.
 | stage-configuration | `stages`, `get_context`, `update_context` | — |
 | prospect-scan | `get_context`, `scan_connections`, `tag_connections` | `connections` |
 | campaign-launch | `scan_connections`, `tag_connections`, `bulk_classify` | `search`, `get_context`, `pipeline_stats` |
-| cold-rescue | `search`, `fetch`, `bulk_classify` | — |
-| won-deal-analysis | `export`, `pipeline_stats`, `get_context`, `update_context` | — |
+| cold-rescue | `search`, `fetch`, `bulk_classify` | `update_conversation` |
+| won-deal-analysis | `export`, `pipeline_stats`, `get_context`, `update_context` | `search` |
 | pipeline-cleanup | `search`, `export`, `bulk_classify` | `fetch`, `start_batch_classify`, `job_status` |
+| smart-tagging | `search`, `fetch`, `bulk_classify`, `get_context`, `tags` | `pipeline_stats`, `scan_connections`, `tag_connections` |
+| conversation-summarizer | `export`, `bulk_classify`, `get_context` | `pipeline_stats`, `start_batch_classify`, `job_status` |
+| stage-review | `export`, `fetch`, `bulk_classify`, `get_context`, `stages` | `pipeline_stats`, `search`, `start_batch_classify`, `job_status` |
+| reminder-engine | `search`, `bulk_classify`, `get_context`, `pipeline_stats` | `fetch` |
+| reply-rate-analysis | `pipeline_stats`, `export`, `search`, `get_context` | — |
+| stage-conversion-analysis | `pipeline_stats`, `stages`, `get_context`, `export` | — |
+| lost-deal-analysis | `export`, `get_context`, `pipeline_stats` | `search`, `update_conversation`, `update_context` |

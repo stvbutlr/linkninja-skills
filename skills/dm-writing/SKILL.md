@@ -208,7 +208,7 @@ See `references/objection-handling.md` for detailed examples and the full object
 **Save draft:**
 
 ```
-update_conversation(id="<id>", draft_message="<the message>", reminder="in 3 days", ai_notes: "Re-engagement attempt [1st/2nd/3rd]. Value added: [what you sent].")
+update_conversation(id="<id>", draft_message="<the message>", reminder="in 3 days", ai_notes="Re-engagement attempt [1st/2nd/3rd]. Value added: [what you sent].")
 ```
 
 See `references/situations.md` for full examples.

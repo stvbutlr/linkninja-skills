@@ -58,7 +58,7 @@ Archived conversations may represent additional losses under different labels:
 search(include_archived=true, compact=true)
 ```
 
-Look for archived conversations with reasons like `not_interested`, `wrong_fit`, `went_competitor`, `went_silent`. These are functional losses even if not staged as "lost." Include them in the analysis if relevant.
+Look for archived conversations with reasons like `not_a_fit`, `ghosted`, `competitor`. These are functional losses even if not staged as "lost." Include them in the analysis if relevant.
 
 ### Step 3: Loss Inventory
 
@@ -129,10 +129,9 @@ If more than 3 deals share a pattern, it is a systemic issue worth addressing.
 
 ```
 update_conversation(
-  conversation_id="<id>",
-  archive=true,
-  archive_reason="timing",
-  reminder="90d",
+  id="<id>",
+  archive={archived: true, reason: "later"},
+  reminder="in 90 days",
   ai_notes="Lost deal analysis: timing objection. Re-engage in 90 days."
 )
 ```

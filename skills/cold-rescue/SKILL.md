@@ -166,9 +166,13 @@ A concentrated push to revive archived conversations that may have become releva
 
 ### Step 1: Find archived conversations worth reviving
 
+Search archived conversations. Filter results by archive reason — `later` and `lost` are the best candidates for revival:
+
 ```
-search(include_archived=true, stage="later", limit=50)
+search(include_archived=true, limit=50)
 ```
+
+From the results, focus on conversations archived with reason `later` (timing-deferred prospects) and conversations in `lost` stage:
 
 ```
 search(include_archived=true, stage="lost", limit=50)

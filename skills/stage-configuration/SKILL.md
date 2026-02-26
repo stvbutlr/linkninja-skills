@@ -120,7 +120,7 @@ This is a merge update -- only the stages and fields you specify change. All oth
 If the user has existing conversations, run a small batch classification to see if the new criteria produce better results:
 
 ```
-start_batch_classify(limit=20)
+start_batch_classify(unclassified_only=false, limit=20)
 ```
 
 Check progress:

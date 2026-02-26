@@ -193,7 +193,7 @@ Skip `won`, `lost`, and `not_a_fit` unless the user specifically requests them -
 For large volumes (100+ in a stage), use server-side batch classification with review-specific instructions:
 
 ```
-start_batch_classify(stage="<stage>", instructions="Re-evaluate every conversation in this stage. Apply the classification decision tree strictly: opening (no reply), chatting (no buying signals), qualified (buying signal confirmed), discovery (call scheduled or deep needs), closing (proposal sent), won/lost (confirmed outcome). Reclassify any conversation that does not match its current stage. Pay special attention to: pricing questions left in chatting (should be qualified), polite interest marked as qualified (should be chatting), scheduled calls marked as closing (should be discovery).")
+start_batch_classify(stage="<stage>", unclassified_only=false, instructions="Re-evaluate every conversation in this stage. Apply the classification decision tree strictly: opening (no reply), chatting (no buying signals), qualified (buying signal confirmed), discovery (call scheduled or deep needs), closing (proposal sent), won/lost (confirmed outcome). Reclassify any conversation that does not match its current stage. Pay special attention to: pricing questions left in chatting (should be qualified), polite interest marked as qualified (should be chatting), scheduled calls marked as closing (should be discovery).")
 ```
 
 Check progress:
@@ -207,7 +207,7 @@ job_status(job_id="<job_id>")
 1. Run server-side for the bulk:
 
 ```
-start_batch_classify(stage="qualified", instructions="Re-evaluate all qualified conversations. Verify each has a real buying signal: stated need, budget mention, authority confirmation, or timeline. Reclassify to chatting if only polite interest. Reclassify to discovery if a call is already scheduled.")
+start_batch_classify(stage="qualified", unclassified_only=false, instructions="Re-evaluate all qualified conversations. Verify each has a real buying signal: stated need, budget mention, authority confirmation, or timeline. Reclassify to chatting if only polite interest. Reclassify to discovery if a call is already scheduled.")
 ```
 
 2. While the job runs, manually review a sample:
@@ -218,10 +218,10 @@ export(stage="qualified", include_messages=true, limit=20)
 
 Read 15-20 threads manually. Note any patterns the server-side job might miss.
 
-3. After the job completes, spot-check results:
+3. After the job completes, spot-check results. Search for conversations that may have been reclassified (check `ai_notes` for reclassification evidence):
 
 ```
-search(stage="chatting", since="1h", compact=true)
+search(stage="chatting", compact=true)
 ```
 
 Were the reclassifications reasonable? Fetch a few to verify:

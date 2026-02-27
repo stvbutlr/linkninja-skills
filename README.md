@@ -140,18 +140,38 @@ graph TD
     LDA -->|refine| ICP
 ```
 
-**Typical user journey:** `icp-definition` → `voice-profile-setup` → `prospect-scan` → `smart-tagging` → `campaign-launch` → `full-morning-triage` → `stage-review` → `reply-rate-analysis` → `won-deal-analysis` + `lost-deal-analysis` → refine ICP
+## Getting Started
 
-## Context Prerequisites
+Skills check for required context before running. If settings are empty, the skill will help you configure them — either through the conversation or via the LinkNinja dashboard at `/pipeline-ai`.
 
-Skills check for required context before running. If your ICP or other settings are empty, the skill will help you configure them first — either through the conversation or by directing you to the LinkNinja dashboard settings.
+### 1. Configure Your AI Profile
 
-| Context Field | What It Stores | Required By |
-|--------------|---------------|-------------|
-| ICP (`additional_context`) | Who you sell to | Most skills |
-| Positioning (`positioning_context`) | What you sell/offer | campaign-launch |
-| Voice Profile (`voice_profile`) | How you communicate | dm-writing, batch-drafting (recommended) |
-| Personal Story (`personal_story`) | Your background | Enhances personalization |
+Set up via the Setup skills or directly in the dashboard:
+
+| Context Field | What It Stores | Set Up By | Required By |
+|--------------|---------------|-----------|-------------|
+| ICP (`additional_context`) | Who you sell to | `icp-definition` or dashboard | Most skills |
+| Positioning (`positioning_context`) | What you sell/offer | Dashboard | campaign-launch |
+| Voice Profile (`voice_profile`) | How you communicate | `voice-profile-setup` or dashboard | dm-writing, batch-drafting |
+| Personal Story (`personal_story`) | Your background | Dashboard | Enhances personalization |
+| Summary Instructions (`summary_instructions`) | How AI summarizes conversations | Dashboard | conversation-summarizer |
+| Stage Criteria | Entrance/exit rules per stage | `stage-configuration` or dashboard | Classification accuracy |
+
+### 2. Build Your Pipeline
+
+`prospect-scan` → `smart-tagging` → `campaign-launch`
+
+### 3. Work Your Pipeline Daily
+
+`full-morning-triage` → `dm-writing` / `batch-drafting` → `cold-rescue`
+
+### 4. Maintain Pipeline Hygiene
+
+`pipeline-cleanup` → `stage-review` → `conversation-summarizer` → `reminder-engine`
+
+### 5. Learn and Refine
+
+`pipeline-health-check` → `reply-rate-analysis` → `stage-conversion-analysis` → `won-deal-analysis` + `lost-deal-analysis` → refine ICP
 
 ## Shared References
 

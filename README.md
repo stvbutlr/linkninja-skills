@@ -104,22 +104,18 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 ## How Skills Work Together
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': {
-  'primaryColor': '#1a1a1a',
-  'primaryTextColor': '#e0e0e0',
-  'primaryBorderColor': '#CEF17B',
-  'lineColor': '#CEF17B',
-  'secondaryColor': '#111',
-  'tertiaryColor': '#1a1a1a',
-  'mainBkg': '#1a1a1a',
-  'nodeBorder': '#CEF17B',
-  'clusterBkg': '#0f0f0f',
-  'clusterBorder': '#333',
-  'titleColor': '#CEF17B',
-  'edgeLabelBackground': '#0a0a0a',
+%%{init: {'theme': 'base', 'themeVariables': {
+  'primaryColor': '#ddf4a0',
+  'primaryTextColor': '#1a1a1a',
+  'primaryBorderColor': '#6b9e23',
+  'lineColor': '#6b9e23',
+  'clusterBkg': '#f5fce6',
+  'clusterBorder': '#a8d45a',
+  'titleColor': '#3d6b0f',
+  'edgeLabelBackground': '#ffffff',
   'fontFamily': 'JetBrains Mono, monospace'
 }}}%%
-graph TD
+flowchart TD
     subgraph Setup
         ICP[icp-definition] -->|foundation| VP[voice-profile-setup]
         ICP --> SC[stage-configuration]
@@ -131,26 +127,21 @@ graph TD
     end
 
     subgraph Conversations
+        direction LR
         FMT[full-morning-triage] --> CR[cold-rescue]
         DM[dm-writing] --> BD[batch-drafting]
-        PC[pipeline-cleanup]
-        SR[stage-review]
-        CS[conversation-summarizer]
-        RE[reminder-engine]
+        PC[pipeline-cleanup] --- SR[stage-review]
+        CS[conversation-summarizer] --- RE[reminder-engine]
     end
 
     subgraph Analysis
-        PHC[pipeline-health-check]
-        RRA[reply-rate-analysis]
-        SCA[stage-conversion-analysis]
-        WDA[won-deal-analysis]
+        direction LR
+        PHC[pipeline-health-check] --- RRA[reply-rate-analysis]
+        SCA[stage-conversion-analysis] --- WDA[won-deal-analysis]
         LDA[lost-deal-analysis]
     end
 
-    ICP --> PS
-    VP --> DM
-    CL --> FMT
-    Conversations --> Analysis
+    Setup --> Connections --> Conversations --> Analysis
     WDA -->|refine| ICP
     LDA -->|refine| ICP
 ```

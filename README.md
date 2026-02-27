@@ -62,49 +62,44 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 
 ## Skills Catalog (19 Skills)
 
-### Daily Operations
+### Setup (`skills/setup/`)
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [full-morning-triage](skills/full-morning-triage/) | Automated daily pipeline review — drafts replies, rescues cold leads, classifies new conversations | "run my morning", "triage my pipeline", "what should I do today" |
-| [dm-writing](skills/dm-writing/) | Situation-specific DM crafting for any conversation stage | "help me write a DM", "draft a message", "what should I say" |
-| [batch-drafting](skills/batch-drafting/) | Draft personalized messages for multiple conversations at once | "batch draft", "draft follow-ups for everyone" |
+| [icp-definition](skills/setup/icp-definition/) | Interview-style ICP setup with network validation | "set up my ICP", "define my ideal client" |
+| [voice-profile-setup](skills/setup/voice-profile-setup/) | Analyze your messages and build a voice profile for AI drafts | "set up my voice", "match my writing style" |
+| [stage-configuration](skills/setup/stage-configuration/) | Customize pipeline stage criteria for your sales process | "customize my stages", "fix my classification" |
 
-### Setup & Configuration
-
-| Skill | Description | Triggers |
-|-------|-------------|----------|
-| [icp-definition](skills/icp-definition/) | Interview-style ICP setup with network validation | "set up my ICP", "define my ideal client" |
-| [voice-profile-setup](skills/voice-profile-setup/) | Analyze your messages and build a voice profile for AI drafts | "set up my voice", "match my writing style" |
-| [stage-configuration](skills/stage-configuration/) | Customize pipeline stage criteria for your sales process | "customize my stages", "fix my classification" |
-
-### Growth & Outreach
+### Connections (`skills/connections/`)
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [prospect-scan](skills/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns | "find prospects", "scan my connections" |
-| [campaign-launch](skills/campaign-launch/) | Plan and execute structured outreach campaigns with scoring | "launch a campaign", "run an outreach campaign" |
-| [cold-rescue](skills/cold-rescue/) | Revive cold and ghosted conversations with value-add re-engagement | "rescue cold conversations", "re-engage" |
-| [smart-tagging](skills/smart-tagging/) | Tag conversations by ICP fit, buying signals, and situational patterns | "tag my conversations", "who are my decision makers" |
+| [prospect-scan](skills/connections/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns | "find prospects", "scan my connections" |
+| [campaign-launch](skills/connections/campaign-launch/) | Plan and execute structured outreach campaigns with scoring | "launch a campaign", "run an outreach campaign" |
+| [smart-tagging](skills/connections/smart-tagging/) | Tag conversations and connections by ICP fit, buying signals, and situational patterns | "tag my conversations", "who are my decision makers" |
 
-### Pipeline Management
-
-| Skill | Description | Triggers |
-|-------|-------------|----------|
-| [pipeline-cleanup](skills/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
-| [stage-review](skills/stage-review/) | Audit stage accuracy — reclassify conversations that are in the wrong stage | "review my stages", "audit my classifications" |
-| [conversation-summarizer](skills/conversation-summarizer/) | Generate or refresh AI summaries and notes across conversations in batch | "summarize my conversations", "update summaries" |
-| [reminder-engine](skills/reminder-engine/) | Bulk reminder management — follow-up cadences, overdue audits, reminder cleanup | "set reminders", "what's overdue", "bulk reminders" |
-
-### Analysis & Optimization
+### Conversations (`skills/conversations/`)
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [pipeline-health-check](skills/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "pipeline health" |
-| [reply-rate-analysis](skills/reply-rate-analysis/) | Analyze opening-to-reply conversion rates and message patterns | "analyze my reply rate", "which openers worked" |
-| [stage-conversion-analysis](skills/stage-conversion-analysis/) | Stage-by-stage conversion funnel — find where deals stall and why | "stage conversion analysis", "where am I losing deals" |
-| [won-deal-analysis](skills/won-deal-analysis/) | Find patterns in won deals, refine ICP from success data | "analyze won deals", "why am I winning" |
-| [lost-deal-analysis](skills/lost-deal-analysis/) | Analyze loss patterns, drop-off stages, and common objections | "analyze lost deals", "why am I losing" |
+| [full-morning-triage](skills/conversations/full-morning-triage/) | Automated daily pipeline review — drafts replies, rescues cold leads, classifies new conversations | "run my morning", "triage my pipeline", "what should I do today" |
+| [dm-writing](skills/conversations/dm-writing/) | Situation-specific DM crafting for any conversation stage | "help me write a DM", "draft a message", "what should I say" |
+| [batch-drafting](skills/conversations/batch-drafting/) | Draft personalized messages for multiple conversations at once | "batch draft", "draft follow-ups for everyone" |
+| [cold-rescue](skills/conversations/cold-rescue/) | Revive cold and ghosted conversations with value-add re-engagement | "rescue cold conversations", "re-engage" |
+| [pipeline-cleanup](skills/conversations/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
+| [stage-review](skills/conversations/stage-review/) | Audit stage accuracy — reclassify conversations that are in the wrong stage | "review my stages", "audit my classifications" |
+| [conversation-summarizer](skills/conversations/conversation-summarizer/) | Generate or refresh AI summaries and notes across conversations in batch | "summarize my conversations", "update summaries" |
+| [reminder-engine](skills/conversations/reminder-engine/) | Bulk reminder management — follow-up cadences, overdue audits, reminder cleanup | "set reminders", "what's overdue", "bulk reminders" |
+
+### Analysis (`skills/analysis/`)
+
+| Skill | Description | Triggers |
+|-------|-------------|----------|
+| [pipeline-health-check](skills/analysis/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "pipeline health" |
+| [reply-rate-analysis](skills/analysis/reply-rate-analysis/) | Analyze opening-to-reply conversion rates and message patterns | "analyze my reply rate", "which openers worked" |
+| [stage-conversion-analysis](skills/analysis/stage-conversion-analysis/) | Stage-by-stage conversion funnel — find where deals stall and why | "stage conversion analysis", "where am I losing deals" |
+| [won-deal-analysis](skills/analysis/won-deal-analysis/) | Find patterns in won deals, refine ICP from success data | "analyze won deals", "why am I winning" |
+| [lost-deal-analysis](skills/analysis/lost-deal-analysis/) | Analyze loss patterns, drop-off stages, and common objections | "analyze lost deals", "why am I losing" |
 
 ## How Skills Work Together
 
@@ -128,7 +123,7 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
     └────────┬───────┘      │
              │              │
     ┌────────▼──────────────▼───────────────────┐
-    │           Daily Operations                 │
+    │           Conversations                    │
     │  ┌──────────────────┐  ┌───────────────┐  │
     │  │full-morning-     │  │ dm-writing    │  │
     │  │triage            │  │               │  │
@@ -137,10 +132,6 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
     │  ┌────────▼─────────┐  ┌──────▼────────┐  │
     │  │ cold-rescue      │  │batch-drafting │  │
     │  └──────────────────┘  └───────────────┘  │
-    └───────────────────────────────────────────┘
-             │
-    ┌────────▼──────────────────────────────────┐
-    │           Pipeline Management              │
     │  ┌──────────────────┐  ┌───────────────┐  │
     │  │pipeline-cleanup  │  │stage-review   │  │
     │  └──────────────────┘  └───────────────┘  │
@@ -151,7 +142,7 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
     └───────────────────────────────────────────┘
              │
     ┌────────▼──────────────────────────────────┐
-    │           Analysis & Optimization          │
+    │           Analysis                         │
     │  ┌──────────────────┐  ┌───────────────┐  │
     │  │pipeline-health-  │  │reply-rate-    │  │
     │  │check             │  │analysis       │  │

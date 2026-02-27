@@ -11,7 +11,10 @@ SKILLS_DIR="skills"
 echo "Validating LinkNinja skills..."
 echo "==============================="
 
-for skill_dir in "$SKILLS_DIR"/*/; do
+for skill_dir in "$SKILLS_DIR"/*/*/; do
+  # Skip if no match (e.g., no subdirectories)
+  [ -d "$skill_dir" ] || continue
+
   skill_name=$(basename "$skill_dir")
   skill_file="$skill_dir/SKILL.md"
 

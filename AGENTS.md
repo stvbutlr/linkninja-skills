@@ -8,7 +8,7 @@ These skills give AI agents expert-level guidance when users are managing their 
 
 ## Skill Format
 
-Each skill in `skills/` follows the Agent Skills Standard:
+Skills are organized into 4 categories under `skills/`: `setup/`, `connections/`, `conversations/`, `analysis/`. Each skill follows the Agent Skills Standard:
 
 - YAML frontmatter: `name` (matches directory), `description` (1-1024 chars)
 - SKILL.md under 500 lines

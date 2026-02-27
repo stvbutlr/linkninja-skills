@@ -1,6 +1,6 @@
 # LinkNinja Skills
 
-Expert sales pipeline skills for the [LinkNinja MCP](https://linkninja.com). Give your AI agent situational expertise for managing LinkedIn DM conversations, prospecting, campaigns, and pipeline analytics.
+Expert sales pipeline skills for the [LinkNinja MCP](https://linkninja.co). Give your AI agent situational expertise for managing LinkedIn DM conversations, prospecting, campaigns, and pipeline analytics.
 
 Works with **any MCP-compatible agent**: Claude Code, Claude.ai, OpenAI Codex, ChatGPT, Gemini, Groq, Manus, and others.
 
@@ -9,15 +9,15 @@ Works with **any MCP-compatible agent**: Claude Code, Claude.ai, OpenAI Codex, C
 Skills are structured markdown files that teach AI agents how to handle specific workflows. Instead of figuring out which tools to call and in what order, the agent follows expert-level guidance for each situation — from morning pipeline triage to launching a targeted outreach campaign.
 
 Each skill defines:
-- **When to activate** (trigger phrases)
-- **What context to check first** (ICP, voice profile, etc.)
-- **Exact tool chains** with parameters
-- **Decision rules** for different scenarios
-- **When to hand off** to related skills
+- **When to activate** — trigger phrases
+- **What context to check** — ICP, voice profile, positioning, etc.
+- **Exact tool chains** — with parameters
+- **Decision rules** — for different scenarios
+- **Handoffs** — to related skills
 
 ## Prerequisites
 
-- LinkNinja account with MCP API key or OAuth credentials
+- [LinkNinja](https://linkninja.co) account with MCP API key or OAuth credentials
 - An MCP-compatible AI agent (see Installation below)
 - LinkNinja MCP connected to your agent
 
@@ -104,6 +104,21 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 ## How Skills Work Together
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {
+  'primaryColor': '#1a1a1a',
+  'primaryTextColor': '#e0e0e0',
+  'primaryBorderColor': '#CEF17B',
+  'lineColor': '#CEF17B',
+  'secondaryColor': '#111',
+  'tertiaryColor': '#1a1a1a',
+  'mainBkg': '#1a1a1a',
+  'nodeBorder': '#CEF17B',
+  'clusterBkg': '#0f0f0f',
+  'clusterBorder': '#333',
+  'titleColor': '#CEF17B',
+  'edgeLabelBackground': '#0a0a0a',
+  'fontFamily': 'JetBrains Mono, monospace'
+}}}%%
 graph TD
     subgraph Setup
         ICP[icp-definition] -->|foundation| VP[voice-profile-setup]
@@ -142,7 +157,7 @@ graph TD
 
 ## Getting Started
 
-Skills check for required context before running. If settings are empty, the skill will help you configure them — either through the conversation or via the LinkNinja dashboard at `/pipeline-ai`.
+Skills check for required context before running. If settings are empty, the skill will help you configure them — either through the conversation or via the [LinkNinja dashboard](https://linkninja.co/pipeline-ai).
 
 ### 1. Configure Your AI Profile
 

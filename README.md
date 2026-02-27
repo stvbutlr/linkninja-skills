@@ -103,49 +103,44 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 
 ## How Skills Work Together
 
-```
-┌─── Setup ─────────────────────────────────────────────────────┐
-│                                                                │
-│   icp-definition  ← foundation: set up first                  │
-│       ├── voice-profile-setup                                  │
-│       └── stage-configuration                                  │
-│                                                                │
-└───────────────────────────┬────────────────────────────────────┘
-                            │
-┌─── Connections ───────────▼────────────────────────────────────┐
-│                                                                │
-│   prospect-scan ──→ smart-tagging ──→ campaign-launch          │
-│                                                                │
-└───────────────────────────┬────────────────────────────────────┘
-                            │
-┌─── Conversations ─────────▼────────────────────────────────────┐
-│                                                                │
-│   full-morning-triage     dm-writing        pipeline-cleanup   │
-│   cold-rescue             batch-drafting    stage-review       │
-│   conversation-summarizer                   reminder-engine    │
-│                                                                │
-└───────────────────────────┬────────────────────────────────────┘
-                            │
-┌─── Analysis ──────────────▼────────────────────────────────────┐
-│                                                                │
-│   pipeline-health-check        reply-rate-analysis             │
-│   stage-conversion-analysis                                    │
-│   won-deal-analysis ──→ Feeds back to ICP                      │
-│   lost-deal-analysis                                           │
-│                                                                │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph Setup
+        ICP[icp-definition] -->|foundation| VP[voice-profile-setup]
+        ICP --> SC[stage-configuration]
+    end
+
+    subgraph Connections
+        PS[prospect-scan] --> ST[smart-tagging]
+        ST --> CL[campaign-launch]
+    end
+
+    subgraph Conversations
+        FMT[full-morning-triage] --> CR[cold-rescue]
+        DM[dm-writing] --> BD[batch-drafting]
+        PC[pipeline-cleanup]
+        SR[stage-review]
+        CS[conversation-summarizer]
+        RE[reminder-engine]
+    end
+
+    subgraph Analysis
+        PHC[pipeline-health-check]
+        RRA[reply-rate-analysis]
+        SCA[stage-conversion-analysis]
+        WDA[won-deal-analysis]
+        LDA[lost-deal-analysis]
+    end
+
+    ICP --> PS
+    VP --> DM
+    CL --> FMT
+    Conversations --> Analysis
+    WDA -->|refine| ICP
+    LDA -->|refine| ICP
 ```
 
-**Typical user journey:**
-1. `icp-definition` → configure your targeting
-2. `voice-profile-setup` → so AI drafts sound like you
-3. `prospect-scan` → find people to message
-4. `smart-tagging` → tag by ICP fit and buying signals
-5. `campaign-launch` → structured outreach push
-6. `full-morning-triage` → daily pipeline management
-7. `stage-review` → audit classification accuracy
-8. `reply-rate-analysis` → learn what messages work
-9. `won-deal-analysis` + `lost-deal-analysis` → learn from results → refine ICP
+**Typical user journey:** `icp-definition` → `voice-profile-setup` → `prospect-scan` → `smart-tagging` → `campaign-launch` → `full-morning-triage` → `stage-review` → `reply-rate-analysis` → `won-deal-analysis` + `lost-deal-analysis` → refine ICP
 
 ## Context Prerequisites
 

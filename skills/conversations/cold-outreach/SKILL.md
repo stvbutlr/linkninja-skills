@@ -1,0 +1,189 @@
+---
+name: cold-outreach
+description: >
+  Craft cold DMs and post-event openers that earn replies. Maps to app template
+  categories: opening, value_add. Use when the user says "write a cold DM", "first
+  message to", "reach out to", "post-event follow-up", or when drafting an opening
+  or value-add message. Uses specificity-personalization framework, insider vocabulary
+  signals, and permission-based closing. Related: reply-handling for when they respond,
+  campaign-launch for structured outreach at scale, voice-profile-setup for tone matching.
+metadata:
+  version: "1.0"
+  author: linkninja
+  template_categories:
+    - opening
+    - value_add
+---
+
+# Cold Outreach
+
+Craft first messages that earn replies — cold DMs, connection openers, and post-event follow-ups. A cold DM works when it reads like it could not possibly have been written for anyone else.
+
+## Before Starting
+
+1. Run `get_context()` to load the user's sales context
+2. Check context completeness:
+
+| Field | Required | If Empty |
+|-------|----------|----------|
+| ICP (`additional_context`) | Yes | "I need your ICP to target the right people and frame messages correctly. Want to set that up?" Run **icp-definition** |
+| Positioning (`positioning_context`) | Yes | "What do you sell? I need this to frame the value-add." Configure in dashboard or inline. |
+| Voice Profile (`voice_profile`) | Recommended | Draft in neutral professional tone. Suggest **voice-profile-setup** after. |
+| Personal Story (`personal_story`) | Optional | Proceed without — do NOT use in first cold message anyway. |
+
+3. If the user names a specific person, find or create their conversation:
+
+```
+search(query="<name>", compact=true)
+```
+
+4. If the user wants to find prospects:
+
+```
+scan_connections(headline_keywords=["<target_role>"], has_conversation=false)
+```
+
+## Using Your Context
+
+Each context field shapes a specific part of the cold DM:
+
+| Context Field | How It Shapes the Draft |
+|--------------|------------------------|
+| **ICP** (`additional_context`) | Determines relevance framing. Reference their industry, role, company stage. Match pain points from ICP to what you see in their profile. If they're outside ICP, flag it before drafting. |
+| **Positioning** (`positioning_context`) | Shapes the value you offer. The insight, framework, or result you reference. Never pitch directly — use to frame the value-add. "I helped another [ICP match] [result from positioning]." |
+| **Voice Profile** (`voice_profile`) | Controls greeting ("Hey" vs "Hi" vs name only), formality, sentence length, vocabulary, sign-off. The draft must sound like the user wrote it, not an AI. |
+| **Personal Story** (`personal_story`) | **Do not use in the first cold message.** Save for reply-handling once they engage. Exception: a shared experience creates a direct connection (same school, same company, same event). |
+
+Draft structure maps context to message parts:
+
+```
+"[greeting from voice_profile] [name] -- [reference to their world, framed by ICP].
+[insight shaped by positioning_context, aimed at pain from ICP].
+[low-friction offer or question in voice_profile style]. [easy out]."
+```
+
+## Reading the Prospect
+
+Before drafting, extract signals from their LinkedIn profile:
+
+| Profile Element | What to Look For | How to Use It |
+|----------------|-----------------|---------------|
+| **Headline** | Role, company stage, industry terms | Frame relevance: "You're [headline signal]..." |
+| **Company** | Size, funding stage, industry | Match to ICP. Reference specific constraints. |
+| **Recent activity** | Posts, comments, job changes | Hook: "Saw your post about..." or "Congrats on the new role." |
+| **Mutual connections** | Shared network | Social proof: "[Name] and I connected over..." |
+| **Location/culture** | Geography, industry norms | Use insider vocabulary and references. |
+
+Use the vocabulary and framing they use in their headline and posts. If they say "demand gen," don't say "lead generation." If they say "scaling," don't say "growing." Language mirroring builds subconscious trust. See `references/cold-dm-framework.md` for the full language mirroring rules.
+
+## The Cold DM Checklist
+
+Every cold DM must pass 5 checks. If any fail, rewrite before saving:
+
+| Check | Test | Example |
+|-------|------|---------|
+| **Specific to them** | Could this message only go to this person? | "Noticed you're scaling the SDR team post-Series B" (pass) vs "I help companies grow" (fail) |
+| **Personalized** | Does it reference something real from their world? | Their headline, a post, their company news, a mutual connection |
+| **Insider vocabulary** | Does it use words from their world, not yours? | "ramp time" for sales leaders, "probation constraints" for German HR |
+| **Permission close** | Does it ask before offering? | "Would that be useful?" "Happy to share if relevant." |
+| **Easy out** | Can they say no without friction? | "No pressure." "Totally fine if timing's off." |
+
+### What Makes Cold DMs Fail
+
+| Pattern | Why It Fails |
+|---------|-------------|
+| Generic opener ("I help companies...") | Could go to anyone — signals automation |
+| Self-focused ("We have a proven methodology") | They don't care about you yet |
+| Jumping to a call | Skips trust entirely — they don't know you |
+| Long pitch on first message | No one asked for this |
+| No easy out | Creates pressure, kills trust |
+| Marketing vocabulary instead of their vocabulary | Signals you're an outsider |
+
+## Cold DM Examples
+
+### Good: Headline-Referenced
+
+> Hey Sarah -- noticed you're scaling the SDR team at Acme post-Series B. Most teams at that stage lose 3-4 months per new rep just on ramp time.
+>
+> I helped another B2B SaaS team cut that from 9 months to 3. Happy to share the structure if useful -- no pitch, just the framework. Would that be helpful?
+
+**Why it works:** Names her situation (SDR team, Series B). Concrete result from a similar company. Offers something useful. Permission close. Easy out.
+
+### Good: Activity-Referenced
+
+> Hey Tom -- your headline says "Building demand gen engines for B2B SaaS." Curious how you're handling the attribution side. Most teams I talk to say it's the hardest part of the stack to get right.
+
+**Why it works:** Uses his exact words. Asks about a known pain in his space. Short. No pitch.
+
+### Good: Mutual Connection
+
+> Hey David -- [mutual connection] mentioned you're rethinking your outbound strategy. I work in that space and had a thought. Mind if I share a quick framework?
+
+### Bad: Generic Pitch
+
+> Hi Sarah! I help companies with sales enablement. We have a proven methodology that's helped 200+ companies improve their results. Would love to hop on a quick call to show you how we can help!
+
+**Why it fails:** Generic. Self-focused. Jumps to call. No specific insight. No permission. No easy out.
+
+## Post-Event Follow-Up
+
+Same checklist, but the event becomes your hook. Reference something specific that happened — not just "thanks for attending."
+
+| Event Type | What to Reference | Example |
+|-----------|------------------|---------|
+| Webinar | Their question or comment | "Your question about X really stood out..." |
+| Workshop | Something they worked on | "Noticed you were focused on Y during the workshop..." |
+| Conference | Something discussed in person | "Great meeting you at Z. You mentioned..." |
+| Content engagement | Post they liked/commented on | "Saw your comment on [post]. Curious about..." |
+
+### Good Post-Event
+
+> Hey Sarah -- really enjoyed your question during the webinar about scaling outbound at speed. That's exactly the problem I see most teams run into after Series A. Curious -- have you found anything that works at your current scale?
+
+### Bad Post-Event
+
+> Hi Sarah! Thanks for attending the webinar! I noticed you were there and wanted to reach out. Would love to chat about how I can help you!
+
+**Why it fails:** Generic. Could go to every attendee. Self-focused. No specific reference.
+
+## Draft Template
+
+```
+update_conversation(
+  id="<id>",
+  draft_message="[greeting] [name] -- [specific reference to their world]. [Insight/result framed by positioning, aimed at ICP pain]. [Permission close or question in voice style]. [Easy out].",
+  ai_notes="Cold outreach. Referenced [what from profile]. ICP fit: [match details]. Offered [what value]. Specificity: [pass/fail on each check]. Goal: get a reply.",
+  reminder="in 3 days"
+)
+```
+
+For post-event:
+
+```
+update_conversation(
+  id="<id>",
+  draft_message="[greeting] [name] -- [reference specific event moment]. [Connect to their situation using ICP context]. [Question in voice style].",
+  ai_notes="Post-event follow-up. Event: [name]. Referenced [what]. ICP fit: [details]. Goal: start a conversation.",
+  reminder="in 3 days"
+)
+```
+
+## Guidelines
+
+- Always save drafts via `draft_message`. Never pretend to send messages.
+- Always include `ai_notes` explaining: what signal you responded to, ICP fit assessment, what the draft accomplishes, expected next step.
+- One draft per conversation. A new draft overwrites the previous one.
+- Match the user's voice profile. If none exists, use neutral professional tone.
+- Keep cold DMs to 2-4 sentences. Post-event can go to 3-5.
+- If the prospect is outside the user's ICP, flag it: "This person doesn't match your ICP because [reason]. Want to draft anyway?"
+- After sending with no reply, transition to **cold-rescue** for re-engagement.
+- See `references/cold-dm-framework.md` for the specificity-personalization grid, language mirroring rules, and permission close structure.
+
+## Related Skills
+
+- **reply-handling** — When they respond to your cold DM
+- **campaign-launch** — Cold outreach at scale with structured cadences
+- **batch-drafting** — Draft cold DMs for multiple prospects at once
+- **voice-profile-setup** — Configure voice matching for natural-sounding drafts
+- **icp-definition** — Set up targeting context for relevant messaging
+- **cold-rescue** — Re-engage prospects who went quiet after cold outreach

@@ -60,7 +60,7 @@ The skills are plain markdown files. Clone the repo and point your agent at the 
 git clone https://github.com/stvbutlr/linkninja-skills.git
 ```
 
-## Skills Catalog (19 Skills)
+## Skills Catalog (23 Skills)
 
 ### Setup (`skills/setup/`)
 
@@ -83,7 +83,11 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 | Skill | Description | Triggers |
 |-------|-------------|----------|
 | [full-morning-triage](skills/conversations/full-morning-triage/) | Automated daily pipeline review — drafts replies, rescues cold leads, classifies new conversations | "run my morning", "triage my pipeline", "what should I do today" |
-| [dm-writing](skills/conversations/dm-writing/) | Situation-specific DM crafting for any conversation stage | "help me write a DM", "draft a message", "what should I say" |
+| [dm-writing](skills/conversations/dm-writing/) | Router — identifies the DM situation and dispatches to the right skill | "help me write a DM", "draft a message", "what should I say" |
+| [cold-outreach](skills/conversations/cold-outreach/) | Cold DMs and post-event openers with specificity-personalization framework | "write a cold DM", "first message", "post-event follow-up" |
+| [reply-handling](skills/conversations/reply-handling/) | Handle replies and qualify prospects through trust progression | "they replied", "how should I respond", "qualifying" |
+| [objection-handling](skills/conversations/objection-handling/) | Handle price, timing, trust, and fit objections in DMs | "handle this objection", "they said too expensive" |
+| [call-booking](skills/conversations/call-booking/) | Book discovery calls with the 3-element invite framework | "book a call", "move to discovery", "schedule a meeting" |
 | [batch-drafting](skills/conversations/batch-drafting/) | Draft personalized messages for multiple conversations at once | "batch draft", "draft follow-ups for everyone" |
 | [cold-rescue](skills/conversations/cold-rescue/) | Revive cold and ghosted conversations with value-add re-engagement | "rescue cold conversations", "re-engage" |
 | [pipeline-cleanup](skills/conversations/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
@@ -129,7 +133,11 @@ flowchart TD
     subgraph Conversations
         direction LR
         FMT[full-morning-triage] --> CR[cold-rescue]
-        DM[dm-writing] --> BD[batch-drafting]
+        DM[dm-writing] --> CO[cold-outreach]
+        DM --> RH[reply-handling]
+        DM --> OH[objection-handling]
+        DM --> CB[call-booking]
+        DM --> BD[batch-drafting]
         PC[pipeline-cleanup] --- SR[stage-review]
         CS[conversation-summarizer] --- RE[reminder-engine]
     end

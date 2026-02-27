@@ -96,7 +96,7 @@ For each conversation returned:
 fetch(id="<conversation_id>")
 ```
 
-Read the full thread. Identify the situation (see **dm-writing** for the 7 situations). Draft a personalized response following dm-principles:
+Read the full thread. Identify the situation and apply the right DM skill: **reply-handling** for active replies and qualifying, **objection-handling** for pushback, **call-booking** for qualified prospects ready for a call, **cold-outreach** for first messages. Draft a personalized response following dm-principles:
 - One thing per message
 - Match the prospect's energy and vocabulary
 - Ask before telling
@@ -254,7 +254,11 @@ For the full 12-step workflow with all tool calls, see `references/triage-workfl
 
 ## Related Skills
 
-- **dm-writing** — Detailed guidance for each of the 7 DM situations
+- **dm-writing** — Router that identifies the right DM skill per situation
+- **cold-outreach** — First messages and post-event openers
+- **reply-handling** — Handling replies, building rapport, qualifying
+- **objection-handling** — Price, timing, trust, and fit objections
+- **call-booking** — Booking discovery calls with qualified prospects
 - **batch-drafting** — Focused batch draft sessions for a specific segment
 - **pipeline-cleanup** — Dedicated archiving and hygiene pass
 - **cold-rescue** — Targeted re-engagement workflow

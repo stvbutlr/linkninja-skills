@@ -263,6 +263,7 @@ For each cold conversation, ask in order:
 
 - **full-morning-triage** -- Handles daily cold conversation triage as part of morning routine
 - **batch-drafting** -- For high-volume re-engagement message drafting
-- **dm-writing** -- For crafting individual high-priority re-engagement messages
+- **dm-writing** -- Router for identifying the right DM skill per situation
+- **reply-handling** -- For crafting replies when cold prospects re-engage
 - **pipeline-cleanup** -- Broader cleanup that includes archiving, not just cold rescue
 - **pipeline-health-check** -- Diagnose why conversations are going cold in the first place

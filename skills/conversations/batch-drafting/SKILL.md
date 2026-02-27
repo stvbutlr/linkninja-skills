@@ -57,7 +57,7 @@ search(stage="qualified", my_turn=true, compact=true, page=2)
 fetch(id="<conversation_id>")
 ```
 
-Read the full thread. Determine the DM situation (see **dm-writing**). Draft a personalized response.
+Read the full thread. Determine the DM situation and apply the right skill: **cold-outreach** for first messages, **reply-handling** for replies and qualifying, **objection-handling** for pushback, **call-booking** for qualified prospects. Draft a personalized response.
 
 **Step 3:** Save each draft individually (draft messages must be saved one at a time via `update_conversation`):
 
@@ -167,7 +167,7 @@ search(freshness="they_ghosted", stage="qualified", compact=true)
 search(freshness="fresh", stage="chatting", my_turn=true, compact=true)
 ```
 
-Apply the appropriate DM situation from **dm-writing** for each.
+Apply the appropriate DM skill for each: **reply-handling** for active conversations, **objection-handling** for pushback, **call-booking** for qualified prospects.
 
 ## Drafting Rules
 
@@ -245,7 +245,11 @@ After batch drafting is complete, deliver a summary:
 
 ## Related Skills
 
-- **dm-writing** — Detailed guidance for each of the 7 DM situations
+- **dm-writing** — Router that identifies the right DM skill per situation
+- **cold-outreach** — First messages, cold DMs, post-event openers
+- **reply-handling** — Handling replies, building rapport, qualifying
+- **objection-handling** — Price, timing, trust, and fit objections
+- **call-booking** — Booking discovery calls with qualified prospects
 - **full-morning-triage** — Complete daily pipeline processing with auto-drafting
 - **cold-rescue** — Targeted re-engagement for ghosted conversations
 - **campaign-launch** — Set up and launch a targeted outreach campaign

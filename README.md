@@ -165,9 +165,9 @@ Set up via the Setup skills or directly in the dashboard:
 | Context Field | What It Stores | Set Up By | Required By |
 |--------------|---------------|-----------|-------------|
 | ICP (`additional_context`) | Who you sell to | `icp-definition` or dashboard | Most skills |
-| Positioning (`positioning_context`) | What you sell/offer | Dashboard | campaign-launch |
-| Voice Profile (`voice_profile`) | How you communicate | `voice-profile-setup` or dashboard | dm-writing, batch-drafting |
-| Personal Story (`personal_story`) | Your background | Dashboard | Enhances personalization |
+| Positioning (`positioning_context`) | What you sell/offer | Dashboard | cold-outreach, reply-handling, objection-handling, call-booking, campaign-launch |
+| Voice Profile (`voice_profile`) | How you communicate | `voice-profile-setup` or dashboard | All DM skills, batch-drafting |
+| Personal Story (`personal_story`) | Your background | Dashboard | reply-handling, objection-handling, call-booking |
 | Summary Instructions (`summary_instructions`) | How AI summarizes conversations | Dashboard | conversation-summarizer |
 | Stage Criteria | Entrance/exit rules per stage | `stage-configuration` or dashboard | Classification accuracy |
 

@@ -227,7 +227,11 @@ Check progress of a batch classification job.
 | Skill | Primary Tools | Secondary Tools |
 |-------|--------------|-----------------|
 | full-morning-triage | `pipeline_stats`, `search`, `fetch`, `bulk_classify` | `export`, `start_batch_classify` |
-| dm-writing | `fetch`, `get_context`, `update_conversation` | — |
+| dm-writing | `fetch`, `get_context`, `search` | — |
+| cold-outreach | `get_context`, `scan_connections`, `search`, `update_conversation` | `fetch` |
+| reply-handling | `get_context`, `fetch`, `search`, `update_conversation` | — |
+| objection-handling | `get_context`, `fetch`, `update_conversation` | — |
+| call-booking | `get_context`, `fetch`, `update_conversation` | — |
 | batch-drafting | `search`, `fetch`, `bulk_classify` | `export` |
 | pipeline-health-check | `pipeline_stats`, `export`, `search` | `get_context` |
 | icp-definition | `get_context`, `update_context`, `scan_connections` | `start_batch_classify`, `job_status` |

@@ -104,58 +104,36 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 ## How Skills Work Together
 
 ```
-                    ┌─────────────────┐
-                    │  icp-definition  │ ← Foundation: set up first
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-    ┌─────────▼──────┐ ┌────▼─────┐ ┌──────▼──────────┐
-    │ prospect-scan  │ │voice-    │ │stage-           │
-    │                │ │profile-  │ │configuration    │
-    └────────┬───────┘ │setup     │ └─────────────────┘
-             │         └────┬─────┘
-    ┌────────▼───────┐      │
-    │ smart-tagging  │      │
-    └────────┬───────┘      │
-    ┌────────▼───────┐      │
-    │campaign-launch │      │
-    └────────┬───────┘      │
-             │              │
-    ┌────────▼──────────────▼───────────────────┐
-    │           Conversations                    │
-    │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │full-morning-     │  │ dm-writing    │  │
-    │  │triage            │  │               │  │
-    │  └────────┬─────────┘  └───────┬───────┘  │
-    │           │                    │           │
-    │  ┌────────▼─────────┐  ┌──────▼────────┐  │
-    │  │ cold-rescue      │  │batch-drafting │  │
-    │  └──────────────────┘  └───────────────┘  │
-    │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │pipeline-cleanup  │  │stage-review   │  │
-    │  └──────────────────┘  └───────────────┘  │
-    │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │conversation-     │  │reminder-      │  │
-    │  │summarizer        │  │engine         │  │
-    │  └──────────────────┘  └───────────────┘  │
-    └───────────────────────────────────────────┘
-             │
-    ┌────────▼──────────────────────────────────┐
-    │           Analysis                         │
-    │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │pipeline-health-  │  │reply-rate-    │  │
-    │  │check             │  │analysis       │  │
-    │  └──────────────────┘  └───────────────┘  │
-    │  ┌──────────────────┐  ┌───────────────┐  │
-    │  │stage-conversion- │  │won-deal-      │  │
-    │  │analysis          │  │analysis       │──┼─→ Feeds back
-    │  └──────────────────┘  └───────────────┘  │   to ICP
-    │  ┌──────────────────┐                     │
-    │  │lost-deal-        │                     │
-    │  │analysis          │                     │
-    │  └──────────────────┘                     │
-    └───────────────────────────────────────────┘
+┌─── Setup ─────────────────────────────────────────────────────┐
+│                                                                │
+│   icp-definition  ← foundation: set up first                  │
+│       ├── voice-profile-setup                                  │
+│       └── stage-configuration                                  │
+│                                                                │
+└───────────────────────────┬────────────────────────────────────┘
+                            │
+┌─── Connections ───────────▼────────────────────────────────────┐
+│                                                                │
+│   prospect-scan ──→ smart-tagging ──→ campaign-launch          │
+│                                                                │
+└───────────────────────────┬────────────────────────────────────┘
+                            │
+┌─── Conversations ─────────▼────────────────────────────────────┐
+│                                                                │
+│   full-morning-triage     dm-writing        pipeline-cleanup   │
+│   cold-rescue             batch-drafting    stage-review       │
+│   conversation-summarizer                   reminder-engine    │
+│                                                                │
+└───────────────────────────┬────────────────────────────────────┘
+                            │
+┌─── Analysis ──────────────▼────────────────────────────────────┐
+│                                                                │
+│   pipeline-health-check        reply-rate-analysis             │
+│   stage-conversion-analysis                                    │
+│   won-deal-analysis ──→ Feeds back to ICP                      │
+│   lost-deal-analysis                                           │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘
 ```
 
 **Typical user journey:**
@@ -202,4 +180,4 @@ Checks frontmatter format, naming conventions, line counts, and required section
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+FSL-1.1-MIT — Free to use with LinkNinja MCP. Converts to MIT after 2 years. See [LICENSE](LICENSE).

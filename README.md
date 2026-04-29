@@ -2,6 +2,8 @@
 
 Expert sales pipeline skills for the [LinkNinja MCP](https://linkninja.co). Give your AI agent situational expertise for managing LinkedIn DM conversations, prospecting, campaigns, and pipeline analytics.
 
+Skills are written to embed the [**Sell By Chat Playbook**](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) by Steve Butler — *Stop selling. Start serving.* Named frameworks (Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1 / 3 / 7 cadence) are quoted directly in skill prompts.
+
 Works with **any MCP-compatible agent**: Claude Code, Claude.ai, OpenAI Codex, ChatGPT, Gemini, Groq, Manus, and others.
 
 ## What Are Skills?
@@ -193,11 +195,14 @@ The `references/` directory contains documentation shared across skills:
 
 | File | Content |
 |------|---------|
-| [tools-registry.md](references/tools-registry.md) | All 17 LinkNinja MCP tools with full parameter docs |
-| [pipeline-stages.md](references/pipeline-stages.md) | 8 pipeline stages with signals and trust levels |
+| [sell-by-chat-methodology.md](references/sell-by-chat-methodology.md) | The Sell By Chat playbook frameworks every DM skill embeds |
+| [tools-registry.md](references/tools-registry.md) | All 30 LinkNinja MCP tools with full parameter docs |
+| [pipeline-stages.md](references/pipeline-stages.md) | 7 pipeline stages with signals, trust levels, and the archive operation |
 | [signal-mapping.md](references/signal-mapping.md) | Signal-to-stage and signal-to-tag classification tables |
-| [dm-principles.md](references/dm-principles.md) | 8 universal DM writing rules |
 | [voice-profile-template.md](references/voice-profile-template.md) | 12-dimension voice analysis framework |
+| [conversation-intelligence.md](references/conversation-intelligence.md) | `warmth_level`, `conversation_health`, `sentiment`, signal arrays returned per conversation |
+| [template-modes.md](references/template-modes.md) | `locked` / `guided` / `flexible` draft modes; placeholders; advancement rules |
+| [enrichment-sections.md](references/enrichment-sections.md) | Sales Navigator enrichment sections, quota, and re-enrich semantics |
 
 ## Validation
 

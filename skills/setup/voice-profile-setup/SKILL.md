@@ -15,7 +15,9 @@ metadata:
 
 # Voice Profile Setup
 
-Analyze the user's real LinkedIn messages and build a voice profile so every AI-drafted DM sounds like them. The profile is saved via `update_context` and used by all skills that draft messages.
+Analyze the user's real LinkedIn messages and build a voice profile so every AI-drafted DM sounds like them. The profile is saved via `update_context` and used by all skills that draft messages. Server-side, `get_draft_prompt` and the `shared_bundle` returned by `get_job_chunk` enforce voice — a richer profile makes that enforcement land harder.
+
+If the user has no `voice_profile` yet, the fallback baseline is the playbook's **Ten Core Voice Rules** (in `references/sell-by-chat-methodology.md`): Be Human Not Robotic, Make Them Feel Seen, Prioritize Empathy, Keep Messages Short, One Question at a Time, Match Their Pace, Give Before You Ask, Follow Up With Purpose, Personalize Every Message, Own the Outcome. Encourage the user to author their own profile at the level of detail those rules imply.
 
 ## Before Starting
 
@@ -37,7 +39,7 @@ Analyze the user's real LinkedIn messages and build a voice profile so every AI-
 Pull conversations with full message transcripts:
 
 ```
-export(include_messages=true, limit=50)
+export_conversations(include_messages=true, limit=50)
 ```
 
 Focus only on messages the **user sent** -- ignore prospect messages entirely. You need at least 10-15 sent messages to spot reliable patterns. More is better.
@@ -45,13 +47,13 @@ Focus only on messages the **user sent** -- ignore prospect messages entirely. Y
 If the first page has too few user-sent messages, paginate:
 
 ```
-export(include_messages=true, limit=50, page=2)
+export_conversations(include_messages=true, limit=50, page=2)
 ```
 
 If specific conversations look promising (longer threads, varied contexts), pull them individually:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Aim for messages across different conversation types -- cold opens, follow-ups, replies to questions, casual chats. A profile built from only cold opens will miss how the user sounds in natural conversation.
@@ -126,13 +128,13 @@ update_context(summary_instructions="Write in a [formality level] tone. [Key voi
 Pick a conversation that needs a reply:
 
 ```
-search(my_turn=true, limit=5)
+search_conversations(my_turn=true, limit=5)
 ```
 
 Fetch one:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Draft a reply using the new voice profile. Save as draft with notes:
@@ -189,13 +191,13 @@ If drafts already exist in the pipeline that were created before the voice profi
 ### Step 1: Find conversations with existing drafts
 
 ```
-search(my_turn=true, limit=50)
+search_conversations(my_turn=true, limit=50)
 ```
 
 Fetch each and check for `draft_message`:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 ### Step 2: Re-draft in the user's voice
@@ -222,7 +224,7 @@ update_conversation(
 )
 ```
 
-Repeat for each conversation. `bulk_classify` does not support `draft_message`.
+Repeat for each conversation. `bulk_update` does not support `draft_message`.
 
 ## Guidelines
 

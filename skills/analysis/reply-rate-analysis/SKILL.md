@@ -26,7 +26,7 @@ Find which opening messages got replies and which got ignored. Compare message p
 
 | Check | How | If Not Met |
 |-------|-----|------------|
-| Opening conversations exist | `pipeline_stats()` — check opening stage count | Need at least 5 total conversations (opening + chatting + qualified+) to analyze. "Not enough data yet. Keep working your pipeline and come back when you've sent at least 5 openers." |
+| Opening conversations exist | `get_stats()` — check opening stage count | Need at least 5 total conversations (opening + chatting + qualified+) to analyze. "Not enough data yet. Keep working your pipeline and come back when you've sent at least 5 openers." |
 | Conversations past opening exist | pipeline_stats — chatting + qualified + discovery + closing + won + lost counts | If zero conversations past opening: "Nobody has replied yet. Too early to analyze patterns. Focus on sending more openers first." |
 | Minimum for pattern analysis | At least 3 replied + 3 unreplied | Partial analysis is fine, but flag: "Small sample — patterns may be noise. Revisit when you have more data." |
 
@@ -37,7 +37,7 @@ Find which opening messages got replies and which got ignored. Compare message p
 ### Step 1: Gather Pipeline Numbers
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Record the stage counts for the reply rate calculation:
@@ -74,13 +74,13 @@ Record the stage counts for the reply rate calculation:
 ### Step 3: Export Unreplied Conversations (Opening Stage)
 
 ```
-export(stage="opening", include_messages=true)
+export_conversations(stage="opening", include_messages=true)
 ```
 
 If `has_more` is true, paginate immediately:
 
 ```
-export(stage="opening", include_messages=true, page=2)
+export_conversations(stage="opening", include_messages=true, page=2)
 ```
 
 Continue until all pages are loaded. These are the openers that did not get a reply.
@@ -90,11 +90,11 @@ Continue until all pages are loaded. These are the openers that did not get a re
 Pull conversations that made it past opening:
 
 ```
-export(stage="chatting", include_messages=true)
+export_conversations(stage="chatting", include_messages=true)
 ```
 
 ```
-export(stage="qualified", include_messages=true)
+export_conversations(stage="qualified", include_messages=true)
 ```
 
 Handle `has_more` pagination on each. For advanced stages, full transcripts are less critical — the opening message is the key data point. If the pipeline is large (100+), prioritize chatting and qualified exports over discovery/closing/won.
@@ -102,7 +102,7 @@ Handle `has_more` pagination on each. For advanced stages, full transcripts are 
 For won deals specifically (best-performing openers):
 
 ```
-export(stage="won", include_messages=true)
+export_conversations(stage="won", include_messages=true)
 ```
 
 ### Step 5: Analyze Opening Message Patterns
@@ -148,7 +148,7 @@ Present as a side-by-side:
 If the user has campaign tags, compare reply rates by campaign:
 
 ```
-search(tags=["campaign-X"], compact=true)
+search_conversations(tags=["campaign-X"], compact=true)
 ```
 
 Count how many are still in opening vs past opening for each campaign tag.
@@ -156,7 +156,7 @@ Count how many are still in opening vs past opening for each campaign tag.
 For deeper analysis:
 
 ```
-export(tags=["campaign-X"], include_messages=true)
+export_conversations(tags=["campaign-X"], include_messages=true)
 ```
 
 | Campaign | Total | In Opening | Past Opening | Reply Rate | Top Pattern |
@@ -171,11 +171,11 @@ If no campaign tags exist, mention: "Tag future campaigns (e.g., `campaign-apr-2
 If the user wants to compare periods:
 
 ```
-export(stage="opening", include_messages=true, since="2026-01-01", before="2026-02-01")
+export_conversations(stage="opening", include_messages=true, since="2026-01-01", before="2026-02-01")
 ```
 
 ```
-export(stage="chatting", include_messages=true, since="2026-01-01", before="2026-02-01")
+export_conversations(stage="chatting", include_messages=true, since="2026-01-01", before="2026-02-01")
 ```
 
 Repeat for the second period. Compare reply rates and patterns between time windows.
@@ -224,7 +224,7 @@ Recommendations:
 **CSV export for offline analysis:**
 
 ```
-export(format="csv", include_messages=true)
+export_conversations(format="csv", include_messages=true)
 ```
 
 ## Guidelines
@@ -234,7 +234,7 @@ export(format="csv", include_messages=true)
 - Always compare replied vs unreplied. One-sided analysis misses the contrast.
 - Quote actual opener messages to illustrate patterns. Anonymize prospect names if the user prefers.
 - Do not draw conclusions from fewer than 3 data points per group. Flag small samples.
-- Handle `has_more` pagination on every `export` call. Missing pages means missing patterns.
+- Handle `has_more` pagination on every `export_conversations` call. Missing pages means missing patterns.
 - For large pipelines (200+ conversations), prioritize opening and chatting exports. Sample rather than export every advanced stage.
 - Do not recommend context updates from this skill. Present findings and let the user decide. Point to **icp-definition** or **dm-writing** for acting on insights.
 - If reply rate is above 35%, say so. Not every analysis reveals a problem.

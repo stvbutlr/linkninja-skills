@@ -22,7 +22,7 @@ Manage the follow-up system across the entire pipeline. Set stage-based cadences
 ## Before Starting
 
 1. Run `get_context()` to load the user's sales context
-2. Run `pipeline_stats()` to get the current pipeline snapshot
+2. Run `get_stats()` to get the current pipeline snapshot
 3. Check what the user needs:
 
 | User Says | Pattern |
@@ -36,23 +36,35 @@ Manage the follow-up system across the entire pipeline. Set stage-based cadences
 
 4. If the user doesn't specify, ask: "What would you like to do? I can set reminders for a stage, audit what's overdue, clear stale reminders, or build cadences for your whole pipeline."
 
-## Stage-Specific Recommended Cadences
+## The Playbook Cadence
 
-Use this table as the default when the user asks for stage-based reminders. Adjust based on their context and preferences.
+A single flat cadence applies across all active stages (from `references/sell-by-chat-methodology.md`). 80% of sales close *after* the 5th touchpoint — most operators quit before then. Persistence with new value at each touch is the edge.
 
-| Stage | Default Follow-Up | Escalation | After 3 Attempts |
-|-------|-------------------|------------|-------------------|
-| opening | 3 days | 5 days, 10 days | Archive or stop |
-| chatting | 5 days | 7 days, 14 days | Review if ICP match |
-| qualified | 3 days | 5 days, 7 days | Escalate effort (higher value) |
-| discovery | 2 days | 3 days, 5 days | Direct follow-up |
-| closing | 1-2 days | 3 days, 5 days | Check for blockers |
-| won | N/A | N/A | N/A |
-| lost | 30-90 days (check back) | N/A | N/A |
+| Touch # | Timing | What Each Touch Must Add |
+|---------|--------|--------------------------|
+| 1 | Day 1 — original outreach | The opener (per cold-outreach Three Opening Rules) |
+| 2 | Day 3 | New value: insight, observation, or question tied to their world |
+| 3 | Day 7 | A different angle — new insight or new question |
+| 4 | Day 14 | A door-open, "no worries if timing's off" — but with substance |
+| 5 | Day 30 | Fresh hook — new industry development, recent post, mutual signal |
+| 6+ | Day 60, 90, extending | Long-tail nurture; only when genuinely new value to share |
+
+### Stage-Aware Adjustments
+
+The base cadence applies everywhere, but two stages benefit from a tighter feedback loop:
+
+| Stage | Adjustment |
+|-------|-----------|
+| `discovery` (call already booked) | Tighten last-mile: 24h before call confirm, 24h after call recap |
+| `closing` (proposal out) | Tighten: Day 1 acknowledgment, Day 3 check, Day 7 nudge — they're already deep |
+| `won` | No reminders needed |
+| `lost` | 30–90 day "check-back" reminder for the `archive: {reason: "later"}` pattern |
+
+If you have nothing new to add at a scheduled touch, **skip it and extend the interval** — empty pings destroy trust faster than silence.
 
 ## Reminder Format
 
-`bulk_classify` accepts `reminder` as a string. Valid formats:
+`bulk_update` accepts `reminder` as a string. Valid formats:
 
 | Format | Example |
 |--------|---------|
@@ -70,26 +82,26 @@ Use this table as the default when the user asks for stage-based reminders. Adju
 **Step 1:** Find conversations in the target stage:
 
 ```
-search(stage="qualified", my_turn=true, compact=true)
+search_conversations(stage="qualified", my_turn=true, compact=true)
 ```
 
 If `has_more` is true, paginate:
 
 ```
-search(stage="qualified", my_turn=true, compact=true, page=2)
+search_conversations(stage="qualified", my_turn=true, compact=true, page=2)
 ```
 
 **Step 2:** Set reminders in batch using the recommended cadence:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "in 3 days", "ai_notes": "Reminder engine: qualified stage default cadence (3 days)."},
   {"id": "def", "reminder": "in 3 days", "ai_notes": "Reminder engine: qualified stage default cadence (3 days)."},
   ...
 ])
 ```
 
-Max 100 per `bulk_classify` call. Split if needed.
+Max 100 per `bulk_update` call. Split if needed.
 
 **Step 3:** If the user wants cadences across multiple stages, repeat for each stage with the appropriate interval from the cadence table.
 
@@ -100,7 +112,7 @@ Max 100 per `bulk_classify` call. Split if needed.
 **Step 1:** Find conversations where it's the user's turn:
 
 ```
-search(my_turn=true, compact=true)
+search_conversations(my_turn=true, compact=true)
 ```
 
 Paginate if `has_more` is true.
@@ -118,7 +130,7 @@ Paginate if `has_more` is true.
 **Step 3:** For conversations that look significantly overdue, fetch to understand context:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Read the thread to determine: is this actually overdue, or was the conversation naturally paused?
@@ -135,42 +147,43 @@ Read the thread to determine: is this actually overdue, or was the conversation 
 **Step 5:** Optionally set reminders for overdue conversations:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "tomorrow", "ai_notes": "Overdue audit: qualified lead, 8 days since last message. Critical priority."},
   {"id": "def", "reminder": "in 2 days", "ai_notes": "Overdue audit: discovery stage, 5 days silent. High priority."},
   ...
 ])
 ```
 
-### Pattern 3: Escalating Cadence
+### Pattern 3: Playbook Cadence (Day 1/3/7/14/30/extending)
 
-"Set 3-7-14 day follow-up sequence" or "escalating reminders based on attempt count."
+"Set the playbook follow-up sequence" or "escalating reminders based on attempt count."
 
 **Step 1:** Find target conversations:
 
 ```
-search(stage="qualified", my_turn=true, compact=true)
+search_conversations(stage="qualified", my_turn=true, compact=true)
 ```
 
 **Step 2:** For each conversation, fetch to check `ai_notes` for follow-up attempt history:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 **Step 3:** Determine the follow-up number from `ai_notes` or message pattern, then set the appropriate interval:
 
 | Follow-Up # | Interval | ai_notes |
 |-------------|----------|----------|
-| 1st attempt | 3 days | "Follow-up #1 scheduled" |
-| 2nd attempt | 7 days | "Follow-up #2 scheduled (escalated)" |
-| 3rd attempt | 14 days | "Follow-up #3 scheduled (final before review)" |
-| 4th+ | Stop or archive | "3 attempts exhausted. Needs manual review or archive." |
+| 1st attempt | 3 days | "Touch #2 — Day 3 value-add scheduled. Need insight or observation tied to their world." |
+| 2nd attempt | 7 days | "Touch #3 — Day 7 different angle. New question or industry observation." |
+| 3rd attempt | 14 days | "Touch #4 — Day 14 door-open with substance. No 'just checking in'." |
+| 4th attempt | 30 days | "Touch #5 — Day 30 fresh hook. Pull recent posts via get_enrichment for new material." |
+| 5th+ | Extend (60d, 90d) | "Long-tail nurture. Only contact when genuinely new value to share." |
 
 **Step 4:** Batch set reminders:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "in 3 days", "ai_notes": "Escalating cadence: follow-up #1 scheduled."},
   {"id": "def", "reminder": "in 7 days", "ai_notes": "Escalating cadence: follow-up #2 scheduled (escalated from 3-day)."},
   {"id": "ghi", "reminder": "in 14 days", "ai_notes": "Escalating cadence: follow-up #3 scheduled (final attempt)."},
@@ -185,19 +198,19 @@ bulk_classify(updates=[
 **Step 1:** Find archived conversations that may still have reminders:
 
 ```
-search(include_archived=true, compact=true)
+search_conversations(include_archived=true, compact=true)
 ```
 
 **Step 2:** Also find conversations where reminders no longer make sense:
 
 ```
-search(freshness="stale", compact=true)
+search_conversations(freshness="stale", compact=true)
 ```
 
 **Step 3:** Clear reminders in batch:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "clear", "ai_notes": "Reminder cleared: conversation archived."},
   {"id": "def", "reminder": "clear", "ai_notes": "Reminder cleared: stale conversation, no engagement in 30+ days."},
   ...
@@ -221,13 +234,13 @@ bulk_classify(updates=[
 **Step 1:** Find campaign conversations:
 
 ```
-search(tags=["campaign-q1"], my_turn=true, compact=true)
+search_conversations(tags=["campaign-q1"], my_turn=true, compact=true)
 ```
 
 **Step 2:** Set reminders with campaign context in `ai_notes`:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "in 3 days", "ai_notes": "Campaign Q1: follow-up reminder. Stage: qualified."},
   {"id": "def", "reminder": "in 5 days", "ai_notes": "Campaign Q1: follow-up reminder. Stage: chatting."},
   ...
@@ -242,11 +255,11 @@ When the user says "set up my follow-up system" or "reminders for everything," p
 
 ```
 1. get_context()                              --> Load context
-2. pipeline_stats()                           --> See stage counts
+2. get_stats()                           --> See stage counts
 3. For each stage with my_turn conversations:
-   search(stage="<stage>", my_turn=true, compact=true)
+   search_conversations(stage="<stage>", my_turn=true, compact=true)
 4. Apply cadence table defaults:
-   bulk_classify(updates=[...])               --> Batch per stage
+   bulk_update(updates=[...])               --> Batch per stage
 5. Report results                             --> Summary with breakdown
 ```
 
@@ -272,12 +285,12 @@ After any reminder operation, deliver a summary:
 ## Guidelines
 
 - This skill sets reminders only. It does not draft messages. Suggest **batch-drafting** or **dm-writing** when the user needs message content.
-- `bulk_classify` supports the `reminder` field (max 100 per call). Split larger batches.
-- `bulk_classify` does NOT support `draft_message`. That requires individual `update_conversation` calls.
-- To find overdue conversations, use `search(my_turn=true)` and analyze `last_message_at` dates. There is no direct "overdue reminders" filter.
+- `bulk_update` supports the `reminder` field (max 100 per call). Split larger batches.
+- `bulk_update` does NOT support `draft_message`. That requires individual `update_conversation` calls.
+- To find overdue conversations, use `search_conversations(my_turn=true)` and analyze `last_message_at` dates. There is no direct "overdue reminders" filter.
 - Always include `ai_notes` explaining why a reminder was set or cleared.
-- Use `compact=true` on `search` when only collecting IDs for batch operations.
-- Handle `has_more` pagination on all `search` results.
+- Use `compact=true` on `search_conversations` when only collecting IDs for batch operations.
+- Handle `has_more` pagination on all `search_conversations` results.
 - Do not set reminders on won deals or conversations where it is their turn to reply.
 - When clearing, preserve reminders on `later`-archived conversations with intentional check-back dates.
 - Default to the stage cadence table. Adjust if the user specifies custom intervals.

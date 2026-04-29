@@ -18,7 +18,7 @@ metadata:
 
 # Conversation Summarizer
 
-Generate or refresh AI summaries and AI notes across the pipeline in batch. Pure documentation — does not change stages, tags, or create drafts. Reads every thread, writes a structured summary and evidence-based notes, saves via `bulk_classify`.
+Generate or refresh AI summaries and AI notes across the pipeline in batch. Pure documentation — does not change stages, tags, or create drafts. Reads every thread, writes a structured summary and evidence-based notes, saves via `bulk_update`.
 
 ## Before Starting
 
@@ -76,13 +76,13 @@ Find conversations that have no summary. Best for first-time setup or after a bu
 **Step 1:** Get all conversations with transcripts:
 
 ```
-export(include_messages=true)
+export_conversations(include_messages=true)
 ```
 
 If `has_more` is true, paginate:
 
 ```
-export(include_messages=true, page=2)
+export_conversations(include_messages=true, page=2)
 ```
 
 **Step 2:** Filter to conversations where `summary` is empty or missing.
@@ -92,7 +92,7 @@ export(include_messages=true, page=2)
 **Step 4:** Save in batch:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "summary": "CTO at Series B SaaS. Needs analytics tool by Q1. Waiting for proposal after demo.", "ai_notes": "Buying signals: budget confirmed ($50K), timeline (Q1), authority (CTO). Stage: discovery. Next: send proposal."},
   {"id": "def", "summary": "Marketing manager at mid-size agency. Early rapport about content strategy.", "ai_notes": "No buying signals. General industry conversation. Stage: chatting. Next: ask about their current pain points."},
   {"id": "ghi", "summary": "Founder, 10-person startup. Asked about pricing after seeing a case study.", "ai_notes": "Interest signal: initiated pricing question. ICP fit: small startup, decision maker. Stage: qualified. Next: answer pricing and qualify budget."},
@@ -100,25 +100,25 @@ bulk_classify(updates=[
 ])
 ```
 
-**Step 5:** If more than 100 conversations need summaries, split into multiple `bulk_classify` calls (max 100 per call).
+**Step 5:** If more than 100 conversations need summaries, split into multiple `bulk_update` calls (max 100 per call).
 
 **Step 6:** Continue paginating until all pages are processed.
 
 ### Large Backlog Shortcut
 
-If `export` shows 200+ conversations without summaries, consider a two-pass approach:
+If `export_conversations` shows 200+ conversations without summaries, consider a two-pass approach:
 
 1. **Pass 1 — Batch classify server-side** for stage/tag assignment:
    ```
    start_batch_classify(unclassified_only=true, limit=500)
    ```
-   Wait for completion via `job_status(job_id="<job_id>")`.
+   Wait for completion via `get_job_status(job_id="<job_id>")`.
 
 2. **Pass 2 — Manual summary pass** stage by stage, starting with highest value:
    ```
-   export(stage="qualified", include_messages=true)
-   export(stage="discovery", include_messages=true)
-   export(stage="closing", include_messages=true)
+   export_conversations(stage="qualified", include_messages=true)
+   export_conversations(stage="discovery", include_messages=true)
+   export_conversations(stage="closing", include_messages=true)
    ```
    Summarize and save each batch. Work down the pipeline.
 
@@ -129,7 +129,7 @@ Re-summarize all conversations in a specific stage. Use after stage criteria cha
 **Step 1:** Export the target stage:
 
 ```
-export(stage="<stage>", include_messages=true)
+export_conversations(stage="<stage>", include_messages=true)
 ```
 
 Paginate if `has_more` is true.
@@ -139,7 +139,7 @@ Paginate if `has_more` is true.
 **Step 3:** Save in batch:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "summary": "<new summary>", "ai_notes": "<new notes>"},
   {"id": "def", "summary": "<new summary>", "ai_notes": "<new notes>"},
   ...
@@ -167,7 +167,7 @@ Re-summarize the entire active pipeline. Use after ICP change, major context upd
 **Step 1:** Get a pipeline snapshot:
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Report the scope to the user:
@@ -177,11 +177,11 @@ Report the scope to the user:
 **Step 2:** Export all conversations with transcripts, working stage by stage in priority order:
 
 ```
-export(stage="qualified", include_messages=true)
-export(stage="discovery", include_messages=true)
-export(stage="closing", include_messages=true)
-export(stage="chatting", include_messages=true)
-export(stage="opening", include_messages=true)
+export_conversations(stage="qualified", include_messages=true)
+export_conversations(stage="discovery", include_messages=true)
+export_conversations(stage="closing", include_messages=true)
+export_conversations(stage="chatting", include_messages=true)
+export_conversations(stage="opening", include_messages=true)
 ```
 
 Paginate each stage if `has_more` is true.
@@ -191,7 +191,7 @@ Paginate each stage if `has_more` is true.
 **Step 4:** Save in batches of up to 100:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "summary": "<new summary>", "ai_notes": "<new notes>"},
   ...up to 100 per call
 ])
@@ -201,12 +201,12 @@ bulk_classify(updates=[
 
 ## Handling Pagination
 
-Every `export` call may return `has_more: true`. Always check and fetch subsequent pages:
+Every `export_conversations` call may return `has_more: true`. Always check and fetch subsequent pages:
 
 ```
-export(stage="qualified", include_messages=true)          → page 1
-export(stage="qualified", include_messages=true, page=2)  → page 2
-export(stage="qualified", include_messages=true, page=3)  → page 3 (if has_more)
+export_conversations(stage="qualified", include_messages=true)          → page 1
+export_conversations(stage="qualified", include_messages=true, page=2)  → page 2
+export_conversations(stage="qualified", include_messages=true, page=3)  → page 3 (if has_more)
 ```
 
 Process and save summaries for each page before moving to the next. This keeps memory manageable for large pipelines.
@@ -216,10 +216,10 @@ Process and save summaries for each page before moving to the next. This keeps m
 ```
 1. get_context()                               → Load ICP + summary_instructions
 2. Determine mode (fill gaps / refresh stage / refresh all)
-3. export(include_messages=true, ...)           → Get conversations with transcripts
+3. export_conversations(include_messages=true, ...)           → Get conversations with transcripts
    +-- Paginate: check has_more, fetch next pages
 4. Read each transcript                        → Write summary + ai_notes
-5. bulk_classify(updates=[{id, summary,        → Save in batches of 100
+5. bulk_update(updates=[{id, summary,        → Save in batches of 100
    ai_notes}, ...])
    +-- Split if > 100 conversations
 6. Report to user                              → Counts and sample summaries
@@ -252,8 +252,8 @@ After summarization is complete, deliver a summary:
 - This skill is pure documentation. Never change stages, tags, or create draft messages.
 - Always use `summary_instructions` from `get_context()` when available. Fall back to the default format.
 - Always include both `summary` and `ai_notes` in every update. They serve different purposes: summary is the quick-glance view, ai_notes is the reasoning.
-- Use `bulk_classify` for all saves. It supports `summary` and `ai_notes` fields. Max 100 per call.
-- Handle `has_more` pagination on every `export` call. Do not assume a single page covers everything.
+- Use `bulk_update` for all saves. It supports `summary` and `ai_notes` fields. Max 100 per call.
+- Handle `has_more` pagination on every `export_conversations` call. Do not assume a single page covers everything.
 - Process and save page by page to avoid accumulating too many unsaved summaries.
 - For conversations with minimal content (1-2 messages), keep summaries brief: "Connected via [method]. No conversation yet." or "Exchanged introductions. No business context."
 - When `summary_instructions` include specific fields or formats, match them exactly.

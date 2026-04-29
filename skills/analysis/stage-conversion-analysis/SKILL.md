@@ -36,13 +36,13 @@ Find the leaky stages. For each pipeline stage, measure how many conversations e
 ## Before Starting
 
 1. Run `get_context()` to load the user's sales context (ICP, stages, positioning)
-2. Run `stages()` to load stage definitions with entrance/exit criteria
-3. Run `pipeline_stats()` to get stage counts, freshness, and turn status
+2. Run `list_stages()` to load stage definitions with entrance/exit criteria
+3. Run `get_stats()` to get stage counts, freshness, and turn status
 4. Check prerequisites:
 
 | Check | How | If Not Met |
 |-------|-----|------------|
-| At least 15 classified conversations | Sum all stage counts from `pipeline_stats()` | "You need at least 15 classified conversations for a meaningful conversion analysis. Want me to classify your pipeline first?" Suggest **full-morning-triage** or `start_batch_classify()` |
+| At least 15 classified conversations | Sum all stage counts from `get_stats()` | "You need at least 15 classified conversations for a meaningful conversion analysis. Want me to classify your pipeline first?" Suggest **full-morning-triage** or `start_batch_classify()` |
 | At least 2 stages with conversations | Count stages with > 0 | "All your conversations are in one stage. Classify more before running conversion analysis." |
 | Some won or lost deals | Check won + lost counts | Analysis still works for active pipeline, but note: "No closed deals yet. Conversion rates are based on current stage distribution. Come back after some deals close for a complete funnel." |
 
@@ -52,7 +52,7 @@ Find the leaky stages. For each pipeline stage, measure how many conversations e
 
 ### Step 1: Conversion Funnel
 
-Calculate from `pipeline_stats()` data. Present the funnel:
+Calculate from `get_stats()` data. Present the funnel:
 
 | Transition | From | To | Rate | Benchmark | Status |
 |------------|------|----|------|-----------|--------|
@@ -77,13 +77,13 @@ This is the core value. For each active stage (opening through closing), export 
 **For each stage, run:**
 
 ```
-export(stage="<stage>", include_messages=true)
+export_conversations(stage="<stage>", include_messages=true)
 ```
 
 Paginate if `has_more` is true:
 
 ```
-export(stage="<stage>", include_messages=true, page=2)
+export_conversations(stage="<stage>", include_messages=true, page=2)
 ```
 
 Continue until all pages are loaded.
@@ -161,7 +161,7 @@ Highlight the **primary bottleneck** (lowest conversion rate) and **secondary bo
 ### Step 4: Lost Deal Analysis
 
 ```
-export(stage="lost", include_messages=true)
+export_conversations(stage="lost", include_messages=true)
 ```
 
 Paginate if `has_more` is true.
@@ -187,7 +187,7 @@ Analyze where lost deals dropped out:
 If won deals exist, pull them for comparison:
 
 ```
-export(stage="won", include_messages=true)
+export_conversations(stage="won", include_messages=true)
 ```
 
 Compare won vs lost on key metrics:
@@ -262,7 +262,7 @@ Deliver 3-5 prioritized recommendations tied to specific findings and skills.
 
 Export full pipeline with transcripts to CSV:
 
-export(format="csv", include_messages=true)
+export_conversations(format="csv", include_messages=true)
 ```
 
 ## Guidelines
@@ -270,12 +270,12 @@ export(format="csv", include_messages=true)
 - This is read-only analysis. Do not change stages, draft messages, or archive anything.
 - Present data first, then interpretation, then recommendations.
 - Use tables for all quantitative data. Tables over prose.
-- Always paginate `export` calls. If `has_more` is true, get the next page before analyzing.
+- Always paginate `export_conversations` calls. If `has_more` is true, get the next page before analyzing.
 - For large pipelines (200+ in a stage), summarize patterns from a sample rather than reading every transcript. Export first 2 pages (up to 1000 conversations) and note the sample size.
 - Do not fabricate patterns from small samples. If a stage has fewer than 3 conversations, note the sample is too small for reliable patterns.
 - Benchmark ranges are directional, not absolute. The user's own trends matter more than generic benchmarks.
 - Always tie recommendations to specific skills. Never give vague advice.
-- `bulk_classify` does NOT support `draft_message`. This skill does not draft anyway.
+- `bulk_update` does NOT support `draft_message`. This skill does not draft anyway.
 - Offer CSV export at the end for users who want spreadsheet analysis.
 - If the user asks to act on a recommendation, hand off to the appropriate skill.
 - Maximum 5 recommendations, ordered by expected impact.

@@ -18,6 +18,8 @@ metadata:
 
 Find what your winning conversations have in common, how they differ from losses, and feed those patterns back into your sales context so targeting and classification get smarter over time.
 
+For each won deal, frame the analysis using the playbook's **A–B Method**: at the moment of conversion, what was their Point A (current state, pain) and their Point B (desired state, what they wanted)? The pattern of A→B gaps that converted is the most valuable input for refining ICP and positioning.
+
 ## Before Starting
 
 1. Run `get_context()` to load the user's current sales context
@@ -25,8 +27,8 @@ Find what your winning conversations have in common, how they differ from losses
 
 | Check | How | If Insufficient |
 |-------|-----|-----------------|
-| Won deals count | Look at pipeline stats or `export(stage="won", include_messages=false)` | Need at least 3 won deals. Tell the user: "You need some won deals to analyze patterns. Keep working your pipeline and come back when you've closed a few." |
-| Lost deals count | `export(stage="lost", include_messages=false)` | Won-only analysis still works. Note that comparison will be limited. |
+| Won deals count | Look at pipeline stats or `export_conversations(stage="won", include_messages=false)` | Need at least 3 won deals. Tell the user: "You need some won deals to analyze patterns. Keep working your pipeline and come back when you've closed a few." |
+| Lost deals count | `export_conversations(stage="lost", include_messages=false)` | Won-only analysis still works. Note that comparison will be limited. |
 | ICP defined | Check `additional_context` from `get_context()` | Analysis still works but refinement step will create an ICP from scratch rather than refine. |
 
 3. If fewer than 3 won deals: stop and explain. Do not fabricate patterns from 1-2 data points.
@@ -39,13 +41,13 @@ Find what your winning conversations have in common, how they differ from losses
 Pull all won conversations with full message transcripts:
 
 ```
-export(stage="won", include_messages=true)
+export_conversations(stage="won", include_messages=true)
 ```
 
 If `has_more` is true, fetch the next page immediately:
 
 ```
-export(stage="won", include_messages=true, page=2)
+export_conversations(stage="won", include_messages=true, page=2)
 ```
 
 Continue until all pages are loaded.
@@ -83,7 +85,7 @@ Present findings in a summary table:
 ### Step 3: Export and Analyze Lost Deals
 
 ```
-export(stage="lost", include_messages=true)
+export_conversations(stage="lost", include_messages=true)
 ```
 
 Paginate if `has_more` is true.
@@ -135,11 +137,11 @@ If the user tags conversations by campaign, compare results across campaigns.
 **Quick comparison:**
 
 ```
-search(tags=["campaign-jan"], compact=true)
+search_conversations(tags=["campaign-jan"], compact=true)
 ```
 
 ```
-search(tags=["campaign-feb"], compact=true)
+search_conversations(tags=["campaign-feb"], compact=true)
 ```
 
 Count results and note stage distribution for each.
@@ -147,11 +149,11 @@ Count results and note stage distribution for each.
 **Deep comparison (if warranted):**
 
 ```
-export(tags=["campaign-jan"], include_messages=true)
+export_conversations(tags=["campaign-jan"], include_messages=true)
 ```
 
 ```
-export(tags=["campaign-feb"], include_messages=true)
+export_conversations(tags=["campaign-feb"], include_messages=true)
 ```
 
 | Metric | Campaign A | Campaign B | Winner |

@@ -24,7 +24,7 @@ Book discovery calls and next steps with qualified prospects. The transition fro
 2. Fetch the conversation:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 3. Check context completeness:
@@ -72,7 +72,7 @@ If signals are missing, don't force the call. Go back to **reply-handling** for 
 
 ## The 3-Element Invite
 
-Every call invite needs exactly three things:
+The call invite is a **Micro-commitment** — a small step that builds emotional investment toward the larger ask. Frame it as low-effort. Three elements (from `references/sell-by-chat-methodology.md`):
 
 ### 1. Specific Next Step
 
@@ -189,6 +189,7 @@ update_conversation(
 
 ## Guidelines
 
+- Before drafting, call `get_draft_prompt(id, reply_intent="advance")` first — it returns server-rendered voice-enforced context tuned for advancing toward a call. Save via `update_conversation`.
 - Always save drafts via `draft_message`. Never pretend to send messages.
 - Always include `ai_notes` explaining: readiness signals present, what the call covers, how positioning/personal story shaped the invite.
 - One draft per conversation. A new draft overwrites the previous one.

@@ -19,6 +19,20 @@ metadata:
 
 Craft first messages that earn replies — cold DMs, connection openers, and post-event follow-ups. A cold DM works when it reads like it could not possibly have been written for anyone else.
 
+## The Three Opening Rules
+
+Every cold DM and post-event opener obeys all three (from `references/sell-by-chat-methodology.md`):
+
+1. **Make it about them.** Not your offer, your company, or your method.
+2. **Keep it short.** 2–4 sentences. Weight per word goes up as length goes down.
+3. **Serve, don't take.** Lead with an observation, question, or helpful comment — not an ask.
+
+Three techniques the rules enable:
+
+- **Precision Flattery** — specific niche praise that proves you understand their world. *"Your approach to [specific topic] is sharp because [specific reason]."* Pull `recent_posts` and `experience` from `get_enrichment` to make praise specific and credible. Generic praise ("love your content") signals automation.
+- **Pattern Interrupt** — unexpected but relevant observation that shows you've stepped into their world before opening your mouth.
+- **Preloaded Value** — if you offer something, it must be: specific to their situation, ungated (no opt-in), actionable (a checklist or framework they can use today), and tied to the next conversation.
+
 ## Before Starting
 
 1. Run `get_context()` to load the user's sales context
@@ -34,7 +48,7 @@ Craft first messages that earn replies — cold DMs, connection openers, and pos
 3. If the user names a specific person, find or create their conversation:
 
 ```
-search(query="<name>", compact=true)
+search_conversations(query="<name>", compact=true)
 ```
 
 4. If the user wants to find prospects:
@@ -170,6 +184,7 @@ update_conversation(
 
 ## Guidelines
 
+- Before drafting, call `get_draft_prompt(id)` first — it returns server-rendered voice-enforced drafting context. Follow the returned prompt exactly, then save via `update_conversation(id, draft_message, ai_notes)`.
 - Always save drafts via `draft_message`. Never pretend to send messages.
 - Always include `ai_notes` explaining: what signal you responded to, ICP fit assessment, what the draft accomplishes, expected next step.
 - One draft per conversation. A new draft overwrites the previous one.

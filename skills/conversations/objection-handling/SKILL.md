@@ -24,7 +24,7 @@ Handle objections and concerns in LinkedIn DM conversations. An objection is not
 2. Fetch the conversation:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 3. Check context completeness:
@@ -47,12 +47,18 @@ fetch(id="<conversation_id>")
 | **Voice Profile** (`voice_profile`) | Critical for objections. Maintain safety through consistent tone. If the user is casual, stay casual. Don't escalate formality when they push back — it feels like pressure. |
 | **Personal Story** (`personal_story`) | Best weapon for "tried before." "I worked with a [similar role] at a [similar company] who had the same experience. The difference was [specific thing]." Real > theoretical. |
 
-## The Pattern (Every Objection)
+## The Pattern: Acknowledge → Ask Context → Reframe
 
-1. **Acknowledge** — validate their concern, don't dismiss it
-2. **Ask what's behind it** — the stated objection is rarely the real one
-3. **Address the real concern** — with specifics, not generalities
-4. **Give an easy out** — they should feel MORE safe after your reply
+The playbook's 3-step pattern for every objection (from `references/sell-by-chat-methodology.md`):
+
+1. **Acknowledge.** Validate the concern fully, don't dismiss it. *"That makes sense — timing is tricky."*
+2. **Ask Context.** What's behind the stated objection? *"What would need to change for this to feel right?"* The stated objection is rarely the real one.
+3. **Reframe.** Position your solution against the underlying concern, with specifics from their world.
+
+Plus two non-negotiables:
+
+- **Never use "but."** "But" negates everything before it. They'll hear the negation, not the acknowledgment. Use "and" or a paragraph break.
+- **Always give an easy out.** They should feel *more* safe after your reply, not pressured. Make it easy to say no.
 
 ## Objection Library
 
@@ -183,6 +189,7 @@ update_conversation(
 
 ## Guidelines
 
+- Before drafting, call `get_draft_prompt(id)` first — it returns server-rendered voice-enforced context. Maintaining safe tone is critical for objections; the prompt enforces voice consistency. Save via `update_conversation`.
 - Always save drafts via `draft_message`. Never pretend to send messages.
 - Always include `ai_notes` explaining: objection type, underlying concern, strategy used, which context fields shaped the response.
 - One draft per conversation. A new draft overwrites the previous one.

@@ -136,7 +136,7 @@ start_batch_classify(unclassified_only=true, limit=20)
 Check results:
 
 ```
-job_status(job_id="<id>")
+get_job_status(job_id="<id>")
 ```
 
 Review: are conversations being classified accurately with the new context? If not, refine the ICP or stage criteria.

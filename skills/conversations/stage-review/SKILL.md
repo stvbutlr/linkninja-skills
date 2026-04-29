@@ -35,15 +35,15 @@ Review already-classified conversations to check whether they belong in their cu
 ## Before Starting
 
 1. Run `get_context()` to load the user's sales context (ICP, positioning, stage criteria)
-2. Run `stages()` to load stage definitions with entrance/exit criteria
-3. Run `pipeline_stats()` to get the current pipeline snapshot
+2. Run `list_stages()` to load stage definitions with entrance/exit criteria
+3. Run `get_stats()` to get the current pipeline snapshot
 
 4. Check prerequisites:
 
 | Check | How | If Not Met |
 |-------|-----|------------|
-| Classified conversations exist | Stage counts from `pipeline_stats()` | "You don't have classified conversations to review yet. Want to classify your pipeline first?" Suggest **full-morning-triage** |
-| At least 5 in target stage | Count for the stage the user wants to review | "Only [N] conversations in [stage]. Review them individually with `fetch`." |
+| Classified conversations exist | Stage counts from `get_stats()` | "You don't have classified conversations to review yet. Want to classify your pipeline first?" Suggest **full-morning-triage** |
+| At least 5 in target stage | Count for the stage the user wants to review | "Only [N] conversations in [stage]. Review them individually with `get_conversation`." |
 | ICP defined | `additional_context` from `get_context()` | Review still works, but not_a_fit detection will be less precise. Note this. |
 
 5. Ask the user: **full pipeline review or specific stage?**
@@ -116,13 +116,13 @@ User chose a specific stage to review. Process one stage at a time for full cont
 **Step 1: Export the stage**
 
 ```
-export(stage="<stage>", include_messages=true)
+export_conversations(stage="<stage>", include_messages=true)
 ```
 
 Paginate if `has_more` is true:
 
 ```
-export(stage="<stage>", include_messages=true, page=2)
+export_conversations(stage="<stage>", include_messages=true, page=2)
 ```
 
 **Step 2: Review each conversation**
@@ -161,14 +161,14 @@ Show the user what you found before making changes:
 After user confirms:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "stage": "qualified", "tags": ["budget_confirmed"], "summary": "Asked about pricing and team size. Buying signal missed.", "ai_notes": "Stage review: reclassified from chatting to qualified. Pricing question is a buying signal."},
   {"id": "def", "stage": "discovery", "tags": ["decision_maker"], "summary": "Call scheduled for Thursday. Deep needs discussed.", "ai_notes": "Stage review: reclassified from closing to discovery. No proposal sent yet."},
   {"id": "ghi", "stage": "chatting", "summary": "General conversation about industry trends.", "ai_notes": "Stage review: reclassified from qualified to chatting. 'Interesting' is polite interest, not a buying signal."}
 ])
 ```
 
-Stay under 100 per `bulk_classify` call. Split larger batches.
+Stay under 100 per `bulk_update` call. Split larger batches.
 
 Always include `ai_notes` starting with "Stage review:" to distinguish reclassification from original classification.
 
@@ -199,7 +199,7 @@ start_batch_classify(stage="<stage>", unclassified_only=false, instructions="Re-
 Check progress:
 
 ```
-job_status(job_id="<job_id>")
+get_job_status(job_id="<job_id>")
 ```
 
 ### Hybrid Review (Recommended for 100+)
@@ -213,7 +213,7 @@ start_batch_classify(stage="qualified", unclassified_only=false, instructions="R
 2. While the job runs, manually review a sample:
 
 ```
-export(stage="qualified", include_messages=true, limit=20)
+export_conversations(stage="qualified", include_messages=true, limit=20)
 ```
 
 Read 15-20 threads manually. Note any patterns the server-side job might miss.
@@ -221,19 +221,19 @@ Read 15-20 threads manually. Note any patterns the server-side job might miss.
 3. After the job completes, spot-check results. Search for conversations that may have been reclassified (check `ai_notes` for reclassification evidence):
 
 ```
-search(stage="chatting", compact=true)
+search_conversations(stage="chatting", compact=true)
 ```
 
 Were the reclassifications reasonable? Fetch a few to verify:
 
 ```
-fetch(id="<id>")
+get_conversation(id="<id>")
 ```
 
 4. Override any incorrect server-side decisions:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "stage": "qualified", "ai_notes": "Stage review override: server reclassified to chatting, but prospect explicitly asked about pricing and team integration. Real buying signal."}
 ])
 ```
@@ -287,12 +287,12 @@ After completing the review, deliver:
 - Always present findings before applying changes. The user confirms reclassifications.
 - Process one stage at a time during manual review. Do not mix stages -- the LLM needs full context for each conversation.
 - Include `ai_notes` starting with "Stage review:" on every reclassification.
-- `bulk_classify` supports stage, tags, summary, ai_notes, reminder, and archive (max 100 per call). It does NOT support `draft_message` -- this skill rarely drafts anyway.
+- `bulk_update` supports stage, tags, summary, ai_notes, reminder, and archive (max 100 per call). It does NOT support `draft_message` -- this skill rarely drafts anyway.
 - For server-side review, write specific instructions that target the common misclassification patterns for that stage.
 - Skip `won`, `lost`, and `not_a_fit` unless explicitly requested. Terminal stages rarely need review.
 - If misclassification rate exceeds 30%, recommend updating stage criteria with **stage-configuration** -- the problem is systemic.
 - If most errors are not_a_fit conversations sitting in chatting, recommend refining ICP with **icp-definition**.
-- Paginate every `export` call. If `has_more` is true, get the next page.
+- Paginate every `export_conversations` call. If `has_more` is true, get the next page.
 - For hybrid mode, start the server-side job first, then manually review while it runs. Do not wait idle.
 - This skill reclassifies. It does not draft messages or archive. If stale conversations are found, note them for **pipeline-cleanup**.
 

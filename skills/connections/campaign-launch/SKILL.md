@@ -29,7 +29,7 @@ Plan, execute, and score a time-compressed outreach campaign built around a spec
 | `voice_profile` | Recommended | "Want to set up your voice profile so drafts sound like you?" Point to **voice-profile-setup**. |
 | `personal_story` | Nice-to-have | Can weave credibility into messages if available. |
 
-3. Run `pipeline_stats()` to see current pipeline state before adding campaign volume.
+3. Run `get_stats()` to see current pipeline state before adding campaign volume.
 
 ## Workflow
 
@@ -100,7 +100,7 @@ scan_connections(connected_after="<30-60 days ago ISO date>")
 **Check warm pipeline:**
 
 ```
-search(stage="chatting", my_turn=true)
+search_conversations(stage="chatting", my_turn=true)
 ```
 
 **Tag the full campaign list:**
@@ -114,12 +114,37 @@ tag_connections(
 
 Present the list to the user with counts: "Found 42 new prospects and 8 warm conversations. Ready to draft opening messages?"
 
+### Step 2.5: Enrich the Cohort (Recommended Before Drafting)
+
+For personalised openers that use **Precision Flattery**, enrich the cohort first. This pulls Sales Nav data (recent posts, experience, projects, education) so each opener can reference one specific item credibly:
+
+```
+enrich_connections(
+  filter={tags: ["campaign-<name>-<month>"], is_enriched: false},
+  re_enrich_after_days=30,
+  limit=100
+)
+```
+
+Returns a `job_id`. ~6 sec per connection — for cohorts >50, return the `job_id` to the user with an ETA and continue when the job completes. Daily quota: 200 enrichments/day. See `references/enrichment-sections.md`.
+
+After the job completes, pull the sections you need for drafting:
+
+```
+get_enrichment(
+  ids=[conv_a, conv_b, ...up to 100...],
+  sections=["recent_posts", "experience"]
+)
+```
+
+This is the foundation for Precision Flattery — without it, openers fall back to headline-only references.
+
 ### Step 3: Batch Draft Opening Messages
 
 For each prospect, craft a personalized opener. Fetch context where available:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Save each draft individually, then batch the stage/tag updates:
@@ -131,14 +156,14 @@ update_conversation(id="def", draft_message="Hey James -- saw your post about ou
 // ...repeat for each prospect
 
 // Batch stage and tag updates
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "abc", stage: "opening", tags: ["campaign-mar-2026"]},
   {id: "def", stage: "opening", tags: ["campaign-mar-2026"]},
   ...
 ])
 ```
 
-Max 100 per `bulk_classify` call. If the list is larger, batch in groups.
+Max 100 per `bulk_update` call. If the list is larger, batch in groups.
 
 The user reviews all drafts in their LinkNinja dashboard and sends them manually.
 
@@ -148,21 +173,21 @@ Follow the day-by-day plan in `references/campaign-week.md`. Summary:
 
 | Day | Primary Actions | Key Tool Calls |
 |-----|----------------|---------------|
-| Day 1 | Send 20-30 opening DMs (from drafts) | `update_conversation` per draft, `bulk_classify` for stage/tags |
-| Days 2-3 | Reply to responses, follow up non-replies, send 15-20 more opens | `search(my_turn=true)`, `fetch`, `update_conversation` per draft |
+| Day 1 | Send 20-30 opening DMs (from drafts) | `update_conversation` per draft, `bulk_update` for stage/tags |
+| Days 2-3 | Reply to responses, follow up non-replies, send 15-20 more opens | `search_conversations(my_turn=true)`, `get_conversation`, `update_conversation` per draft |
 | Days 3-4 | Qualify engaged prospects, invite to event/call | `update_conversation(stage="qualified")` |
-| Day 5 | Final follow-ups, confirm attendees, door-open messages | `search(tags=["campaign-..."])` |
+| Day 5 | Final follow-ups, confirm attendees, door-open messages | `search_conversations(tags=["campaign-..."])` |
 
 ### Step 5: Daily Tracking
 
 Run at end of each day:
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 ```
-search(tags=["campaign-<tag>"])
+search_conversations(tags=["campaign-<tag>"])
 ```
 
 Count conversations by stage to track campaign flow.
@@ -176,7 +201,7 @@ See `references/follow-up-cadence.md` for detailed timing. Core rules:
 | They replied | Same day | Respond with a relevant question |
 | No reply after 2 days | Day 3 | Value-add follow-up (insight, resource, question) |
 | No reply after 5 days | Day 5-6 | Different angle or door-open message |
-| After 2 follow-ups with no reply | Stop | Move to monthly nurture or archive |
+| After playbook cadence exhausted (Day 1/3/7/extending) | Hand off to **cold-rescue** | Re-engagement track with new value, or extend reminders 30-90 days |
 
 Set reminders for follow-ups:
 
@@ -195,11 +220,11 @@ After the campaign week, measure results:
 **Pull all campaign data:**
 
 ```
-search(tags=["campaign-<tag>"], compact=true)
+search_conversations(tags=["campaign-<tag>"], compact=true)
 ```
 
 ```
-export(tags=["campaign-<tag>"], include_messages=true)
+export_conversations(tags=["campaign-<tag>"], include_messages=true)
 ```
 
 **Key metrics:**
@@ -220,7 +245,7 @@ export(tags=["campaign-<tag>"], include_messages=true)
 **CSV export for offline analysis:**
 
 ```
-export(tags=["campaign-<tag>"], format="csv")
+export_conversations(tags=["campaign-<tag>"], format="csv")
 ```
 
 **Feed learnings back:**
@@ -257,10 +282,10 @@ update_conversation(
 - Never send messages directly. Always save as drafts via `draft_message`. The user reviews and sends.
 - Always include `ai_notes` explaining: what signal the message responds to, what the draft tries to accomplish, campaign tag.
 - Personalize every opener. Reference their headline, a post, mutual connection, or specific situation. Never template-blast.
-- Follow the 2-touch rule: after 2 follow-ups with no reply, stop. Do not chase.
+- Follow the playbook cadence (Day 1 / 3 / 7 / extending). Each touch must add new value. Hand to **cold-rescue** if a conversation goes cold mid-campaign — 80% of sales close after the 5th touchpoint.
 - Tag every campaign conversation for tracking and post-campaign analysis.
-- Run `pipeline_stats()` daily during the campaign to track flow.
-- Max 100 per `bulk_classify` call. Batch larger lists into multiple calls.
+- Run `get_stats()` daily during the campaign to track flow.
+- Max 100 per `bulk_update` call. Batch larger lists into multiple calls.
 
 ## Related Skills
 

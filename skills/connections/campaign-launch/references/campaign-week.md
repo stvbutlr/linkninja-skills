@@ -18,7 +18,7 @@ scan_connections(tags=["campaign-<tag>"], has_conversation=false, limit=30)
 3. For prospects with existing conversations, fetch context:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 4. Draft personalized opening messages (one per conversation):
@@ -33,7 +33,7 @@ update_conversation(
 )
 ```
 
-Repeat for each prospect. `draft_message` requires `update_conversation` -- `bulk_classify` does not support it.
+Repeat for each prospect. `draft_message` requires `update_conversation` -- `bulk_update` does not support it.
 
 ### Afternoon
 
@@ -42,11 +42,11 @@ Repeat for each prospect. `draft_message` requires `update_conversation` -- `bul
 7. End-of-day check:
 
 ```
-search(tags=["campaign-<tag>"])
+search_conversations(tags=["campaign-<tag>"])
 ```
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 **Day 1 target:** 20-30 messages sent, all tagged with campaign tag.
@@ -62,13 +62,13 @@ pipeline_stats()
 1. Check for replies:
 
 ```
-search(my_turn=true, freshness="fresh", tags=["campaign-<tag>"])
+search_conversations(my_turn=true, freshness="fresh", tags=["campaign-<tag>"])
 ```
 
 2. Read each reply in full:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 3. Draft personalized responses (one per conversation):
@@ -101,7 +101,7 @@ Repeat for each reply. `draft_message` requires `update_conversation`.
 1. Check for new replies:
 
 ```
-search(my_turn=true, freshness="fresh")
+search_conversations(my_turn=true, freshness="fresh")
 ```
 
 2. Follow up on Day 1 non-replies (value-add, not "checking in"):
@@ -109,7 +109,7 @@ search(my_turn=true, freshness="fresh")
 Find Day 1 conversations still in opening with no reply:
 
 ```
-search(stage="opening", tags=["campaign-<tag>"], my_turn=false)
+search_conversations(stage="opening", tags=["campaign-<tag>"], my_turn=false)
 ```
 
 Draft follow-ups that add value -- an insight, a relevant resource, a question tied to their situation:
@@ -153,7 +153,7 @@ update_conversation(
 1. Check all replies:
 
 ```
-search(my_turn=true, freshness="fresh")
+search_conversations(my_turn=true, freshness="fresh")
 ```
 
 2. For qualified prospects, draft invitation messages:
@@ -198,7 +198,7 @@ update_conversation(
 1. Final reply check:
 
 ```
-search(my_turn=true, freshness="fresh")
+search_conversations(my_turn=true, freshness="fresh")
 ```
 
 2. Send "door open" messages to anyone who engaged but has not committed:
@@ -211,14 +211,14 @@ search(my_turn=true, freshness="fresh")
 
 ### Afternoon
 
-4. For non-replies after 2 follow-ups, set reminders for monthly nurture:
+4. For non-replies through the playbook cadence (Day 1 / 3 / 7), keep extending intervals (14, 30, 60 days) with new value each time — 80% close after the 5th touchpoint:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {
     id: "abc",
-    reminder: "<30 days from now>",
-    ai_notes: "Campaign: no reply after 2 follow-ups. Moving to monthly nurture. Do not message again until reminder."
+    reminder: "<14 days from now>",
+    ai_notes: "Campaign: cadence active. Touch 4 due in 14 days. Will need fresh value to share — check enrichment for new posts/news."
   },
   ...
 ])
@@ -227,11 +227,11 @@ bulk_classify(updates=[
 5. Campaign checkpoint:
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 ```
-search(tags=["campaign-<tag>"])
+search_conversations(tags=["campaign-<tag>"])
 ```
 
 Count by stage. Calculate preliminary metrics.
@@ -254,7 +254,7 @@ Count by stage. Calculate preliminary metrics.
 ### Campaign scoring:
 
 ```
-export(tags=["campaign-<tag>"], include_messages=true)
+export_conversations(tags=["campaign-<tag>"], include_messages=true)
 ```
 
 Calculate: reply rate, qualification rate, conversion rate, show rate. See SKILL.md Step 7 for full scoring instructions.

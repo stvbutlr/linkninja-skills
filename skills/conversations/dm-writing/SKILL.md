@@ -29,13 +29,13 @@ Identify the right DM situation and route to the specialist skill. This skill is
 2. If the user specifies a conversation, fetch it:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 3. If the user says "help with my replies" without specifying:
 
 ```
-search(my_turn=true, freshness="fresh", compact=true)
+search_conversations(my_turn=true, freshness="fresh", compact=true)
 ```
 
 ## Situation Decision Tree
@@ -80,20 +80,20 @@ Was there a recent event (webinar, workshop, session)?
 
 ## Quick Reference
 
-| Situation | Skill | App Template Category |
-|-----------|-------|----------------------|
-| First message, no conversation | **cold-outreach** | opening, value_add |
-| Post-event follow-up | **cold-outreach** | opening, value_add |
-| They replied, building rapport | **reply-handling** | follow_up |
-| Qualifying, finding the gap | **reply-handling** | follow_up |
-| They objected or hesitated | **objection-handling** | objection |
-| They went quiet | **cold-rescue** | nurture, value_add |
-| Qualified, booking a call | **call-booking** | closing |
-| Multiple conversations at once | **batch-drafting** | all categories |
+| Situation | Skill | App Template Category | Playbook Frameworks Embedded |
+|-----------|-------|----------------------|------------------------------|
+| First message, no conversation | **cold-outreach** | opening, value_add | Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value |
+| Post-event follow-up | **cold-outreach** | opening, value_add | Three Opening Rules, Precision Flattery |
+| They replied, building rapport | **reply-handling** | follow_up | Trust Progression |
+| Qualifying, finding the gap | **reply-handling** | follow_up | A–B Method, Question Sequence |
+| They objected or hesitated | **objection-handling** | objection | Acknowledge → Ask Context → Reframe |
+| They went quiet | **cold-rescue** | nurture, value_add | Day 1/3/7/extending cadence |
+| Qualified, booking a call | **call-booking** | closing | Micro-commitments, 3-element invite |
+| Multiple conversations at once | **batch-drafting** | all categories | All of the above (per-conversation) |
 
 ## The 8 Ground Rules
 
-These apply to every DM, every situation. Full details in `references/dm-principles.md`:
+These apply to every DM, every situation. Full doctrine in `references/sell-by-chat-methodology.md`:
 
 1. **One thing per message.** Don't pitch, qualify, AND close in one DM.
 2. **Sound like you have a full calendar.** Inviting energy, not chasing energy.
@@ -102,7 +102,7 @@ These apply to every DM, every situation. Full details in `references/dm-princip
 5. **Every follow-up adds value.** Never "just checking in."
 6. **Always include an easy out.** "No pressure." "Totally fine if timing's off."
 7. **Match the prospect's energy.** Short for short. Formal for formal.
-8. **Know when to stop.** After 2 follow-ups with no reply, stop chasing.
+8. **Persist with purpose.** Day 1 → Day 3 → Day 7 → extending intervals. 80% of sales close *after* the 5th touchpoint. Each follow-up must add new value — if you have nothing new to say, wait until you do.
 
 ## Guidelines
 

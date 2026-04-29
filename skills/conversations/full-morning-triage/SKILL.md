@@ -51,7 +51,7 @@ Always work in this exact order. Higher priority = higher conversion impact and 
 ### Phase 1: Pipeline Snapshot
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Capture and note:
@@ -75,35 +75,35 @@ Capture and note:
 Find fresh conversations where it's the user's turn, starting with highest-value stages:
 
 ```
-search(my_turn=true, freshness="fresh", stage="qualified")
+search_conversations(my_turn=true, freshness="fresh", stage="qualified")
 ```
 
 ```
-search(my_turn=true, freshness="fresh", stage="discovery")
+search_conversations(my_turn=true, freshness="fresh", stage="discovery")
 ```
 
 ```
-search(my_turn=true, freshness="fresh", stage="closing")
+search_conversations(my_turn=true, freshness="fresh", stage="closing")
 ```
 
 ```
-search(my_turn=true, freshness="fresh")
+search_conversations(my_turn=true, freshness="fresh")
 ```
 
 For each conversation returned:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
-Read the full thread. Identify the situation and apply the right DM skill: **reply-handling** for active replies and qualifying, **objection-handling** for pushback, **call-booking** for qualified prospects ready for a call, **cold-outreach** for first messages. Draft a personalized response following dm-principles:
+Read the full thread. Identify the situation and apply the right DM skill: **reply-handling** for active replies and qualifying, **objection-handling** for pushback, **call-booking** for qualified prospects ready for a call, **cold-outreach** for first messages. Draft a personalized response following the playbook (`references/sell-by-chat-methodology.md`):
 - One thing per message
 - Match the prospect's energy and vocabulary
 - Ask before telling
 - Reference something real from the conversation
 - Keep it short (2-4 sentences)
 
-Save each draft individually (`bulk_classify` does not support `draft_message`):
+Save each draft individually (`bulk_update` does not support `draft_message`):
 
 ```
 update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Replied to her pricing question. Reframed around ROI. Next: wait for budget confirmation.")
@@ -116,10 +116,10 @@ Track count: **N hot lead drafts saved.**
 ### Phase 3: Cold Rescue — Value-Add Follow-Ups
 
 ```
-search(freshness="cold", my_turn=true, compact=true)
+search_conversations(freshness="cold", my_turn=true, compact=true)
 ```
 
-For each, `fetch(id)` and read the thread. Draft a value-add follow-up — never "just checking in." Options:
+For each, `get_conversation(id)` and read the thread. Draft a value-add follow-up — never "just checking in." Options:
 - A relevant insight or result from a similar situation
 - An article or resource connected to something they mentioned
 - A specific question about something they told the user earlier
@@ -132,7 +132,7 @@ update_conversation(id="<id1>", draft_message="Hey [name], ...", ai_notes="Re-en
 // ...repeat for each
 
 // Batch reminders
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "<id1>", reminder: "in 3 days"},
   ...
 ])
@@ -145,19 +145,19 @@ Track count: **M cold rescue drafts saved, M reminders set.**
 **High-value ghosts first** — qualified/discovery conversations where they stopped replying:
 
 ```
-search(freshness="they_ghosted", stage="qualified", compact=true)
+search_conversations(freshness="they_ghosted", stage="qualified", compact=true)
 ```
 
 ```
-search(freshness="they_ghosted", stage="discovery", compact=true)
+search_conversations(freshness="they_ghosted", stage="discovery", compact=true)
 ```
 
-For each, `fetch(id)` and read the thread. These are worth more effort because buying signals existed. Draft a re-engagement message with new value.
+For each, `get_conversation(id)` and read the thread. These are worth more effort because buying signals existed. Draft a re-engagement message with new value.
 
 **Then chatting-stage ghosts:**
 
 ```
-search(freshness="they_ghosted", stage="chatting", compact=true)
+search_conversations(freshness="they_ghosted", stage="chatting", compact=true)
 ```
 
 **Decision rules for ghosts:**
@@ -178,7 +178,7 @@ update_conversation(id="<id1>", draft_message="...", ai_notes="Re-engagement att
 // ...repeat for each draft
 
 // Batch archives and reminders (no draft_message)
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "<id1>", reminder: "in 7 days"},
   {id: "<id2>", archive: {archived: true, reason: "ghosted"}, ai_notes: "No reply after 3 follow-ups over 4 weeks. Archiving."},
   ...
@@ -190,13 +190,13 @@ Track counts: **P re-engagement drafts, Q archives.**
 ### Phase 5: Classify New Conversations
 
 ```
-export(unclassified_only=true, include_messages=true)
+export_conversations(unclassified_only=true, include_messages=true)
 ```
 
 If `has_more` is true, fetch the next page:
 
 ```
-export(unclassified_only=true, include_messages=true, page=2)
+export_conversations(unclassified_only=true, include_messages=true, page=2)
 ```
 
 For each unclassified conversation, read the thread and determine:
@@ -207,10 +207,10 @@ For each unclassified conversation, read the thread and determine:
 Archive obvious not-a-fits immediately.
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "<id>", stage: "chatting", tags: [], summary: "Early rapport. They asked about your work.", ai_notes: "No buying signals. General conversation."},
   {id: "<id>", stage: "qualified", tags: ["decision_maker"], summary: "VP Sales, explicit need for onboarding tool.", ai_notes: "Stated problem and timeline."},
-  {id: "<id>", stage: "not_a_fit", archive: {archived: true, reason: "not_a_fit"}, ai_notes: "Selling SEO services. Not a prospect."},
+  {id: "<id>", archive: {archived: true, reason: "not_a_fit"}, ai_notes: "Selling SEO services. Not a prospect."},
   ...
 ])
 ```
@@ -243,9 +243,9 @@ For the full 12-step workflow with all tool calls, see `references/triage-workfl
 ## Guidelines
 
 - Always process in priority order. Do not skip to classification before handling hot leads.
-- Use `compact=true` on `search` when only collecting IDs for batch operations.
-- Stay under `bulk_classify` limits: max 100 updates per call. Split larger batches.
-- Handle `has_more` pagination on `search` and `export` results.
+- Use `compact=true` on `search_conversations` when only collecting IDs for batch operations.
+- Stay under `bulk_update` limits: max 100 updates per call. Split larger batches.
+- Handle `has_more` pagination on `search_conversations` and `export_conversations` results.
 - Always include `ai_notes` with every draft and classification.
 - Never pretend to send messages. All drafts are saved for user review.
 - Match the user's voice profile when drafting. If no voice profile exists, use a neutral professional tone.

@@ -9,7 +9,7 @@ Timing rules and message patterns for every follow-up situation during and after
 | They replied | Same day (within hours) | Respond with a question about their world |
 | No reply to opener | Day 3 (48-72 hours) | Value-add follow-up |
 | No reply to first follow-up | Day 5-6 | Different angle or door-open |
-| No reply after 2 follow-ups | STOP | Set 30-day reminder for monthly nurture |
+| Playbook cadence active (touches 4+) | Day 14, Day 30, Day 60, Day 90 | Extend interval; each touch must add new value |
 | "Sounds interesting, let me think" | 24 hours | Send a relevant example or case study |
 | Said yes, then went quiet | 24 hours before event | Gentle check-in |
 | Attended event | Within 2 hours | Personal reference to session |
@@ -17,15 +17,14 @@ Timing rules and message patterns for every follow-up situation during and after
 | No-showed | Same day | Warm, no guilt, share takeaway |
 | "Not right now" | Set monthly reminder | Nurture check-in tied to their world |
 
-## The 2-Touch Rule
+## The Persistence Cadence
 
-After 2 follow-ups with no reply, stop. Period.
+**80% of sales happen after the 5th touchpoint.** Most operators quit before 5. The playbook cadence is Day 1 → Day 3 → Day 7 → extending (14, 30, 60, 90).
 
-- Do not send a third message.
-- Do not "just check in."
-- They know how to find you.
-- Move to monthly nurture cadence or archive.
-- Persistence is good. Pestering destroys trust permanently.
+- Each touch must add new value: insight, observation, question, resource, or fresh angle.
+- Never "just check in." Repeated empty pings destroy trust faster than silence.
+- If you have nothing new to say, wait until you do — don't pad the calendar.
+- Persistence with purpose is the edge. Pestering (same ping, no new value) is what destroys trust, not persistence itself.
 
 ## Follow-Up Message Patterns
 
@@ -72,8 +71,8 @@ Purpose: Try a completely different approach, or gracefully leave the door open.
 update_conversation(
   id="<id>",
   draft_message: "[different angle or door open]",
-  ai_notes: "Follow-up #2 (final). If no reply, move to monthly nurture. Do not send another follow-up.",
-  reminder: "<30 days for nurture check-in>"
+  ai_notes: "Follow-up #2. If no reply, continue cadence at Day 14 with fresh value (new angle, new resource, or industry observation). Playbook says 80% close after touch 5.",
+  reminder: "<Day 14 from initial — touch #3>"
 )
 ```
 
@@ -152,7 +151,7 @@ update_conversation(
 | Day 3 | Day 1 non-replies + new replies | Follow-up #1 (value-add) + responses |
 | Day 4 | Day 2 non-replies + qualified prospects | Follow-up #1 + invitations |
 | Day 5 | Day 1 second non-replies + all engaged | Follow-up #2 (door-open) + confirmations |
-| Post-campaign | 2-follow-up non-replies | Set 30-day nurture reminder. Stop messaging. |
+| Post-campaign | Cadence touches 3-5+ | Extend interval (Day 14, 30, 60, 90) with fresh value each time. Hand to **cold-rescue**. |
 
 ## Anti-Patterns (Never Do These)
 
@@ -162,7 +161,7 @@ update_conversation(
 | "Did you see my last message?" | Passive aggressive. They saw it. |
 | "Bumping this up" | You are not their priority. Accept it. |
 | "I know you're busy, but..." | Starts with an apology. Weak framing. |
-| Third follow-up after silence | Crosses the line from persistent to pest. |
+| Repeating yourself with no new value | Pestering destroys trust. Persistence with new value is the playbook edge. |
 | Same message, slightly reworded | They know it is the same ask. |
 | "Last chance" (false urgency) | Manufactured pressure destroys trust. |
 | Following up within 24 hours | Signals desperation. Wait 48-72 hours minimum. |

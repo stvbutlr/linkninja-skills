@@ -62,12 +62,13 @@ The skills are plain markdown files. Clone the repo and point your agent at the 
 git clone https://github.com/stvbutlr/linkninja-skills.git
 ```
 
-## Skills Catalog (23 Skills)
+## Skills Catalog (27 Skills)
 
 ### Setup (`skills/setup/`)
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
+| [onboarding-walkthrough](skills/setup/onboarding-walkthrough/) | First-time guided setup — ICP, positioning, voice, stages in one session | "set me up", "I'm new to LinkNinja", "where do I begin" |
 | [icp-definition](skills/setup/icp-definition/) | Interview-style ICP setup with network validation | "set up my ICP", "define my ideal client" |
 | [voice-profile-setup](skills/setup/voice-profile-setup/) | Analyze your messages and build a voice profile for AI drafts | "set up my voice", "match my writing style" |
 | [stage-configuration](skills/setup/stage-configuration/) | Customize pipeline stage criteria for your sales process | "customize my stages", "fix my classification" |
@@ -77,6 +78,7 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 | Skill | Description | Triggers |
 |-------|-------------|----------|
 | [prospect-scan](skills/connections/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns | "find prospects", "scan my connections" |
+| [connection-enrichment](skills/connections/connection-enrichment/) | Pull Sales Nav data (recent posts, experience) — feeds Precision Flattery | "enrich my connections", "pull Sales Nav data" |
 | [campaign-launch](skills/connections/campaign-launch/) | Plan and execute structured outreach campaigns with scoring | "launch a campaign", "run an outreach campaign" |
 | [smart-tagging](skills/connections/smart-tagging/) | Tag conversations and connections by ICP fit, buying signals, and situational patterns | "tag my conversations", "who are my decision makers" |
 
@@ -86,16 +88,18 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 |-------|-------------|----------|
 | [full-morning-triage](skills/conversations/full-morning-triage/) | Automated daily pipeline review — drafts replies, rescues cold leads, classifies new conversations | "run my morning", "triage my pipeline", "what should I do today" |
 | [dm-writing](skills/conversations/dm-writing/) | Router — identifies the DM situation and dispatches to the right skill | "help me write a DM", "draft a message", "what should I say" |
-| [cold-outreach](skills/conversations/cold-outreach/) | Cold DMs and post-event openers with specificity-personalization framework | "write a cold DM", "first message", "post-event follow-up" |
-| [reply-handling](skills/conversations/reply-handling/) | Handle replies and qualify prospects through trust progression | "they replied", "how should I respond", "qualifying" |
-| [objection-handling](skills/conversations/objection-handling/) | Handle price, timing, trust, and fit objections in DMs | "handle this objection", "they said too expensive" |
-| [call-booking](skills/conversations/call-booking/) | Book discovery calls with the 3-element invite framework | "book a call", "move to discovery", "schedule a meeting" |
-| [batch-drafting](skills/conversations/batch-drafting/) | Draft personalized messages for multiple conversations at once | "batch draft", "draft follow-ups for everyone" |
-| [cold-rescue](skills/conversations/cold-rescue/) | Revive cold and ghosted conversations with value-add re-engagement | "rescue cold conversations", "re-engage" |
+| [cold-outreach](skills/conversations/cold-outreach/) | Cold DMs and post-event openers — Three Opening Rules + Precision Flattery + Pattern Interrupt + Preloaded Value | "write a cold DM", "first message", "post-event follow-up" |
+| [reply-handling](skills/conversations/reply-handling/) | Handle replies and qualify prospects through A–B Method + Question Sequence | "they replied", "how should I respond", "qualifying" |
+| [objection-handling](skills/conversations/objection-handling/) | Acknowledge → Ask Context → Reframe pattern for price, timing, trust, and fit objections | "handle this objection", "they said too expensive" |
+| [call-booking](skills/conversations/call-booking/) | Book discovery calls with Micro-commitments + 3-element invite | "book a call", "move to discovery", "schedule a meeting" |
+| [batch-drafting](skills/conversations/batch-drafting/) | Draft personalized messages for many conversations using start_batch_draft chunked flow | "batch draft", "draft follow-ups for everyone" |
+| [template-library](skills/conversations/template-library/) | Build and manage reusable message templates with playbook-framework guidance | "create a template", "manage my templates" |
+| [sequence-runner](skills/conversations/sequence-runner/) | Multi-touch outbound sequences using templates + Day 1/3/7/extending cadence | "run a sequence", "drip sequence", "Day 7 follow-up" |
+| [cold-rescue](skills/conversations/cold-rescue/) | Revive cold and ghosted conversations — playbook persistence cadence (80% close after touch 5) | "rescue cold conversations", "re-engage" |
 | [pipeline-cleanup](skills/conversations/pipeline-cleanup/) | Archive stale conversations, classify backlogs, clean the pipeline | "clean up my pipeline", "pipeline hygiene" |
 | [stage-review](skills/conversations/stage-review/) | Audit stage accuracy — reclassify conversations that are in the wrong stage | "review my stages", "audit my classifications" |
 | [conversation-summarizer](skills/conversations/conversation-summarizer/) | Generate or refresh AI summaries and notes across conversations in batch | "summarize my conversations", "update summaries" |
-| [reminder-engine](skills/conversations/reminder-engine/) | Bulk reminder management — follow-up cadences, overdue audits, reminder cleanup | "set reminders", "what's overdue", "bulk reminders" |
+| [reminder-engine](skills/conversations/reminder-engine/) | Reminder management — playbook flat cadence (Day 1/3/7/14/30/extending) | "set reminders", "what's overdue", "bulk reminders" |
 
 ### Analysis (`skills/analysis/`)
 
@@ -123,12 +127,14 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 }}}%%
 flowchart TD
     subgraph Setup
-        ICP[icp-definition] -->|foundation| VP[voice-profile-setup]
+        OW[onboarding-walkthrough] --> ICP[icp-definition]
+        ICP -->|foundation| VP[voice-profile-setup]
         ICP --> SC[stage-configuration]
     end
 
     subgraph Connections
-        PS[prospect-scan] --> ST[smart-tagging]
+        PS[prospect-scan] --> CE[connection-enrichment]
+        CE --> ST[smart-tagging]
         ST --> CL[campaign-launch]
     end
 
@@ -140,6 +146,8 @@ flowchart TD
         DM --> OH[objection-handling]
         DM --> CB[call-booking]
         DM --> BD[batch-drafting]
+        TL[template-library] --> SQR[sequence-runner]
+        BD -.-> SQR
         PC[pipeline-cleanup] --- SR[stage-review]
         CS[conversation-summarizer] --- RE[reminder-engine]
     end

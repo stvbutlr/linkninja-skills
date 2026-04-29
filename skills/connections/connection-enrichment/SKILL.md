@@ -202,6 +202,13 @@ The Sales Navigator data is rich — including contact info (emails, phones, twi
 6. Use data for downstream skill          → cold-outreach, batch-drafting, sequence-runner
 ```
 
+## Job Lifecycle (Cancel & Resume)
+
+Enrichment is async — sometimes you need to abort or resume:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")` — useful if you discover the cohort is wrong after starting (e.g., enrichment running on connections you're not actually about to message). **Note:** quota already consumed up to the cancel point is not refunded.
+- **Resume:** if the user says *"continue"*, *"resume"*, *"check on it"* — call `continue_active_job(type="enrich")` first. Don't fire a second `enrich_connections` while one is in flight.
+
 ## Guidelines
 
 - **Always preview first** for batches >20. Quota is finite.

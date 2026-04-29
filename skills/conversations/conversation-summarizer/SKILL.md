@@ -247,6 +247,13 @@ After summarization is complete, deliver a summary:
 >
 > **Next step:** Review summaries in your LinkNinja dashboard. Run **pipeline-health-check** to see how your pipeline looks with fresh documentation.
 
+## Job Lifecycle (Cancel & Resume)
+
+For the bulk classify shortcut path:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")` if a classify batch is processing the wrong cohort.
+- **Resume:** if the user says *"continue"*, *"resume"*, *"keep going"* — call `continue_active_job()` first. Don't start a new job while one is active.
+
 ## Guidelines
 
 - This skill is pure documentation. Never change stages, tags, or create draft messages.

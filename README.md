@@ -1,10 +1,12 @@
 # LinkNinja Skills
 
-Expert sales pipeline skills for the [LinkNinja MCP](https://linkninja.co). Give your AI agent situational expertise for managing LinkedIn DM conversations, prospecting, campaigns, and pipeline analytics.
+A pile of skills for your AI agent that turns [LinkNinja](https://linkninja.co) into the LinkedIn DM operator you wish you had time to be.
 
-Skills are written to embed the [**Sell By Chat Playbook**](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) by Steve Butler — *Stop selling. Start serving.* Named frameworks (Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1 / 3 / 7 cadence) are quoted directly in skill prompts.
+Built around the playbook I actually use to sell by chat — not generic LinkedIn-bro advice. The thesis is simple: **stop selling, start serving.** Skills embed the named moves from the [Sell By Chat Playbook](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) directly — Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1/3/7 cadence — so the AI sounds like someone who's done this before, not a script.
 
-Works with **any MCP-compatible agent**: Claude Code, Claude.ai, OpenAI Codex, ChatGPT, Gemini, Groq, Manus, and others.
+Works with any MCP-compatible agent: Claude Code, Claude.ai, OpenAI Codex, ChatGPT, Gemini, Groq, Manus.
+
+> **Note on enrichment.** Skills that pull Sales Navigator data (`connection-enrichment`, `lead-research`, plus enrichment hooks inside `cold-outreach`, `prospect-scan`, `campaign-launch`, `full-morning-triage`, `reply-handling`, `smart-tagging`, `sequence-runner`) need an active Sales Navigator connection. Without Sales Nav, those skills fall back to headline-level personalisation — still useful, just less specific.
 
 ## What Are Skills?
 
@@ -62,7 +64,7 @@ The skills are plain markdown files. Clone the repo and point your agent at the 
 git clone https://github.com/stvbutlr/linkninja-skills.git
 ```
 
-## Skills Catalog (27 Skills)
+## Skills Catalog (28 Skills)
 
 ### Setup (`skills/setup/`)
 
@@ -75,12 +77,15 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 
 ### Connections (`skills/connections/`)
 
+🟢 = Sales Navigator required for the enrichment paths inside the skill (skill still works without it; enrichment branches are skipped).
+
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [prospect-scan](skills/connections/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns | "find prospects", "scan my connections" |
-| [connection-enrichment](skills/connections/connection-enrichment/) | Pull Sales Nav data (recent posts, experience) — feeds Precision Flattery | "enrich my connections", "pull Sales Nav data" |
-| [campaign-launch](skills/connections/campaign-launch/) | Plan and execute structured outreach campaigns with scoring | "launch a campaign", "run an outreach campaign" |
-| [smart-tagging](skills/connections/smart-tagging/) | Tag conversations and connections by ICP fit, buying signals, and situational patterns | "tag my conversations", "who are my decision makers" |
+| [prospect-scan](skills/connections/prospect-scan/) | Find ICP matches in your connections — supports subsegment campaigns. 🟢 Optional Sales Nav enrich step after scan. | "find prospects", "scan my connections" |
+| [connection-enrichment](skills/connections/connection-enrichment/) 🟢 | Pull Sales Nav data (recent posts, experience) — feeds Precision Flattery | "enrich my connections", "pull Sales Nav data" |
+| [lead-research](skills/connections/lead-research/) 🟢 | Deep research on a contact or cohort — produces 1–2 line personalisation briefs per contact | "research this lead", "build me a brief", "find me hooks" |
+| [campaign-launch](skills/connections/campaign-launch/) | Plan and execute structured outreach campaigns with scoring. 🟢 Optional enrich step before drafting. | "launch a campaign", "run an outreach campaign" |
+| [smart-tagging](skills/connections/smart-tagging/) | Tag conversations and connections by ICP fit, buying signals, and intelligence-field evidence. 🟢 Optional enrichment-backed tagging. | "tag my conversations", "who are my decision makers" |
 
 ### Conversations (`skills/conversations/`)
 
@@ -134,7 +139,8 @@ flowchart TD
 
     subgraph Connections
         PS[prospect-scan] --> CE[connection-enrichment]
-        CE --> ST[smart-tagging]
+        CE --> LR[lead-research]
+        LR --> ST[smart-tagging]
         ST --> CL[campaign-launch]
     end
 

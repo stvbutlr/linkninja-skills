@@ -31,7 +31,7 @@ Three rules for every cold DM and post-event opener:
 
 ### Precision Flattery
 
-Specific niche praise that proves you understand their world. *"Your approach to [specific topic] is sharp because [specific reason]."* Generic praise ("love your content") signals automation. Pull from `enrich_connections` data — recent posts, experience, projects — to make praise specific and credible.
+Specific niche praise that proves you understand their world. *"Your approach to [specific topic] is sharp because [specific reason]."* Generic praise ("love your content") signals automation. Pull from `enrich_connections` data — recent posts, experience, projects — to make praise specific and credible (*requires an active Sales Navigator connection*; without Sales Nav, fall back to headline-level cues).
 
 ### Pattern Interrupt
 

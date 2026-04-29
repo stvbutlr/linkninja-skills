@@ -177,7 +177,7 @@ get_conversation(id="<conversation_id>")
 | 1st attempt | 3 days | "Touch #2 — Day 3 value-add scheduled. Need insight or observation tied to their world." |
 | 2nd attempt | 7 days | "Touch #3 — Day 7 different angle. New question or industry observation." |
 | 3rd attempt | 14 days | "Touch #4 — Day 14 door-open with substance. No 'just checking in'." |
-| 4th attempt | 30 days | "Touch #5 — Day 30 fresh hook. Pull recent posts via get_enrichment for new material." |
+| 4th attempt | 30 days | "Touch #5 — Day 30 fresh hook. Pull recent posts via get_enrichment for new material (Sales Navigator required; otherwise reuse headline-level cues)." |
 | 5th+ | Extend (60d, 90d) | "Long-tail nurture. Only contact when genuinely new value to share." |
 
 **Step 4:** Batch set reminders:

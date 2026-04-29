@@ -256,6 +256,37 @@ tag_connections(
 
 This is the bridge between surface-level prospect-scan (headline match) and deep verification (conversation evidence). Use `icp-verified` to distinguish from `icp-match` (headline only).
 
+## Tagging Backed by Enrichment Evidence
+
+> **Sales Navigator only.** Skip this section if the user doesn't have Sales Nav.
+
+For higher-confidence tags like `decision_maker`, `technical_buyer`, `is_hiring`, you can back claims with enrichment data. After enriching a cohort (see **connection-enrichment**), pull the relevant sections:
+
+```
+get_enrichment(ids: [<conv/conn_ids>], sections: ["identity", "experience", "skills", "flags"])
+```
+
+Then tag with evidence cited in `ai_notes`:
+
+| Tag | Enrichment evidence |
+|-----|---------------------|
+| `decision_maker` | `identity.title` confirms C-suite/VP/Director; `experience` shows tenure/scope |
+| `technical_buyer` | `skills` array shows technical depth; `experience` shows IC roles |
+| `champion` (combined with thread evidence) | `experience` shows past advocacy of similar products/methodologies |
+| `is_hiring` | `flags.is_hiring: true` |
+| `is_open_to_work` | `flags.is_open_to_work: true` (probably exclude from outreach) |
+| `competitor_mentioned` | `experience` shows current role at a known competitor |
+
+Example with evidence:
+
+```
+bulk_update(updates=[
+  {"id": "conv_xxx", "tags": ["decision_maker", "icp-verified"], "ai_notes": "Tagged decision_maker. Evidence: identity.title='VP of Engineering' at 200-person SaaS. experience shows 8 yrs in VP/Director eng roles. Conversation: said 'I make this call.'"}
+])
+```
+
+This combines server-side intelligence fields, conversation thread evidence, and enrichment data into the strongest possible tag justification.
+
 ## Report Template
 
 After any tagging operation, deliver a summary:

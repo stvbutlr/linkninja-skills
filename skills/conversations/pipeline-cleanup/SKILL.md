@@ -225,6 +225,13 @@ After all phases, summarize results:
 - [Any specific recommendations based on what was found]
 ```
 
+## Job Lifecycle (Cancel & Resume)
+
+For the server-side batch classify path:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")`. Useful when a classification batch is processing the wrong cohort, or when stage criteria need updating before more conversations are classified.
+- **Resume:** if the user says *"continue"*, *"resume"*, *"keep going"* — do NOT start a new job. Call `continue_active_job()` first. The system rejects a fresh `start_batch_classify` while one is still active.
+
 ## Guidelines
 
 - Always fetch full threads before making archive decisions on stale conversations. Don't archive based on metadata alone.

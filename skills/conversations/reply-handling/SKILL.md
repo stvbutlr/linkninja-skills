@@ -134,6 +134,14 @@ update_conversation(
 
 The playbook anchors qualifying on the **A–B Method**: find Point A (current state, current pain) and Point B (desired state, what they want). The gap between them is your opportunity. Every question surfaces A or B more clearly — never to set up a pitch.
 
+> **Pull enrichment for sharper questions (Sales Navigator only).** When qualifying, recent activity gives you a specific anchor — *"saw your post on X, how does that connect to..."*. Pull the contact's recent posts and experience:
+>
+> ```
+> get_enrichment(ids: ["<conv_id>"], sections: ["recent_posts", "experience"])
+> ```
+>
+> If the contact isn't enriched yet, run `enrich_connections(connection_ids=[<id>], limit=1)` first. Skip if no Sales Nav — fall back to thread context. See **connection-enrichment** for the full pattern.
+
 The four-stage question sequence walks the A–B gap:
 
 | Phase | Example Question | Purpose |

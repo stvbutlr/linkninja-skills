@@ -116,6 +116,22 @@ tag_connections(
 )
 ```
 
+### Step 4.5: Enrich the Cohort (Recommended Before Outreach)
+
+> **Requires an active Sales Navigator connection.** If the user doesn't have Sales Nav, skip this step — they'll fall back to headline-only personalisation.
+
+Tagged connections are great input for **Precision Flattery**, but you need real data — recent posts, current role, projects — to make praise specific. Run enrichment now while the cohort is still focused:
+
+```
+enrich_connections(
+  filter={tags: ["icp-match"], is_enriched: false},
+  re_enrich_after_days: 30,
+  limit: 100
+)
+```
+
+~6 sec/connection — for cohorts >50, return the `job_id` and ETA, don't block. Daily quota is 200/day. After completion, hand off to **connection-enrichment** or **lead-research** to surface specific hooks per contact, or directly to **cold-outreach** / **batch-drafting** which will pull `recent_posts` + `experience` from `get_enrichment` during drafting.
+
 ### Step 5: Prioritize Outreach Order
 
 Not all prospects are equal. Work through these tiers in order:

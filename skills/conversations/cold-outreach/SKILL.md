@@ -29,7 +29,7 @@ Every cold DM and post-event opener obeys all three (from `references/sell-by-ch
 
 Three techniques the rules enable:
 
-- **Precision Flattery** — specific niche praise that proves you understand their world. *"Your approach to [specific topic] is sharp because [specific reason]."* Pull `recent_posts` and `experience` from `get_enrichment` to make praise specific and credible. Generic praise ("love your content") signals automation.
+- **Precision Flattery** — specific niche praise that proves you understand their world. *"Your approach to [specific topic] is sharp because [specific reason]."* Pull `recent_posts` and `experience` from `get_enrichment` to make praise specific and credible — *requires an active Sales Navigator connection* (without it, fall back to headline + post-level signals). Generic praise ("love your content") signals automation.
 - **Pattern Interrupt** — unexpected but relevant observation that shows you've stepped into their world before opening your mouth.
 - **Preloaded Value** — if you offer something, it must be: specific to their situation, ungated (no opt-in), actionable (a checklist or framework they can use today), and tied to the next conversation.
 

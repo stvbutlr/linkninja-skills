@@ -72,6 +72,18 @@ Capture and note:
 
 ### Phase 2: Hot Leads — Draft Responses
 
+> **Optional but recommended (Sales Navigator only):** before drafting hot-lead responses, enrich the qualified+ cohort so drafts can reference recent posts or specific experience. Skip if the user doesn't have Sales Nav — drafts fall back to thread context only.
+>
+> ```
+> enrich_connections(
+>   filter={my_turn: true, freshness: "fresh", stage: "qualified", is_enriched: false},
+>   re_enrich_after_days: 30,
+>   limit: 50
+> )
+> ```
+>
+> Wait for completion (~5 min for 50 contacts), then proceed. The enrichment data feeds **Precision Flattery** in each draft.
+
 Find fresh conversations where it's the user's turn, starting with highest-value stages:
 
 ```
@@ -239,6 +251,15 @@ Deliver a summary to the user:
 > **Next step:** Open your LinkNinja dashboard, review the AI drafts, and hit send.
 
 For the full 12-step workflow with all tool calls, see `references/triage-workflow-detail.md`.
+
+## Job Lifecycle (Cancel & Resume)
+
+Long-running async jobs (classify, draft, enrich) sometimes need to be aborted or resumed:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")`. Useful when a misconfigured filter is processing the wrong cohort, or when the user changes direction.
+- **Resume an interrupted job:** if the user says *"continue"*, *"resume"*, *"keep going"* — do NOT start a new job. Per the live `ai_execution.job_protocols`: call `continue_active_job()` first. The system tracks active jobs and won't accept a fresh `start_*` while one is still in flight.
+
+`continue_active_job()` with no args uses the most recent active job; pass `job_id` or `type` (`draft_reply` / `classify`) to be explicit.
 
 ## Guidelines
 

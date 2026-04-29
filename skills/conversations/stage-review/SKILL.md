@@ -282,6 +282,13 @@ After completing the review, deliver:
 - [Schedule next review: suggest monthly or after major campaign]
 ```
 
+## Job Lifecycle (Cancel & Resume)
+
+For the server-side review path:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")` if review instructions need adjusting before more conversations are reclassified.
+- **Resume:** *"continue"* / *"resume"* / *"keep going"* triggers `continue_active_job()` — never `start_batch_classify` again while a review job is active.
+
 ## Guidelines
 
 - Always present findings before applying changes. The user confirms reclassifications.

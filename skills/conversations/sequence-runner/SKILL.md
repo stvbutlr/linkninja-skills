@@ -32,7 +32,7 @@ Run a sequenced multi-touch outreach program over time. Each touch uses a differ
 
 3. Check `list_templates()` to verify the template chain exists and the linkages (`tag_key` + `advance_tag_to`) are configured. If templates aren't set up, hand off to **template-library**.
 
-4. Check `enrich_connections` quota if the cohort is unenriched and you intend to use Precision Flattery — see **connection-enrichment**.
+4. Check `enrich_connections` quota if the cohort is unenriched and you intend to use Precision Flattery — see **connection-enrichment**. *Sales Navigator required for enrichment*; without it, sequences run on headline-only personalisation.
 
 ## The Sequence Cadence
 
@@ -197,6 +197,13 @@ Or read `list_tags()` for the full counts.
 | Most contacts at `gr1` | Sequence not progressing — kick off Day 3 |
 | Stuck at `gr3` | Day 7 angle isn't landing — review the GR3 template's `agent_guidance` |
 | Long tail at `gr_dormant` | Cadence exhausted with no engagement — hand to **cold-rescue** for re-engagement attempts with new value |
+
+## Job Lifecycle (Cancel & Resume)
+
+Sequence touches use `start_batch_draft` jobs — same recovery primitives as **batch-drafting**:
+
+- **Cancel mid-flight:** `cancel_job(job_id="<job_id>")` — useful if the wrong template was attached to a batch and you spotted it before submission completes.
+- **Resume:** if the user says *"continue"*, *"resume"*, *"keep going"* (typical mid-touch interruption) — call `continue_active_job()` first. Never start a fresh `start_batch_draft` while a job is active for this user.
 
 ## Guidelines
 

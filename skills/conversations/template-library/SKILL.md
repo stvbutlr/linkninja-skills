@@ -101,7 +101,7 @@ create_template(
   content: "Hey {{first_name}} — saw [specific recent post topic] and it lined up with what we were chatting about last week. Quick framework I sketched — happy to share if useful.",
   category: "follow_up",
   tag_key: "gr3",
-  agent_guidance: "Open with a Pattern Interrupt referencing their most recent post (pull from get_enrichment). Tie the value to what they shared in the chatting stage. Apply Preloaded Value rules — specific, ungated, actionable, tied to next conversation.",
+  agent_guidance: "Open with a Pattern Interrupt referencing their most recent post (pull from get_enrichment — Sales Navigator required; without it, reference headline instead). Tie the value to what they shared in the chatting stage. Apply Preloaded Value rules — specific, ungated, actionable, tied to next conversation.",
   guardrails: "Maximum 3 sentences. Do not ask for a meeting. Do not mention pricing. Must offer something specific and ungated.",
   advance_tag_to: "gr4",
   advance_stage_to: "qualified"

@@ -1,173 +1,217 @@
 ---
 name: batch-drafting
 description: >
-  Draft personalized messages for multiple conversations in a single session —
-  follow-ups for a stage, re-engagement for cold leads, campaign follow-ups, or all
-  pending replies. Use when the user says "draft messages for", "batch draft",
-  "draft follow-ups for everyone", "process my pipeline", "draft for all my qualified
-  leads", "write messages for my cold conversations", or "draft campaign follow-ups".
-  Reads each conversation, crafts a personalized response, saves each draft via
-  update_conversation. Related: dm-writing for individual message guidance per situation,
-  full-morning-triage for complete pipeline processing, cold-rescue for targeted
-  re-engagement, campaign-launch for outreach campaign setup.
+  Draft personalised messages for many conversations at once using the server-orchestrated
+  chunked drafting flow (start_batch_draft). The AI does the drafting per chunk; the
+  server tracks state and saves the saved payload at the end. Use when the user says
+  "draft messages for", "batch draft", "draft follow-ups for everyone", "process my
+  pipeline", "draft for all my qualified leads", "write messages for my cold
+  conversations", or "draft campaign follow-ups". Falls back to individual
+  get_draft_prompt + update_conversation for ≤5 conversations. Related: dm-writing for
+  individual message guidance per situation, full-morning-triage for complete pipeline
+  processing, cold-rescue for targeted re-engagement, campaign-launch for outreach
+  campaign setup, sequence-runner for templated multi-touch sequences.
 metadata:
-  version: "1.0"
+  version: "2.0"
   author: linkninja
 ---
 
 # Batch Drafting
 
-Draft personalized messages for 5, 20, or 100 conversations in one session. Read each thread, craft a response matched to the situation, save each draft via `update_conversation`. The user reviews and sends from their dashboard.
+Draft personalised messages for 5, 20, or 1000 conversations in one session using the server-orchestrated `start_batch_draft` flow. The AI does the actual drafting work in chunks (the server doesn't write drafts itself — see the controller's verbatim guidance: *"Does NOT write drafts by itself — creates items for your AI to draft"*). The user reviews everything in their dashboard and sends.
 
 ## Before Starting
 
-1. Run `get_context()` to load the user's sales context
+1. Run `get_context()` to load the user's sales context and the live `ai_execution` rules
 2. Check context completeness:
 
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | "I need your ICP to draft relevant messages. Want to set that up?" Run **icp-definition** |
-| Voice Profile (`voice_profile`) | Recommended | Draft in neutral professional tone. Mention: "Your drafts will be better with a voice profile set up." |
-| Positioning (`positioning_context`) | Recommended | Proceed — but positioning context helps with value props in messages |
-| Personal Story (`personal_story`) | Optional | Proceed without — use for credibility references when available |
+| Voice Profile (`voice_profile`) | Recommended | Voice is also enforced server-side via the `shared_bundle` returned by `get_job_chunk`. A richer profile makes drafts land harder. |
+| Positioning (`positioning_context`) | Recommended | Helps with value props in messages |
+| Personal Story (`personal_story`) | Optional | Use for credibility references when relevant |
 
 3. Determine what the user wants drafted. If they don't specify, ask: "Which conversations should I draft for? Options: all pending replies, a specific stage, cold conversations, or a campaign tag."
 
-## Batch Patterns
+## When to Use Which Pattern
 
-### Pattern 1: Draft for a Stage
+| Batch size | Pattern |
+|-----------|---------|
+| 1 conversation | `get_draft_prompt(id)` → AI drafts → `update_conversation(id, draft_message, ai_notes)` (see **dm-writing**) |
+| 2–5 | Optional individual flow per conversation, OR start_batch_draft for consistency |
+| 5+ | **`start_batch_draft` chunked flow** — recommended |
+| 100+ | `start_batch_draft` (max 1000 per job) |
 
-"Draft follow-ups for all my qualified leads where it's my turn."
+## The Canonical Flow (`start_batch_draft`)
 
-**Step 1:** Find conversations:
-
-```
-search_conversations(stage="qualified", my_turn=true, compact=true)
-```
-
-If `has_more` is true, fetch the next page:
-
-```
-search_conversations(stage="qualified", my_turn=true, compact=true, page=2)
-```
-
-**Step 2:** For each conversation:
+From the live `ai_execution.job_protocols.draft_reply` block in `get_context`:
 
 ```
-get_conversation(id="<conversation_id>")
+start_batch_draft → continue_active_job → submit_job_results(claim_next=true) loop → get_job_results
 ```
 
-Read the full thread. Determine the DM situation and apply the right skill: **cold-outreach** for first messages, **reply-handling** for replies and qualifying, **objection-handling** for pushback, **call-booking** for qualified prospects. Draft a personalized response.
+### Operational Rules (Verbatim From Live Protocol)
 
-**Step 3:** Save each draft individually (draft messages must be saved one at a time via `update_conversation`):
+- **Don't stop after start.** Keep calling tools in the same turn.
+- **No user-facing progress message** until `submit_job_results` has succeeded — and `get_job_results` is fetched.
+- **No user response between chunks.** Process all chunks in a single turn.
+- **If the user says "continue" / "resume":** call `continue_active_job` first.
+- **Don't start a new job if one is active** — check first.
+- **Recommended polling: 2 seconds.**
+- **For draft jobs:** drafts can only be `applied` or `failed` — **skipped is NOT allowed**. Every claimed item must be drafted. `reply_mode` (`reply` or `follow_up`) is required on every applied item.
 
-```
-update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Replied to pricing question. Reframed around ROI. Next: wait for budget confirmation.")
-update_conversation(id="<id2>", draft_message="Hey James, ...", ai_notes="Acknowledged timeline concern. Proposed 30-min call. Next: confirm time.")
-// ...repeat for each conversation
-```
+### Step 1: Start the Job
 
-### Pattern 2: Draft Re-Engagement for Cold
-
-"Draft follow-ups for everyone going cold."
-
-**Step 1:**
+Choose **filter mode** (filter object) or **list mode** (`conversation_ids` array). Add optional `template_id` + `draft_mode` + `reply_intent`:
 
 ```
-search_conversations(freshness="cold", my_turn=true, compact=true)
+start_batch_draft(
+  filter={stage: "qualified", my_turn: true},
+  reply_intent: "qualify",
+  limit: 100
+)
 ```
 
-**Step 2:** For each, `get_conversation(id)` and read the thread.
+Returns `job_id` and `recommended_poll_seconds`.
 
-**Step 3:** Draft value-add follow-ups — never "just checking in." Use the escalation cadence:
-
-| Follow-Up # | Approach | Reminder |
-|-------------|----------|----------|
-| 1st | Insight or result tied to something they mentioned | `in 3 days` |
-| 2nd | Different angle — new question or industry observation | `in 7 days` |
-| 3rd | Door-open: "No worries if timing's off..." | `in 30 days` |
-
-**Step 4:** Save each draft individually, then batch the reminders:
+### Step 2: Poll, Then Loop Chunks
 
 ```
-// Save drafts one at a time
-update_conversation(id="<id1>", draft_message="Hey Sarah, ...", ai_notes="Re-engagement #1. Shared insight about [topic]. Last discussed: [what].")
-update_conversation(id="<id2>", draft_message="Hey James, ...", ai_notes="Re-engagement #2. New angle: [what]. Previous follow-up was [date].")
-// ...repeat for each
-
-// Batch reminders
-bulk_update(updates=[
-  {id: "<id1>", reminder: "in 3 days"},
-  {id: "<id2>", reminder: "in 7 days"},
-  ...
-])
+get_job_status(job_id="<job_id>")
 ```
 
-### Pattern 3: Draft Campaign Follow-Ups
-
-"Draft follow-ups for my Q1 campaign."
-
-**Step 1:**
+When ready, claim the first chunk:
 
 ```
-search_conversations(tags=["campaign-q1"], my_turn=true, compact=true)
+get_job_chunk(job_id="<job_id>", limit=10)
 ```
 
-**Step 2:** For each, `get_conversation(id)` and read the thread.
+Returns:
 
-**Step 3:** Draft responses that reference the campaign context while staying personalized to each conversation.
+- `chunk_token` — required for submit
+- `shared_bundle` — voice_profile, personal_story, positioning_context, additional_context, stages, tags
+- `items[]` — each with id, contact, transcript, `effective_stage`, `active_stage_definition`, `my_turn`, and an embedded `draft_prompt` per item
+- `remaining_after_this_chunk`
 
-**Step 4:** Save each draft individually:
+### Step 3: Draft Every Item, Then Submit
 
-```
-update_conversation(id="<id1>", draft_message="...", ai_notes="Campaign Q1 follow-up. Referenced [their specific situation]. Stage: [current].")
-// ...repeat for each conversation
-```
+For each item, **follow the embedded `draft_prompt` exactly**. Pull voice and context from the `shared_bundle`. Determine `reply_mode`:
 
-### Pattern 4: Draft for All Pending
+- `reply` — direct response to a recent message
+- `follow_up` — re-engaging after silence
 
-"Draft messages for everyone waiting on me."
-
-**Step 1:**
-
-```
-search_conversations(my_turn=true, compact=true)
-```
-
-**Step 2:** Process in priority order:
-
-| Priority | Filter | Why |
-|----------|--------|-----|
-| 1 | `stage="qualified"` or `stage="discovery"` or `stage="closing"` | Highest conversion, fastest decay |
-| 2 | `freshness="fresh"` | Engaged right now |
-| 3 | `freshness="cold"` | Slipping away |
-| 4 | Remaining `my_turn=true` | Everything else |
-
-For each, `get_conversation(id)` and draft based on the DM situation.
-
-**Step 3:** Save each draft individually:
+Submit results and claim the next chunk inline (reduces round trips):
 
 ```
-update_conversation(id="<id1>", draft_message="...", ai_notes="...")
-update_conversation(id="<id2>", draft_message="...", ai_notes="...")
-// ...repeat for each conversation
+submit_job_results(
+  job_id="<job_id>",
+  chunk_token="<chunk_token>",
+  items: [
+    {id: "conv_xxx", status: "applied", draft_message: "...", reply_mode: "reply"},
+    {id: "conv_yyy", status: "applied", draft_message: "...", reply_mode: "follow_up"},
+    {id: "conv_zzz", status: "failed",  error: "transcript missing context to draft confidently"}
+  ],
+  claim_next: true
+)
 ```
 
-### Pattern 5: Draft by Freshness + Stage Combination
+The response includes the next chunk inline (when `claim_next: true`). Repeat the draft → submit loop until no more chunks remain.
 
-"Draft re-engagement for qualified leads who ghosted."
-
-```
-search_conversations(freshness="they_ghosted", stage="qualified", compact=true)
-```
-
-"Draft responses for fresh conversations in chatting stage."
+### Step 4: Fetch and Share Results
 
 ```
-search_conversations(freshness="fresh", stage="chatting", my_turn=true, compact=true)
+get_job_results(job_id="<job_id>", limit=50)
 ```
 
-Apply the appropriate DM skill for each: **reply-handling** for active conversations, **objection-handling** for pushback, **call-booking** for qualified prospects.
+Returns the saved per-conversation payload (contact name, draft_message, reply_mode). Share with the user in their terms — never expose job IDs or chunk tokens.
+
+## Common Patterns
+
+### Pattern A: Drafts for a Stage
+
+> "Draft follow-ups for all my qualified leads where it's my turn."
+
+```
+start_batch_draft(
+  filter={stage: "qualified", my_turn: true},
+  reply_intent: "qualify"
+)
+```
+
+Loop chunks → submit → results. Apply **A–B Method** + **Question Sequence** in each draft (see `references/sell-by-chat-methodology.md` and **reply-handling**).
+
+### Pattern B: Cold Re-engagement Cohort
+
+> "Draft re-engagement messages for everyone going cold."
+
+```
+start_batch_draft(
+  filter={freshness: "cold", my_turn: true},
+  reply_intent: "nurture"
+)
+```
+
+Per-item, set `reply_mode: "follow_up"`. After the job completes, batch the reminders for the cohort using filter mode:
+
+```
+bulk_update(
+  filter={freshness: "cold", my_turn: true},
+  reminder: "in 7 days"
+)
+```
+
+### Pattern C: Campaign Cohort with a Template
+
+> "Draft the Day 7 follow-up for my Q1 campaign using the GR3 template."
+
+First, find the template:
+
+```
+list_templates(tag="gr3")
+```
+
+Then:
+
+```
+start_batch_draft(
+  filter={tags: ["campaign-q1"], my_turn: true},
+  template_id: <id>,
+  draft_mode: "guided",
+  reply_intent: "advance"
+)
+```
+
+| draft_mode | Behaviour |
+|------------|-----------|
+| `locked` | Server renders `{{variables}}` only. No AI personalisation. Use for known-working sequences. |
+| `guided` (default) | AI personalises opening / closing within the template structure. Best balance. |
+| `flexible` | Template is a loose reference. AI writes freely. Use for varied audiences. |
+
+See `references/template-modes.md` for the full spec.
+
+### Pattern D: Mixed Pipeline by Priority
+
+> "Draft for everyone waiting on me."
+
+Process by priority — run multiple `start_batch_draft` jobs sequentially, one per priority bucket. Don't blast everyone at once:
+
+| Priority | Filter | reply_intent |
+|----------|--------|--------------|
+| 1 | `stage: "qualified"`, `my_turn: true`, `freshness: "fresh"` | `qualify` |
+| 2 | `stage: "discovery"`, `my_turn: true` | `advance` |
+| 3 | `stage: "closing"`, `my_turn: true` | `advance` |
+| 4 | `freshness: "cold"`, `my_turn: true` | `nurture` |
+
+### Pattern E: Single / Small Batch (Fallback)
+
+For ≤5 conversations, the individual flow is faster than the chunked job:
+
+```
+get_draft_prompt(id="<id>", reply_intent="qualify")  → AI drafts following the prompt → update_conversation(id, draft_message="...", ai_notes="...")
+```
+
+This is also the right path when one specific draft needs heavy customisation. See `references/tools-registry.md` for `get_draft_prompt` parameters.
 
 ## Drafting Rules
 
@@ -175,58 +219,66 @@ For every draft, follow these rules:
 
 | Rule | Detail |
 |------|--------|
-| Never send | Save as `draft_message`. User reviews and sends from dashboard. |
-| Always include `ai_notes` | Explain: signal responded to, draft purpose, expected next step |
-| Match voice | Use `voice_profile` from context. If none, neutral professional. |
+| Never send | Drafts only. User reviews and sends from dashboard. |
+| Always include `ai_notes` | Explain: signal responded to, draft purpose, expected next step (used by classify jobs only — for draft jobs, use `context_used` if relevant) |
+| Match voice | Voice is enforced via the `shared_bundle` and the per-item `draft_prompt`. Follow them exactly. |
 | One thing per message | Don't pitch + qualify + close in one DM |
-| Reference something real | Mention something specific from the thread, not a generic opener |
-| Keep it short | 2-4 sentences for most messages |
-| Add value on follow-ups | Never "just checking in" — add an insight, result, or question |
-| Set reminders | For cold rescue and ghost re-engagement, always set a follow-up reminder |
+| Reference something real | Mention something specific from the thread, never a generic opener |
+| Keep it short | 2–4 sentences for most messages |
+| Add value on follow-ups | Never "just checking in" — add an insight, result, or question (per playbook follow-up cadence) |
+| Set reminders for re-engagement | Use `bulk_update` filter mode after the draft job to batch reminders |
 
 ## Handling Scale
 
-Draft messages must be saved individually via `update_conversation` because `bulk_update` does not support `draft_message`. Non-draft updates (stage, tags, reminders, archive) can still be batched.
+| Conversations | Recommended approach |
+|--------------|----------------------|
+| 1–5 | Individual `get_draft_prompt` + `update_conversation` |
+| 5–100 | One `start_batch_draft` job |
+| 100–500 | One `start_batch_draft` job (single job handles up to 1000) |
+| 500+ | Filter to highest-priority segment first; run sequential jobs by priority |
 
-| Conversations | Drafts | Non-Draft Updates |
-|--------------|--------|-------------------|
-| 1-5 | `update_conversation` per draft | `update_conversation` or `bulk_update` |
-| 6-100 | `update_conversation` per draft | `bulk_update` (one call) |
-| 101-200 | `update_conversation` per draft | Split into two `bulk_update` calls |
-| 200+ | Filter to highest-priority segment first | Split into `bulk_update` calls of max 100 |
+**Pagination:** `search_conversations` results are not needed before `start_batch_draft` — the filter is server-side. Use `search_conversations` only when the user explicitly asks to review the full list before drafting.
 
-**Pagination:** If `search_conversations` returns `has_more: true`, fetch the next page before starting drafts:
+**Job limits:** `start_batch_draft` accepts up to 1000 conversations per job. `get_job_chunk` returns up to 25 items per claim (default 10).
 
-```
-search_conversations(stage="qualified", my_turn=true, compact=true, page=2)
-```
+## Confidentiality
 
-**Batch limits:** `bulk_update` accepts max 100 updates per call (for non-draft fields). Drafts are always one at a time via `update_conversation`.
+Don't surface job IDs, chunk tokens, lease mechanics, or protocol internals in user-facing text. Translate progress to user terms:
+
+- "Drafting in batches…"
+- "X of Y drafts ready."
+- "Wrapping up the batch — last few coming through."
+- "All drafts saved. Open your dashboard to review."
 
 ## Workflow Summary
 
 ```
-1. get_context()                              → Load ICP + voice
-2. search_conversations(filter, compact=true)               → Find conversations
-   └─ Handle has_more pagination
-3. get_conversation(id) for each                         → Read full threads
-4. Draft personalized message per situation   → Apply dm-writing rules
-5. update_conversation(id, draft_message,     → Save each draft individually
-   ai_notes) for each conversation
-6. bulk_update(updates=[...])               → Batch non-draft updates (reminders, tags, stage)
-   └─ Split if > 100
-7. Report to user                             → Count of drafts saved
+1. get_context()                         → Load ICP + voice + ai_execution rules
+2. start_batch_draft(filter | ids,       → Kick off the job (server side)
+   template_id?, draft_mode?,
+   reply_intent?)
+3. get_job_status(job_id)                → Poll every 2s until ready
+4. Loop:                                 → Until no more chunks
+   ├─ get_job_chunk(job_id)              → Claim next chunk + shared bundle
+   ├─ AI drafts every item using each    → status: applied or failed
+   │  embedded draft_prompt              → reply_mode: reply or follow_up (required)
+   └─ submit_job_results(job_id,         → Submit + claim next inline
+        chunk_token, items,
+        claim_next=true)
+5. get_job_results(job_id)               → Pull saved payload
+6. Report to user                        → Count, hottest, next step
 ```
 
 ## Report Template
 
-After batch drafting is complete, deliver a summary:
+After the job completes:
 
 > **Batch drafting complete.**
 >
 > - **N drafts** saved and ready to review in your dashboard
 > - **Stages covered:** [list of stages processed]
-> - **Reminders set:** M follow-up reminders for cold/ghost conversations
+> - **Reply modes:** A drafts as direct replies, B as re-engagement follow-ups
+> - **Reminders set:** M follow-up reminders (where applicable)
 >
 > **Hottest draft:** [name] in [stage] — [why this one matters most]
 >
@@ -234,23 +286,26 @@ After batch drafting is complete, deliver a summary:
 
 ## Guidelines
 
-- Always process higher-value stages first (qualified > chatting > opening).
-- Use `compact=true` on `search_conversations` to save bandwidth when only IDs are needed.
-- Always include `ai_notes` with every draft. Explain reasoning so the user can evaluate.
-- Never pretend to send messages. Save drafts only.
-- Match the user's voice profile. Neutral professional if none exists.
-- For cold/ghost conversations, always attach a reminder with the draft.
-- If a conversation is ambiguous or needs user judgment, flag it in the report instead of drafting.
+- Always run inside the same turn — don't pause for user input mid-loop. The protocol explicitly disallows it.
+- Use filter mode whenever the action applies uniformly. Don't paginate `search_conversations` first.
+- Use `compact=true` only on `search_conversations` calls used for inspection — `start_batch_draft` doesn't need pre-paginated IDs.
+- Always include `ai_notes` (or `context_used`) so the user understands the reasoning per draft.
+- Match the user's `voice_profile` (enforced via `shared_bundle`). If the user has none, fall back to the **Ten Core Voice Rules** in `references/sell-by-chat-methodology.md`.
+- For cold/ghost conversations, follow the playbook cadence — Day 1 / 3 / 7 / extending — and pair with `bulk_update` reminder batching after the draft job.
+- If a conversation is genuinely ambiguous and you can't draft confidently, mark the item as `failed` with an `error` reason — don't fabricate a draft.
 - One draft per conversation. A new draft overwrites the previous one.
+- Never expose job IDs, chunk tokens, or protocol mechanics in user-facing reports.
 
 ## Related Skills
 
-- **dm-writing** — Router that identifies the right DM skill per situation
-- **cold-outreach** — First messages, cold DMs, post-event openers
-- **reply-handling** — Handling replies, building rapport, qualifying
-- **objection-handling** — Price, timing, trust, and fit objections
-- **call-booking** — Booking discovery calls with qualified prospects
-- **full-morning-triage** — Complete daily pipeline processing with auto-drafting
-- **cold-rescue** — Targeted re-engagement for ghosted conversations
-- **campaign-launch** — Set up and launch a targeted outreach campaign
-- **voice-profile-setup** — Configure voice matching for better draft quality
+- **dm-writing** — Router that identifies the right DM situation per conversation
+- **cold-outreach** — First messages, cold DMs, post-event openers (for solo drafts in the `opening` category)
+- **reply-handling** — Building rapport and qualifying through A–B Method
+- **objection-handling** — Acknowledge → Ask Context → Reframe pattern
+- **call-booking** — Booking calls with Micro-commitments
+- **cold-rescue** — Targeted re-engagement following the playbook cadence
+- **full-morning-triage** — Daily compound workflow that uses batch-drafting under the hood
+- **campaign-launch** — Set up an outreach campaign cohort, then call batch-drafting
+- **sequence-runner** — Multi-touch sequences with templates over time (uses `start_batch_draft` per touch)
+- **voice-profile-setup** — Configure voice matching for natural-sounding drafts
+- **template-library** — Manage templates referenced by `start_batch_draft(template_id)`

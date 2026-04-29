@@ -25,7 +25,7 @@ Turn pipeline data into decisions. Snapshot the current state, calculate convers
 
 | Check | How | If Not Met |
 |-------|-----|------------|
-| At least 10 classified conversations | `pipeline_stats()` — sum all stage counts | "You need at least 10 classified conversations for a meaningful analysis. Want me to classify your pipeline first?" Suggest **full-morning-triage** or `start_batch_classify()` |
+| At least 10 classified conversations | `get_stats()` — sum all stage counts | "You need at least 10 classified conversations for a meaningful analysis. Want me to classify your pipeline first?" Suggest **full-morning-triage** or `start_batch_classify()` |
 | ICP configured | `additional_context` in context | Optional for health check, but note: "Your ICP isn't configured yet. Analysis will be more useful with an ICP set up." |
 
 3. If the pipeline has enough data, proceed to the analysis.
@@ -35,7 +35,7 @@ Turn pipeline data into decisions. Snapshot the current state, calculate convers
 ### Section 1: Pipeline Snapshot
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Present the current state:
@@ -74,16 +74,29 @@ Present the current state:
 
 ### Section 2: Conversion Funnel Analysis
 
-Calculate conversion rates from `pipeline_stats()` data:
+Calculate conversion rates from `get_stats()` data. Benchmarks reflect the playbook's chat-to-contract chain (see `references/sell-by-chat-methodology.md` — ~30% reply / ~50% engagement / ~20% call-book / ~80% show / ~50% close → ~1% overall):
 
-| Transition | Formula | Rate | Benchmark |
-|------------|---------|------|-----------|
-| Opening to Chatting (reply rate) | chatting / opening | —% | 15-30% |
-| Chatting to Qualified | qualified / chatting | —% | 20-40% |
-| Qualified to Discovery | discovery / qualified | —% | 30-50% |
-| Discovery to Closing | closing / discovery | —% | 40-60% |
-| Closing to Won (close rate) | won / (won + lost) | —% | 10-25% |
-| Overall | won / opening | —% | 1-5% |
+| Transition | Formula | Rate | Playbook Benchmark |
+|------------|---------|------|--------------------|
+| Opening to Chatting (reply rate) | chatting / opening | —% | ~30% (15–30% acceptable, below 15% = critical) |
+| Chatting to Qualified | qualified / chatting | —% | ~50% (20–40% typical for less aligned ICP) |
+| Qualified to Discovery (call-book) | discovery / qualified | —% | ~20% (30–50% if you call early) |
+| Discovery to Closing (show + advance) | closing / discovery | —% | ~80% show × your conversion |
+| Closing to Won (close rate) | won / (won + lost) | —% | ~50% (10–25% in less consultative funnels) |
+| **Overall (chats → contracts)** | won / opening | —% | **~1%** |
+
+The playbook's "80% of sales close after the 5th touchpoint" means losses concentrated in early stages are usually a *cadence* problem (people quitting follow-up before touch 5), not a *messaging* problem. Check `cold-rescue` health before blaming openers.
+
+### Conversation Intelligence Slicing
+
+Combine `get_stats` (stage counts) with `get_conversation` (intelligence fields) for a richer view. Pull `warmth_level` and `conversation_health` distributions across stages — the patterns flag specific issues:
+
+| Pattern | Likely Cause | Action |
+|---------|--------------|--------|
+| Many `qualified` with `conversation_health: at_risk` | Qualifying without next-step traction | **call-booking** push needed |
+| Many `chatting` with `warmth_level: cold` | Conversations stalling, not progressing | **cold-rescue** sweep |
+| `discovery` with `conversation_health: dead` | Stuck post-call without follow-through | Manual review — re-engage or archive |
+| High `objection_signals` not yet in `qualified` | Objections raised early, not addressed | **objection-handling** sweep |
 
 **Find the leaky stage** — the transition with the biggest drop-off below benchmark:
 
@@ -120,23 +133,23 @@ Find conversations that need immediate attention:
 **Qualified leads waiting on the user:**
 
 ```
-search(my_turn=true, stage="qualified", compact=true)
+search_conversations(my_turn=true, stage="qualified", compact=true)
 ```
 
 **Discovery/closing conversations going cold:**
 
 ```
-search(freshness="cold", stage="discovery", compact=true)
+search_conversations(freshness="cold", stage="discovery", compact=true)
 ```
 
 ```
-search(freshness="cold", stage="closing", compact=true)
+search_conversations(freshness="cold", stage="closing", compact=true)
 ```
 
 **Conversations the user ghosted:**
 
 ```
-search(freshness="you_ghosted", compact=true)
+search_conversations(freshness="you_ghosted", compact=true)
 ```
 
 List these in the report as specific action items.
@@ -188,14 +201,14 @@ Deliver the full analysis:
 > 3. [Third priority recommendation]
 >
 > **Optional:** Export to CSV for offline analysis:
-> `export(format="csv", include_messages=true)`
+> `export_conversations(format="csv", include_messages=true)`
 
 ## Deep Dive: Stage-Level Analysis
 
 If the user wants to dig deeper into a specific stage:
 
 ```
-export(stage="<problem_stage>", include_messages=true)
+export_conversations(stage="<problem_stage>", include_messages=true)
 ```
 
 Look for patterns in:
@@ -216,11 +229,11 @@ update_context(additional_context="Pipeline analysis finding: [what you learned]
 If the user has campaign tags, compare performance:
 
 ```
-search(tags=["campaign-jan"], compact=true)
+search_conversations(tags=["campaign-jan"], compact=true)
 ```
 
 ```
-search(tags=["campaign-feb"], compact=true)
+search_conversations(tags=["campaign-feb"], compact=true)
 ```
 
 | Metric | Campaign A | Campaign B |
@@ -240,7 +253,7 @@ See `references/benchmarks.md` for healthy ranges by metric.
 - Always tie recommendations to specific skills or tools.
 - Don't overwhelm: 3-5 recommendations max, prioritized by impact.
 - If the pipeline has fewer than 10 conversations, say so and suggest building volume first.
-- For large pipelines (200+), use `pipeline_stats()` for the snapshot and targeted `search` queries for specifics. Avoid exporting everything.
+- For large pipelines (200+), use `get_stats()` for the snapshot and targeted `search_conversations` queries for specifics. Avoid exporting everything.
 - Offer CSV export for users who want offline/spreadsheet analysis.
 
 ## Related Skills

@@ -32,12 +32,12 @@ Healthy conversion ranges, warning sign thresholds, metric formulas, and diagnos
 
 | Metric | Formula | Data Source |
 |--------|---------|-------------|
-| Reply rate | chatting_count / opening_count | `pipeline_stats()` |
-| Qualification rate | qualified_count / chatting_count | `pipeline_stats()` |
-| Discovery rate | discovery_count / qualified_count | `pipeline_stats()` |
-| Proposal rate | closing_count / discovery_count | `pipeline_stats()` |
-| Close rate | won_count / (won_count + lost_count) | `pipeline_stats()` |
-| Overall conversion | won_count / opening_count | `pipeline_stats()` |
+| Reply rate | chatting_count / opening_count | `get_stats()` |
+| Qualification rate | qualified_count / chatting_count | `get_stats()` |
+| Discovery rate | discovery_count / qualified_count | `get_stats()` |
+| Proposal rate | closing_count / discovery_count | `get_stats()` |
+| Close rate | won_count / (won_count + lost_count) | `get_stats()` |
+| Overall conversion | won_count / opening_count | `get_stats()` |
 
 ### Health Metrics
 
@@ -60,7 +60,7 @@ Healthy conversion ranges, warning sign thresholds, metric formulas, and diagnos
 To measure these precisely, export conversations and check timestamps:
 
 ```
-export(stage="won", include_messages=true)
+export_conversations(stage="won", include_messages=true)
 ```
 
 Compare `created_at` and `last_message_at` across messages.
@@ -71,27 +71,27 @@ Compare `created_at` and `last_message_at` across messages.
 
 | Warning Sign | Threshold | Detection |
 |-------------|-----------|-----------|
-| You are the bottleneck | my_turn > 50% of active pipeline | `pipeline_stats()` — sum my_turn across stages |
-| You're dropping conversations | you_ghosted > 10% of active | `pipeline_stats()` — freshness breakdown |
-| Qualified leads decaying | my_turn in qualified > 0, freshness not fresh | `search(my_turn=true, stage="qualified", freshness="cold")` |
+| You are the bottleneck | my_turn > 50% of active pipeline | `get_stats()` — sum my_turn across stages |
+| You're dropping conversations | you_ghosted > 10% of active | `get_stats()` — freshness breakdown |
+| Qualified leads decaying | my_turn in qualified > 0, freshness not fresh | `search_conversations(my_turn=true, stage="qualified", freshness="cold")` |
 
 ### High (Act This Week)
 
 | Warning Sign | Threshold | Detection |
 |-------------|-----------|-----------|
-| Pipeline decaying | ghost_rate > 25% | `pipeline_stats()` — (cold + ghosted) / total |
+| Pipeline decaying | ghost_rate > 25% | `get_stats()` — (cold + ghosted) / total |
 | Outreach not working | reply rate < 15% | Opening count vs chatting count |
-| Empty pipeline | Total active < 10 | `pipeline_stats()` — sum active counts |
-| No fresh conversations | fresh < 20% of active | `pipeline_stats()` — freshness breakdown |
+| Empty pipeline | Total active < 10 | `get_stats()` — sum active counts |
+| No fresh conversations | fresh < 20% of active | `get_stats()` — freshness breakdown |
 
 ### Medium (Address This Month)
 
 | Warning Sign | Threshold | Detection |
 |-------------|-----------|-----------|
-| Chatting bottleneck | chatting > 2x qualified | `pipeline_stats()` — stage counts |
-| Prospect interest fading | their_turn in qualified+ > 50% | `pipeline_stats()` — turn status per stage |
+| Chatting bottleneck | chatting > 2x qualified | `get_stats()` — stage counts |
+| Prospect interest fading | their_turn in qualified+ > 50% | `get_stats()` — turn status per stage |
 | Closing problem | close rate < 10% | Won vs (won + lost) |
-| Single-stage pipeline | One stage has > 60% of conversations | `pipeline_stats()` — stage distribution |
+| Single-stage pipeline | One stage has > 60% of conversations | `get_stats()` — stage distribution |
 
 ## Diagnostic Patterns
 
@@ -108,7 +108,7 @@ Compare `created_at` and `last_message_at` across messages.
 **Tool calls for investigation:**
 
 ```
-export(stage="qualified", include_messages=true)
+export_conversations(stage="qualified", include_messages=true)
 ```
 
 Read the qualified conversations. Are they genuinely qualified (need + budget/authority/timeline), or are they just people being polite?
@@ -125,7 +125,7 @@ Read the qualified conversations. Are they genuinely qualified (need + budget/au
 **Investigation:**
 
 ```
-export(stage="chatting", include_messages=true, limit=20)
+export_conversations(stage="chatting", include_messages=true, limit=20)
 ```
 
 Read 20 chatting conversations. What's the pattern? Are prospects engaging but not the right fit? Are they interested but you're not surfacing the need?
@@ -142,7 +142,7 @@ Read 20 chatting conversations. What's the pattern? Are prospects engaging but n
 **Investigation:**
 
 ```
-export(stage="opening", include_messages=true, limit=20)
+export_conversations(stage="opening", include_messages=true, limit=20)
 ```
 
 Read 20 opening messages. Are they specific to each person? Do they offer value? Do they reference something real?
@@ -159,7 +159,7 @@ Read 20 opening messages. Are they specific to each person? Do they offer value?
 **Investigation:**
 
 ```
-export(stage="discovery", include_messages=true)
+export_conversations(stage="discovery", include_messages=true)
 ```
 
 Look at post-call messages. Is there a clear next step after each call?
@@ -181,17 +181,17 @@ Track these monthly to spot trends:
 Export monthly snapshots for comparison:
 
 ```
-export(format="csv", include_messages=false)
+export_conversations(format="csv", include_messages=false)
 ```
 
 ## Quick Reference: What to Measure When
 
 | User Question | Metric | Tool Call |
 |--------------|--------|-----------|
-| "How's my pipeline doing?" | Stage counts + freshness | `pipeline_stats()` |
-| "Where am I losing deals?" | Conversion rates per transition | `pipeline_stats()` + calculate |
+| "How's my pipeline doing?" | Stage counts + freshness | `get_stats()` |
+| "Where am I losing deals?" | Conversion rates per transition | `get_stats()` + calculate |
 | "Is my outreach working?" | Reply rate | Opening vs chatting counts |
 | "Am I qualifying well?" | Qualification rate | Chatting vs qualified counts |
-| "Which campaign works better?" | Rates per campaign tag | `search(tags=["campaign-x"], compact=true)` per campaign |
-| "How fast am I closing?" | Cycle time | `export(stage="won", include_messages=true)` — check timestamps |
-| "Am I responding fast enough?" | My-turn count, neglect rate | `pipeline_stats()` — my_turn and you_ghosted |
+| "Which campaign works better?" | Rates per campaign tag | `search_conversations(tags=["campaign-x"], compact=true)` per campaign |
+| "How fast am I closing?" | Cycle time | `export_conversations(stage="won", include_messages=true)` — check timestamps |
+| "Am I responding fast enough?" | My-turn count, neglect rate | `get_stats()` — my_turn and you_ghosted |

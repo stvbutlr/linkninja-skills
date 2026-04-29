@@ -122,9 +122,9 @@ Not all prospects are equal. Work through these tiers in order:
 
 | Priority | Who | How to Find | Why First |
 |----------|-----|-------------|-----------|
-| 1 | People who already replied and are waiting for you | `search(my_turn=true)` | Already engaged. Highest conversion. |
+| 1 | People who already replied and are waiting for you | `search_conversations(my_turn=true)` | Already engaged. Highest conversion. |
 | 2 | ICP matches who engaged with your content | Ask the user. Tag as `warm-lead`. | Social proof of interest. |
-| 3 | Mutual connections / shared context | `connections(detailed=true)` + user reviews profiles | Natural conversation opener. |
+| 3 | Mutual connections / shared context | `list_connections(detailed=true)` + user reviews profiles | Natural conversation opener. |
 | 4 | Cold ICP matches, never messaged | `scan_connections(has_conversation=false)` | Volume play. Lowest conversion. |
 
 Present the prioritized list to the user with recommended actions for each tier.
@@ -134,7 +134,7 @@ Present the prioritized list to the user with recommended actions for each tier.
 Before any outreach, verify no existing conversations exist:
 
 ```
-search(query="<prospect name>")
+search_conversations(query="<prospect name>")
 ```
 
 Sending a "cold" opener to someone with an existing thread is a trust-damaging mistake.
@@ -193,7 +193,7 @@ If results are capped:
 For detailed profile information on specific connections:
 
 ```
-connections(query="<name>", detailed=true, limit=50)
+list_connections(query="<name>", detailed=true, limit=50)
 ```
 
 The `detailed=true` flag includes LinkedIn URLs so the user can review profiles.
@@ -216,6 +216,7 @@ The `detailed=true` flag includes LinkedIn URLs so the user can review profiles.
 - If scan returns mostly wrong matches, the keywords are too broad. Tighten before proceeding.
 - Recent connections (`connected_after`) tend to be warmer. Mention this option to the user.
 - Present results with context: "Found 47 connections matching your ICP. 12 already have conversations, 35 are new prospects."
+- Playbook targeting baseline: ~200 personalised connection requests per week to ICP. Once momentum builds, prioritise **warm signals** (profile views, post engagement, connection requests received) over fresh cold outreach — they convert dramatically better.
 
 ## Related Skills
 

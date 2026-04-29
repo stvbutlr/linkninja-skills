@@ -23,14 +23,14 @@ Purge stale conversations, archive dead threads, classify unprocessed conversati
 ## Before Starting
 
 1. Run `get_context()` to load the user's current sales context
-2. Run `pipeline_stats()` to get the current state
+2. Run `get_stats()` to get the current state
 3. Check prerequisites:
 
 | Check | How | If Insufficient |
 |-------|-----|-----------------|
 | Total conversations | Pipeline stats total count | Need at least 10 conversations. If fewer: "Your pipeline is small enough to manage manually. Come back when it grows." |
 | ICP defined | Check `additional_context` from `get_context()` | Cleanup still works. Archive decisions will be less precise without ICP. Note borderline cases for manual review. |
-| Stale/ghosted count | Freshness breakdown from `pipeline_stats()` | If zero stale/ghosted: "Your pipeline looks healthy. No stale conversations to clean up." Check for unclassified instead. |
+| Stale/ghosted count | Freshness breakdown from `get_stats()` | If zero stale/ghosted: "Your pipeline looks healthy. No stale conversations to clean up." Check for unclassified instead. |
 
 4. Summarize the pipeline state to the user before starting:
 
@@ -43,19 +43,19 @@ Purge stale conversations, archive dead threads, classify unprocessed conversati
 Find all stale conversations:
 
 ```
-search(freshness="stale", compact=true)
+search_conversations(freshness="stale", compact=true)
 ```
 
 If `has_more` is true, paginate:
 
 ```
-search(freshness="stale", compact=true, page=2)
+search_conversations(freshness="stale", compact=true, page=2)
 ```
 
 For each stale conversation, fetch the full thread to make an informed decision:
 
 ```
-fetch(id="<id>")
+get_conversation(id="<id>")
 ```
 
 Apply the decision rules:
@@ -89,7 +89,7 @@ update_conversation(id="abc", draft_message="Hey Sarah, been thinking about what
 // ...repeat for each re-engagement draft
 
 // Batch archives, reminders, and other non-draft updates
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "reminder": "in 7 days"},
   {"id": "def", "archive": {"archived": true, "reason": "ghosted"}, "ai_notes": "No reply after 3 follow-ups over 5 weeks. No buying signals in thread."},
   {"id": "ghi", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Recruiter pitching staffing services. Not a prospect."},
@@ -98,14 +98,14 @@ bulk_classify(updates=[
 ])
 ```
 
-If more than 100 updates, split into multiple `bulk_classify` calls (max 100 per call).
+If more than 100 updates, split into multiple `bulk_update` calls (max 100 per call).
 
 ### Phase 2: Ghosted Openers
 
 Find conversations stuck in opening where they never replied:
 
 ```
-search(stage="opening", freshness="they_ghosted", compact=true)
+search_conversations(stage="opening", freshness="they_ghosted", compact=true)
 ```
 
 These are the lowest-value stale conversations. Most should be archived unless the prospect is clearly ICP.
@@ -121,7 +121,7 @@ For each, a quick check is sufficient. If you already loaded context from Phase 
 update_conversation(id="pqr", draft_message="Hey Alex, came across this [resource] and thought of you given your work in [their field]...", ai_notes="Final re-engagement attempt. Matches ICP but never replied to opener. New angle with value-add.")
 
 // Batch archives and reminders
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "pqr", "reminder": "in 5 days"},
   {"id": "stu", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Student account. Not ICP."},
   {"id": "vwx", "archive": {"archived": true, "reason": "ghosted"}, "ai_notes": "No reply to opener after 3 weeks. Generic headline, can't determine ICP fit."}
@@ -135,7 +135,7 @@ Find and classify conversations that haven't been processed yet.
 **For manageable volumes (under 100):**
 
 ```
-export(unclassified_only=true, include_messages=true)
+export_conversations(unclassified_only=true, include_messages=true)
 ```
 
 Paginate if `has_more` is true.
@@ -161,10 +161,10 @@ At any point: clearly not ICP? -> not_a_fit (archive)
 Submit all classifications:
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {"id": "abc", "stage": "chatting", "tags": [], "summary": "Early rapport. Asked about his work.", "ai_notes": "No buying signals. General industry conversation."},
   {"id": "def", "stage": "qualified", "tags": ["decision_maker", "urgent"], "summary": "CTO needs analytics tool by end of Q1.", "ai_notes": "Explicit timeline and authority confirmed."},
-  {"id": "ghi", "stage": "not_a_fit", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Selling SEO services. Not a prospect."}
+  {"id": "ghi", "archive": {"archived": true, "reason": "not_a_fit"}, "ai_notes": "Selling SEO services. Not a prospect."}
 ])
 ```
 
@@ -179,17 +179,17 @@ start_batch_classify(unclassified_only=true, limit=500)
 Check progress:
 
 ```
-job_status(job_id="<job_id>")
+get_job_status(job_id="<job_id>")
 ```
 
-Repeat `job_status` until status is "completed."
+Repeat `get_job_status` until status is "completed."
 
 **Hybrid approach (recommended for 100+ conversations):**
 
 1. Run server-side batch for the bulk: `start_batch_classify(unclassified_only=true, limit=500)`
 2. While waiting, manually review the first page of exports for edge cases
-3. After server-side completes, spot-check results: `search(stage="qualified", compact=true)` -- do these look right?
-4. Override any misclassifications with `bulk_classify`
+3. After server-side completes, spot-check results: `search_conversations(stage="qualified", compact=true)` -- do these look right?
+4. Override any misclassifications with `bulk_update`
 
 ### Phase 4: Report
 
@@ -229,15 +229,15 @@ After all phases, summarize results:
 
 - Always fetch full threads before making archive decisions on stale conversations. Don't archive based on metadata alone.
 - For ghosted openers (Phase 2), a quick metadata check is sufficient if the volume is high. Full thread review is only needed for ICP matches.
-- Use `compact=true` on `search` when you only need IDs. Saves bandwidth.
-- Stay under batch limits: `bulk_classify` accepts max 100 per call. Split larger batches.
+- Use `compact=true` on `search_conversations` when you only need IDs. Saves bandwidth.
+- Stay under batch limits: `bulk_update` accepts max 100 per call. Split larger batches.
 - Always include `ai_notes` on every update. Explain the archive reason or re-engagement rationale.
 - Never send messages. Save drafts via `draft_message`. The user reviews and sends.
-- Paginate every `search` and `export` call. If `has_more` is true, get the next page.
+- Paginate every `search_conversations` and `export_conversations` call. If `has_more` is true, get the next page.
 - For re-engagement drafts, reference something specific from the conversation. Never "just checking in."
-- If `pipeline_stats` shows zero stale/ghosted, skip to Phase 3 (unclassified) or tell the user the pipeline is clean.
+- If `get_stats` shows zero stale/ghosted, skip to Phase 3 (unclassified) or tell the user the pipeline is clean.
 - If ICP is not defined, be conservative on borderline archive decisions. Flag uncertain cases for the user.
-- `bulk_classify` supports stage, tags, summary, ai_notes, reminder, and archive. Draft messages must be saved individually via `update_conversation`.
+- `bulk_update` supports stage, tags, summary, ai_notes, reminder, and archive. Draft messages must be saved individually via `update_conversation`.
 - For the hybrid approach (Phase 3), let the server-side job run while you manually review edge cases. Don't wait idle.
 
 ## Related Skills

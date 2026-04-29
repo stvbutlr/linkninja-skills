@@ -18,6 +18,8 @@ metadata:
 
 Understand why deals are being lost, where in the pipeline they drop off, what patterns appear in the losses, and how lost deals differ from won deals. Feed insights back into context to prevent future losses.
 
+For each lost deal, frame the analysis using the playbook's **A–B Method**: at the moment of loss, what was their Point A (current state) and Point B (desired state) — and where did the gap between them break? Lost deals usually fail because A wasn't surfaced clearly, B wasn't tied to your offer, or the path between them felt risky. Patterns in those failure modes are the most valuable signal.
+
 ## Before Starting
 
 1. Run `get_context()` to load the user's sales context
@@ -25,8 +27,8 @@ Understand why deals are being lost, where in the pipeline they drop off, what p
 
 | Check | How | If Insufficient |
 |-------|-----|-----------------|
-| Lost deals count | `export(stage="lost", include_messages=false)` | Need at least 3 lost deals. Tell the user: "You need some lost deals to analyze patterns. This is actually good news — it may mean you're not losing deals yet." |
-| Won deals count | `export(stage="won", include_messages=false)` | Lost-only analysis still works. Note that comparison will be limited. |
+| Lost deals count | `export_conversations(stage="lost", include_messages=false)` | Need at least 3 lost deals. Tell the user: "You need some lost deals to analyze patterns. This is actually good news — it may mean you're not losing deals yet." |
+| Won deals count | `export_conversations(stage="won", include_messages=false)` | Lost-only analysis still works. Note that comparison will be limited. |
 | ICP defined | Check `additional_context` from `get_context()` | Analysis still works but ICP fit assessment will be skipped. Suggest **icp-definition**. |
 
 3. If fewer than 3 lost deals: stop and explain. Do not fabricate patterns from 1-2 data points.
@@ -39,13 +41,13 @@ Understand why deals are being lost, where in the pipeline they drop off, what p
 Pull all lost conversations with full message transcripts:
 
 ```
-export(stage="lost", include_messages=true)
+export_conversations(stage="lost", include_messages=true)
 ```
 
 If `has_more` is true, fetch the next page immediately:
 
 ```
-export(stage="lost", include_messages=true, page=2)
+export_conversations(stage="lost", include_messages=true, page=2)
 ```
 
 Continue until all pages are loaded. Do not skip pages.
@@ -55,7 +57,7 @@ Continue until all pages are loaded. Do not skip pages.
 Archived conversations may represent additional losses under different labels:
 
 ```
-search(include_archived=true, compact=true)
+search_conversations(include_archived=true, compact=true)
 ```
 
 Look for archived conversations with reasons like `not_a_fit`, `ghosted`, `competitor`. These are functional losses even if not staged as "lost." Include them in the analysis if relevant.
@@ -139,7 +141,7 @@ update_conversation(
 ### Step 6: Export Won Deals for Comparison
 
 ```
-export(stage="won", include_messages=true)
+export_conversations(stage="won", include_messages=true)
 ```
 
 Paginate if `has_more` is true.
@@ -170,7 +172,7 @@ Compare the two populations across these dimensions:
 ### Step 8: Pipeline Context
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Place the loss analysis in context:
@@ -264,7 +266,7 @@ Key difference: [the single most telling gap between won and lost]
 
 ### Optional: Export to CSV
 ```
-export(stage="lost", format="csv", include_messages=true)
+export_conversations(stage="lost", format="csv", include_messages=true)
 ```
 ```
 
@@ -275,7 +277,7 @@ export(stage="lost", format="csv", include_messages=true)
 - Present findings as tables and specific numbers, not vague observations.
 - Quote actual message excerpts to illustrate patterns — these make the analysis concrete.
 - This skill is analysis only. Do not change stages or draft messages. The only write operation is optionally updating context via `update_context()` with user approval.
-- `bulk_classify` does NOT support `draft_message`. Do not attempt batch drafts through bulk_classify.
+- `bulk_update` does NOT support `draft_message`. Do not attempt batch drafts through bulk_classify.
 - Timing losses are not true losses. Flag them separately and recommend archiving with reminders.
 - Handle `has_more` pagination on every export. Missing pages means incomplete analysis.
 - If the user has 20+ lost deals, still analyze all of them. Lost deal patterns need the full picture — unlike won deals, you cannot assume recent losses represent the same patterns as older ones.

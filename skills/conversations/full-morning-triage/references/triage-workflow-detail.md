@@ -13,14 +13,14 @@ Check that `additional_context` (ICP) is populated. If empty, stop and run **icp
 ## Step 2: Pipeline Snapshot
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Record these numbers for the report:
 
 | Metric | Where to Find It |
 |--------|-----------------|
-| Stage counts | `stages` array — count per stage |
+| Stage counts | `list_stages` array — count per stage |
 | My-turn counts | `my_turn` per stage — these are urgent |
 | Freshness breakdown | `fresh`, `cold`, `you_ghosted`, `they_ghosted`, `stale` counts |
 | Total active | Sum of all non-archived conversations |
@@ -28,15 +28,15 @@ Record these numbers for the report:
 ## Step 3: Find Hot Leads (Qualified+, Fresh, My Turn)
 
 ```
-search(my_turn=true, freshness="fresh", stage="qualified")
+search_conversations(my_turn=true, freshness="fresh", stage="qualified")
 ```
 
 ```
-search(my_turn=true, freshness="fresh", stage="discovery")
+search_conversations(my_turn=true, freshness="fresh", stage="discovery")
 ```
 
 ```
-search(my_turn=true, freshness="fresh", stage="closing")
+search_conversations(my_turn=true, freshness="fresh", stage="closing")
 ```
 
 These are the highest-priority conversations. People with confirmed buying signals waiting for a reply.
@@ -44,7 +44,7 @@ These are the highest-priority conversations. People with confirmed buying signa
 ## Step 4: Find Remaining Fresh Replies
 
 ```
-search(my_turn=true, freshness="fresh")
+search_conversations(my_turn=true, freshness="fresh")
 ```
 
 This catches chatting and opening stage conversations that also have fresh replies. Deduplicate against Step 3 results.
@@ -54,7 +54,7 @@ This catches chatting and opening stage conversations that also have fresh repli
 For each conversation from Steps 3-4:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Read the full thread. Determine the DM situation:
@@ -67,7 +67,7 @@ Read the full thread. Determine the DM situation:
 | chatting | They just replied | Acknowledge, ask a question, don't pitch |
 | opening | First reply received | Celebrate internally, build rapport |
 
-Draft each message following dm-principles:
+Draft each message following the playbook (`references/sell-by-chat-methodology.md`):
 - One thing per message
 - Match their energy and vocabulary
 - Reference something specific from the thread
@@ -76,7 +76,7 @@ Draft each message following dm-principles:
 
 ## Step 6: Save Hot Lead Drafts (Individual)
 
-Draft messages must be saved one at a time via `update_conversation` (`bulk_classify` does not support `draft_message`):
+Draft messages must be saved one at a time via `update_conversation` (`bulk_update` does not support `draft_message`):
 
 ```
 update_conversation(
@@ -103,13 +103,13 @@ Record: **N hot lead drafts saved.**
 ## Step 7: Find and Process Cold Conversations
 
 ```
-search(freshness="cold", my_turn=true, compact=true)
+search_conversations(freshness="cold", my_turn=true, compact=true)
 ```
 
 For each:
 
 ```
-fetch(id="<id>")
+get_conversation(id="<id>")
 ```
 
 Read the thread. Draft a value-add follow-up. Options by conversation context:
@@ -145,7 +145,7 @@ update_conversation(
 )
 
 // Batch reminders
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "conv_jkl", reminder: "in 3 days"},
   {id: "conv_mno", reminder: "in 3 days"}
 ])
@@ -158,26 +158,26 @@ Record: **M cold rescue drafts saved, M reminders set.**
 **High-value ghosts (qualified/discovery):**
 
 ```
-search(freshness="they_ghosted", stage="qualified", compact=true)
+search_conversations(freshness="they_ghosted", stage="qualified", compact=true)
 ```
 
 ```
-search(freshness="they_ghosted", stage="discovery", compact=true)
+search_conversations(freshness="they_ghosted", stage="discovery", compact=true)
 ```
 
 **Chatting-stage ghosts:**
 
 ```
-search(freshness="they_ghosted", stage="chatting", compact=true)
+search_conversations(freshness="they_ghosted", stage="chatting", compact=true)
 ```
 
 **Opening-stage ghosts (for archiving):**
 
 ```
-search(freshness="they_ghosted", stage="opening", compact=true)
+search_conversations(freshness="they_ghosted", stage="opening", compact=true)
 ```
 
-For each, `fetch(id)` and apply the decision table:
+For each, `get_conversation(id)` and apply the decision table:
 
 | Stage | Days Silent | Follow-up Count | Action |
 |-------|------------|-----------------|--------|
@@ -210,7 +210,7 @@ update_conversation(
 )
 
 // Batch reminders and archives
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "conv_pqr", reminder: "in 7 days"},
   {id: "conv_stu", reminder: "in 30 days"},
   {id: "conv_vwx", archive: {archived: true, reason: "ghosted"}, ai_notes: "No reply after 3 follow-ups over 4 weeks. Opening stage. Archiving."},
@@ -223,13 +223,13 @@ Record: **P re-engagement drafts, Q archives.**
 ## Step 11: Classify New Conversations
 
 ```
-export(unclassified_only=true, include_messages=true)
+export_conversations(unclassified_only=true, include_messages=true)
 ```
 
 If `has_more` is true:
 
 ```
-export(unclassified_only=true, include_messages=true, page=2)
+export_conversations(unclassified_only=true, include_messages=true, page=2)
 ```
 
 For each unclassified conversation, read the thread and classify:
@@ -275,7 +275,7 @@ At any point: Are they clearly not your ICP, selling to you, or spam?
 ## Step 12: Save Classifications (Batch)
 
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {
     id: "conv_class1",
     stage: "chatting",
@@ -292,7 +292,6 @@ bulk_classify(updates=[
   },
   {
     id: "conv_class3",
-    stage: "not_a_fit",
     archive: {archived: true, reason: "not_a_fit"},
     ai_notes: "Selling SEO services. Not a prospect."
   }
@@ -331,9 +330,9 @@ Next step: Open your LinkNinja dashboard, review the AI drafts, and hit send.
 
 | Situation | How to Handle |
 |-----------|--------------|
-| Pipeline has 50+ unclassified conversations | Use `start_batch_classify()` instead of manual classification. Check with `job_status()`. |
-| More than 100 updates in a single phase | Split into multiple `bulk_classify` calls (max 100 each) |
-| `search` returns `has_more: true` | Fetch the next page immediately before proceeding |
+| Pipeline has 50+ unclassified conversations | Use `start_batch_classify()` instead of manual classification. Check with `get_job_status()`. |
+| More than 100 updates in a single phase | Split into multiple `bulk_update` calls (max 100 each) |
+| `search_conversations` returns `has_more: true` | Fetch the next page immediately before proceeding |
 | Voice profile is empty | Draft in neutral professional tone. Note in report: "Consider setting up your voice profile for better draft quality." |
 | Very small pipeline (< 10 conversations) | Skip batch operations. Process individually. Suggest outreach to grow the pipeline. |
 | User has `you_ghosted` conversations | Flag prominently in report: "You owe [N] people a reply. These are decaying fast." |

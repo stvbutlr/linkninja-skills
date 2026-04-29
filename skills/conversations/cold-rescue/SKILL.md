@@ -29,7 +29,7 @@ Systematically work through cold and ghosted conversations, decide which are wor
 | `voice_profile` | Recommended | Re-engagement messages need to sound like the user. Point to **voice-profile-setup**. |
 | `positioning_context` | Helpful | Knowing the offer helps craft value-add re-engagement messages. |
 
-3. Run `pipeline_stats()` to see the scope of the problem: how many cold, ghosted, and stale conversations exist.
+3. Run `get_stats()` to see the scope of the problem: how many cold, ghosted, and stale conversations exist.
 
 ## Workflow
 
@@ -39,27 +39,27 @@ Pull conversations in different cold states:
 
 **Cold conversations where it's your turn:**
 ```
-search(freshness="cold", my_turn=true, limit=50)
+search_conversations(freshness="cold", my_turn=true, limit=50)
 ```
 
 **Conversations where they ghosted after qualification:**
 ```
-search(freshness="they_ghosted", stage="qualified", limit=50)
+search_conversations(freshness="they_ghosted", stage="qualified", limit=50)
 ```
 
 **Stale conversations (oldest, least active):**
 ```
-search(freshness="stale", limit=50)
+search_conversations(freshness="stale", limit=50)
 ```
 
 **Cold conversations where you ghosted them:**
 ```
-search(freshness="you_ghosted", limit=50)
+search_conversations(freshness="you_ghosted", limit=50)
 ```
 
 Handle `has_more` -- if there are more results, paginate:
 ```
-search(freshness="cold", my_turn=true, limit=50, page=2)
+search_conversations(freshness="cold", my_turn=true, limit=50, page=2)
 ```
 
 ### Step 2: Triage Each Conversation
@@ -67,7 +67,7 @@ search(freshness="cold", my_turn=true, limit=50, page=2)
 For each conversation, fetch the full transcript:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Apply the decision rules:
@@ -118,7 +118,7 @@ update_conversation(id="abc", draft_message="Hey Sarah -- was thinking about you
 update_conversation(id="def", draft_message="Hey James -- something reminded me of our scaling conversation...", ai_notes="Cold rescue. Qualified but ghosted 2 weeks ago. Was discussing SDR team scaling. High-priority re-engage.")
 
 // Batch reminders
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "abc", reminder: "7 days from now"},
   {id: "def", reminder: "7 days from now"}
 ])
@@ -126,7 +126,7 @@ bulk_classify(updates=[
 
 **Archive batch:**
 ```
-bulk_classify(updates=[
+bulk_update(updates=[
   {
     id: "ghi",
     archive: {archived: true, reason: "ghosted"},
@@ -146,7 +146,7 @@ bulk_classify(updates=[
 ])
 ```
 
-Max 100 per `bulk_classify` call.
+Max 100 per `bulk_update` call.
 
 ### Step 5: Set Follow-Up Cadence for Re-engaged
 
@@ -169,19 +169,19 @@ A concentrated push to revive archived conversations that may have become releva
 Search archived conversations. Filter results by archive reason — `later` and `lost` are the best candidates for revival:
 
 ```
-search(include_archived=true, limit=50)
+search_conversations(include_archived=true, limit=50)
 ```
 
 From the results, focus on conversations archived with reason `later` (timing-deferred prospects) and conversations in `lost` stage:
 
 ```
-search(include_archived=true, stage="lost", limit=50)
+search_conversations(include_archived=true, stage="lost", limit=50)
 ```
 
 ### Step 2: Fetch and evaluate each
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 **Re-engage if:**
@@ -202,7 +202,7 @@ For conversations worth reviving, unarchive in batch, then save drafts individua
 
 ```
 // Batch unarchive + stage updates
-bulk_classify(updates=[
+bulk_update(updates=[
   {id: "abc", archive: {archived: false}, stage: "chatting", reminder: "7 days", ai_notes: "Re-engagement sprint. Originally archived as 'later' on [date]. Reason: [reason]. Re-engaging because [justification]."},
   ...
 ])
@@ -217,7 +217,7 @@ update_conversation(id="abc", draft_message="Hey [name] -- it's been a while. [S
 After the sprint:
 
 ```
-pipeline_stats()
+get_stats()
 ```
 
 Count: how many re-engaged, how many replied, how many re-archived. Feed patterns back to future rescue efforts.
@@ -249,14 +249,15 @@ For each cold conversation, ask in order:
 
 ## Guidelines
 
-- Always `fetch` the full conversation before deciding. Summaries miss nuance.
+- Always `get_conversation` the full conversation before deciding. Summaries miss nuance.
 - Never guilt-trip about silence. "I noticed you haven't replied" kills trust.
+- Before drafting re-engagement messages, call `get_draft_prompt(id, reply_intent="nurture")` first — it returns server-rendered voice-enforced context tuned for nurture/re-engagement. Save via `update_conversation`.
 - Never send messages directly. Save as drafts via `draft_message`.
 - Always include `ai_notes` explaining the rescue decision and reasoning.
 - Reference something specific from the previous conversation. Generic re-opens get generic silence.
-- Follow the 2-touch rule for re-engagement: if re-engage attempt + one follow-up both fail, archive.
+- Follow the playbook cadence: Day 1 / 3 / 7 / extending intervals. Each touch must add new value (insight, observation, question — never "just checking in"). 80% of sales close after the 5th touchpoint, so don't archive prematurely. Archive only after the cadence is exhausted with no engagement.
 - When you ghosted them, own it. A brief "slipped through the cracks" builds more trust than pretending it didn't happen.
-- Batch processing is the key to throughput. Triage first, save drafts individually via `update_conversation`, then batch non-draft updates (reminders, archives, tags) via `bulk_classify`.
+- Batch processing is the key to throughput. Triage first, save drafts individually via `update_conversation`, then batch non-draft updates (reminders, archives, tags) via `bulk_update`.
 - Do not re-engage more than 20-30 conversations at once. The user needs to handle replies.
 
 ## Related Skills

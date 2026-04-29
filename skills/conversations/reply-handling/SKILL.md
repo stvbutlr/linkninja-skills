@@ -24,7 +24,7 @@ Handle replies and advance conversations from first response through qualificati
 2. Fetch the conversation:
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 3. Check context completeness:
@@ -39,7 +39,7 @@ fetch(id="<conversation_id>")
 4. If the user says "help with my replies" without specifying, find what needs attention:
 
 ```
-search(my_turn=true, freshness="fresh", compact=true)
+search_conversations(my_turn=true, freshness="fresh", compact=true)
 ```
 
 ## Using Your Context
@@ -130,14 +130,18 @@ update_conversation(
 
 **Goal:** Find the gap between where they are now and where they want to be.
 
-### Question Sequence
+### A–B Method + Question Sequence
+
+The playbook anchors qualifying on the **A–B Method**: find Point A (current state, current pain) and Point B (desired state, what they want). The gap between them is your opportunity. Every question surfaces A or B more clearly — never to set up a pitch.
+
+The four-stage question sequence walks the A–B gap:
 
 | Phase | Example Question | Purpose |
 |-------|-----------------|---------|
-| **Easy open** | "What's been your biggest focus this quarter?" | Let them share freely |
-| **Go deeper** | "When you mentioned X -- is that more of a Y issue or a Z issue?" | Specifics about their challenge |
-| **Surface the gap** | "So right now it's [current state]. Where would you need that to be?" | Help them feel the distance |
-| **Check commitment** | "Is fixing this something you're actively working on?" | Test readiness to act |
+| **Easy open** | "What's been your biggest focus this quarter?" | Let them share freely (no commitment) |
+| **Go deeper** | "When you mentioned X -- is that more of a Y issue or a Z issue?" | Surface specifics about Point A |
+| **Surface the gap** | "So right now it's [current state]. Where would you need that to be?" | Make them feel the A→B distance |
+| **Check commitment** | "Is fixing this something you're actively working on?" | Micro-commitment test — readiness to act |
 
 ### Pain Depth Check
 
@@ -211,12 +215,13 @@ update_conversation(
 
 ## Guidelines
 
+- Before drafting, call `get_draft_prompt(id, reply_intent="qualify")` first — it returns server-rendered voice-enforced context tuned for qualifying. Follow the returned prompt exactly, then save via `update_conversation`.
 - Always save drafts via `draft_message`. Never pretend to send messages.
 - Always include `ai_notes` explaining: what signal you responded to, trust level, qualification status, expected next step.
 - One draft per conversation. A new draft overwrites the previous one.
 - Match the user's voice profile. If none exists, match the prospect's energy level.
 - Keep replies to 2-3 sentences. One question per message.
-- After 2 follow-ups with no reply, hand off to **cold-rescue**.
+- If a conversation goes cold mid-qualifying, hand off to **cold-rescue** for the playbook cadence (Day 1 / 3 / 7 / extending) — 80% of sales close after the 5th touchpoint.
 - See `references/conversation-progression.md` for the full trust progression model and pain depth assessment.
 
 ## Related Skills

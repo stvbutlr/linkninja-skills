@@ -15,15 +15,26 @@ Skills are organized into 4 categories under `skills/`: `setup/`, `connections/`
 - Verbose content in `references/` subdirectory
 - `name` field: lowercase a-z, numbers, hyphens, 1-64 chars, must match directory name
 
+## Methodology
+
+Every DM skill embeds the [Sell By Chat Playbook](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) by Steve Butler.
+
+> **Stop selling. Start serving.** Relationship-first, transaction-second.
+
+Skill prompts use these named frameworks directly: Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Question Sequence, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1 / 3 / 7 / extending follow-up cadence (80% of sales close after the 5th touchpoint), Ten Core Voice Rules. Full doctrine in `references/sell-by-chat-methodology.md`.
+
 ## Shared References
 
 `references/` at repo root contains cross-cutting documentation:
 
-- `tools-registry.md` — All 17 LinkNinja MCP tools with full parameter docs
-- `pipeline-stages.md` — 8 pipeline stages with signals, trust levels, criteria
+- `sell-by-chat-methodology.md` — The Sell By Chat playbook frameworks every DM skill embeds
+- `tools-registry.md` — All 30 LinkNinja MCP tools with full parameter docs
+- `pipeline-stages.md` — 7 pipeline stages with signals, trust levels, criteria
 - `signal-mapping.md` — Signal-to-stage and signal-to-tag classification tables
-- `dm-principles.md` — Universal DM writing rules
 - `voice-profile-template.md` — 12-dimension voice analysis template
+- `conversation-intelligence.md` — `warmth_level`, `conversation_health`, `sentiment`, signal arrays
+- `template-modes.md` — `locked` / `guided` / `flexible` draft modes; placeholders; advancement rules
+- `enrichment-sections.md` — Sales Nav enrichment sections, quota, re-enrich semantics
 
 Skills should reference these rather than duplicating the content.
 
@@ -48,10 +59,13 @@ Users can configure context two ways:
 
 - **Draft-only.** Never pretend to send messages. Always save as drafts via `draft_message`.
 - **Always explain reasoning.** Include `ai_notes` with every draft and classification.
-- **Batch-first.** Use `bulk_classify` for multiple updates (stage, tags, summary, ai_notes, reminder, archive). Note: `bulk_classify` does NOT support `draft_message` — use `update_conversation` individually for drafts.
-- **Respect limits.** `bulk_classify` max 100 per call. `start_batch_classify` max 500 per job.
-- **Handle pagination.** If `has_more` is true on `search` or `export`, fetch the next page.
-- **Use compact mode.** Pass `compact=true` on `search` when you only need IDs.
+- **Single drafts**: call `get_draft_prompt(id)` first, then `update_conversation(id, draft_message, ai_notes)`. Follow the returned prompt exactly.
+- **Batch drafts**: use `start_batch_draft` (the agent-driven flow) — `start_batch_draft → continue_active_job → submit_job_results(claim_next=true) loop → get_job_results`. Don't loop `update_conversation` for many drafts.
+- **Bulk updates**: `bulk_update` filter mode applies a uniform action to all matches in one call (don't paginate `search_conversations` first). `bulk_update` updates mode handles per-conversation actions including `draft_message`.
+- **Respect limits.** `start_batch_classify` max 500 per job. `start_batch_draft` max 1000 per job. `get_enrichment` max 100 ids per call.
+- **Handle pagination.** If `has_more` is true on `search_conversations`, `export_conversations`, or `list_connections`, fetch the next page.
+- **Use compact mode.** Pass `compact=true` on `search_conversations` when you only need IDs.
+- **Don't surface protocol mechanics** (job IDs, chunk tokens, lease internals) in user-facing reports. Describe progress in user terms.
 
 ## Cross-Referencing
 

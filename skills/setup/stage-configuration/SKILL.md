@@ -20,7 +20,7 @@ Customize LinkNinja's 8 pipeline stages so the AI classifier matches the user's 
 ## Before Starting
 
 1. Run `get_context()` to load the user's current sales context
-2. Run `stages()` to see current stage definitions with any existing customization
+2. Run `list_stages()` to see current stage definitions with any existing customization
 3. Check context:
 
 | Field | Status | Action |
@@ -126,17 +126,17 @@ start_batch_classify(unclassified_only=false, limit=20)
 Check progress:
 
 ```
-job_status(job_id="<id>")
+get_job_status(job_id="<id>")
 ```
 
 Then review a few results:
 
 ```
-search(limit=10)
+search_conversations(limit=10)
 ```
 
 ```
-fetch(id="<conversation_id>")
+get_conversation(id="<conversation_id>")
 ```
 
 Ask the user: "Here's how conversations are being classified with the new criteria. Does [conversation X] belong in [stage Y]?"
@@ -231,7 +231,7 @@ update_context(stages=[
 
 ## Guidelines
 
-- Always review current stages before making changes. Run `stages()` first.
+- Always review current stages before making changes. Run `list_stages()` first.
 - Make one round of changes, then test. Do not change all 8 stages at once without verifying.
 - The `ai_context` field is the most powerful lever -- it gives the classifier nuanced instructions.
 - Entrance/exit criteria should be observable signals, not assumptions about intent.

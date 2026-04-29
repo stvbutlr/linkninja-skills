@@ -1,18 +1,31 @@
 # LinkNinja MCP Tools Registry
 
-All 17 tools available through the LinkNinja MCP. Each tool is called by name with the parameters listed below.
+All 30 tools available through the LinkNinja MCP (server v3.5+). Each tool is called by name with the parameters listed below.
 
-## Context & Configuration
+Categories:
+
+- [Context & Setup](#context--setup) — 7 tools
+- [Search & Read](#search--read) — 7 tools
+- [Conversation Updates](#conversation-updates) — 3 tools
+- [Templates](#templates) — 4 tools
+- [Enrichment](#enrichment) — 1 tool
+- [Async Jobs](#async-jobs) — 8 tools
+
+IDs use two prefixes: `conv_xxx` for conversations (from `search_conversations`) and `conn_xxx` for connections (from `list_connections` / `scan_connections`). Most write tools accept either.
+
+---
+
+## Context & Setup
 
 ### `get_context`
 
-Load the user's full sales context. Always call this first.
+Load the user's full sales context. **Always call this first.**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| *(none)* | — | — | Returns full context |
+| *(none)* | — | — | — |
 
-**Returns:** `additional_context` (ICP), `positioning_context`, `voice_profile`, `personal_story`, `summary_instructions`, stage definitions with criteria, tag definitions, freshness thresholds (`ghost_after_days`, `cold_after_days`), pipeline stats snapshot.
+**Returns:** `additional_context` (ICP), `positioning_context`, `voice_profile`, `personal_story`, `summary_instructions`, stage definitions with criteria, tag definitions, freshness thresholds (`ghost_after_days`, `cold_after_days`), pipeline stats snapshot, classification prompt, AI execution rules (`ai_execution.job_protocols`).
 
 ### `update_context`
 
@@ -27,80 +40,100 @@ Update the user's sales context. Merge update — only specified fields change.
 | `summary_instructions` | string | No | How AI summarizes conversations |
 | `stages` | array | No | Stage criteria updates (merge by `key`) |
 
-Each stage in `stages` array: `{key, entrance_criteria, exit_criteria, ai_context}`
+Each stage in `stages` array: `{key, entrance_criteria, exit_criteria, ai_context}`.
 
-### `stages`
+### `list_stages`
 
 Get current stage definitions.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| *(none)* | — | — | Returns all stage definitions |
+| *(none)* | — | — | — |
 
-**Returns:** Array of stages with `stage_key`, `display_name`, `description`, `entrance_criteria`, `exit_criteria`, `ai_context`, `color`, `sort_order`, `is_active`.
+**Returns:** Array of stages with `key`, `name`, `description`, `entrance_criteria`, `exit_criteria`, `ai_context`, `color`. The 7 default stages are `opening`, `chatting`, `qualified`, `discovery`, `closing`, `won`, `lost`.
 
-### `tags`
+> Tip: `get_context` already includes stages — only call this for the standalone definition.
 
-Get current tag definitions.
+### `list_tags`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| *(none)* | — | — | Returns all tag definitions |
-
-### `prompt`
-
-Get the classification prompt currently in use.
+Get current tag definitions and tags currently in use.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| *(none)* | — | — | Returns rendered classification prompt |
+| *(none)* | — | — | — |
+
+**Returns:** `tag_definitions` (all defined tags) and `tags_in_use` (tags assigned to ≥1 conversation/connection).
+
+> Tip: included in `get_context`.
+
+### `get_prompt`
+
+Get the AI classification prompt rendered from current ICP, positioning, stage criteria, and tag definitions.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| *(none)* | — | — | — |
+
+### `get_draft_prompt`
+
+Get a server-rendered draft prompt for a single conversation. **Call this before drafting individually.** Includes voice-profile enforcement, conversation intelligence signals, and all relevant context.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | `conv_xxx` or `conn_xxx` |
+| `instructions` | string | No | Optional additional instructions for this draft |
+| `reply_intent` | enum | No | `nurture` / `qualify` / `advance` |
+
+For batch drafting, the equivalent prompt is embedded in each `get_job_chunk` item — don't loop `get_draft_prompt`.
+
+### `ninja_setup`
+
+Guided onboarding flow for first-time users. Walks through ICP, positioning, voice profile, and stage configuration.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| *(none)* | — | — | — |
 
 ---
 
-## Pipeline & Search
+## Search & Read
 
-### `pipeline_stats`
+### `search_conversations`
 
-Pipeline overview with counts by stage, turn status, and freshness.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| *(none)* | — | — | Returns pipeline snapshot |
-
-**Returns:** Conversation counts per stage, `my_turn` vs `their_turn` per stage, freshness breakdown (fresh, cold, you_ghosted, they_ghosted, stale).
-
-### `search`
-
-Search conversations with filters.
+Search conversations with rich filters. Returns metadata only (no transcripts) — paginated.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `query` | string | No | Text search across names, summaries |
 | `stage` | string | No | Filter by stage key |
+| `tags` | array | No | Filter by tag keys |
 | `my_turn` | boolean | No | Filter by whose turn it is |
 | `freshness` | string | No | `fresh`, `cold`, `you_ghosted`, `they_ghosted`, `stale` |
 | `since` | string | No | ISO date — conversations active since |
-| `tags` | array | No | Filter by tag keys |
+| `before` | string | No | ISO date — conversations active before |
+| `company` | string | No | Filter by current company (requires enrichment) |
+| `location` | string | No | Filter by location (requires enrichment) |
+| `title` | string | No | Filter by current job title (requires enrichment) |
 | `compact` | boolean | No | Return IDs only (use for batch prep) |
 | `include_archived` | boolean | No | Include archived conversations |
-| `limit` | integer | No | Max results (default 50, max 200) |
+| `limit` | integer | No | Max results (default 50) |
 | `page` | integer | No | Page number for pagination |
 
-**Returns:** Array of conversations. If `has_more` is true, fetch next page.
+**Returns:** Array of conversations. If `has_more` is `true`, fetch next page.
 
-### `fetch`
+### `get_conversation`
 
-Get full conversation with message transcript.
+Get a single conversation with full message transcript and conversation intelligence fields.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | Conversation ID (conv_* prefix) |
+| `id` | string | Yes | `conv_xxx` or `conn_xxx` |
 
-**Returns:** Full conversation with all messages, stage, tags, summary, ai_notes, draft_message, reminder, archive status, last_message_at, classification details.
+**Returns:** Full conversation including messages, stage, tags, summary, ai_notes, draft_message, reminder, archive status, last_message_at, plus intelligence fields (`warmth_level`, `warmth_score`, `sentiment`, `conversation_health`, `engagement_signals`, `interest_signals`, `objection_signals`, `momentum_signals`).
 
-### `export`
+### `export_conversations`
 
-Bulk export conversations with optional transcripts. Paginated.
+Bulk export conversations with optional transcripts. Paginated, supports CSV.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -108,14 +141,68 @@ Bulk export conversations with optional transcripts. Paginated.
 | `tags` | array | No | Filter by tags |
 | `since` | string | No | ISO date |
 | `before` | string | No | ISO date |
-| `include_messages` | boolean | No | Include full message transcripts |
+| `my_turn` | boolean | No | Filter by turn |
+| `freshness` | string | No | Filter by freshness state |
+| `include_messages` | boolean | No | Include full transcripts (default true) |
 | `unclassified_only` | boolean | No | Only unclassified conversations |
-| `include_archived` | boolean | No | Include archived |
-| `format` | string | No | `json` (default) or `csv` (returns download URL) |
-| `limit` | integer | No | Max per page (default 200, max 500) |
+| `format` | string | No | `json` (default) or `csv` (returns download URL valid 1 hour) |
+| `limit` | integer | No | Max per page (default 200) |
 | `page` | integer | No | Page number |
 
-**Returns:** Array of conversations. If `has_more` is true, fetch next page. CSV format returns a download URL valid for 1 hour.
+### `get_stats`
+
+Pipeline overview with counts by stage, turn status, and freshness.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| *(none)* | — | — | — |
+
+**Returns:** Conversation counts per stage, `my_turn` vs `their_turn` per stage, freshness breakdown, opening_breakdown.
+
+### `list_connections`
+
+List LinkedIn connections with optional filters. Paginated.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search by name or headline |
+| `company` | string | No | Filter by company (requires enrichment) |
+| `location` | string | No | Filter by location (requires enrichment) |
+| `title` | string | No | Filter by job title (requires enrichment) |
+| `tags` | array | No | Filter by tags |
+| `message_status` | enum | No | `all` / `no_messages` / `has_messages` |
+| `detailed` | boolean | No | Include LinkedIn URLs |
+| `limit` | integer | No | Max results (default 200) |
+| `page` | integer | No | Page number |
+
+### `scan_connections`
+
+Server-side ICP scan across the connection graph (up to 30k connections). Returns up to 500 matches.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `headline_keywords` | array | No | Keywords to match in headline (OR logic) |
+| `headline_exclude` | array | No | Keywords to exclude from headline |
+| `company` | string | No | Filter by current company (requires enrichment) |
+| `location` | string | No | Filter by location (requires enrichment) |
+| `title` | string | No | Filter by current job title (requires enrichment) |
+| `tags` | array | No | Filter by existing tags |
+| `connected_after` | string | No | ISO date — only connections added after |
+| `has_conversation` | boolean | No | `true` = only messaged, `false` = only un-messaged |
+| `limit` | integer | No | Max results (max 500) |
+
+### `get_enrichment`
+
+Read enriched profile data for one or many contacts (Sales Navigator). Batch — accepts 1–100 ids per call. Optional section filtering.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `ids` | array | Yes | `conv_xxx` or `conn_xxx`, 1–100 |
+| `sections` | array | No | Whitelist sections to return |
+
+**Sections:** `identity`, `experience`, `education`, `skills`, `certifications`, `projects`, `languages`, `recent_posts`, `volunteer`, `interests`, `groups`, `causes`, `contact`, `network`, `flags`, `throttled_sections`. Omit `sections` for full payload.
+
+**Per-contact errors don't fail the batch.** Each result entry has `enriched=true/false` with reason.
 
 ---
 
@@ -123,129 +210,280 @@ Bulk export conversations with optional transcripts. Paginated.
 
 ### `update_conversation`
 
-Update a single conversation. All parameters optional except `id`.
+Update a single conversation or connection. Stage, tags, notes, reminder, draft, archive.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `id` | string | Yes | Conversation ID |
-| `stage` | string | No | Pipeline stage key |
-| `tags` | array | No | Tag keys to set |
-| `summary` | string | No | Conversation summary |
-| `ai_notes` | string | No | AI reasoning notes (always include) |
-| `draft_message` | string | No | Draft DM for user to review and send |
-| `reminder` | string | No | ISO date, natural language, or `"clear"` |
+| `id` | string | Yes | `conv_xxx` or `conn_xxx` |
+| `stage` | string | No | Pipeline stage key (one of the 7 stages) |
+| `tags` | array | No | Set tags (replaces ALL existing) |
+| `add_tags` | array | No | Tags to add (merge) |
+| `remove_tags` | array | No | Tags to remove |
+| `notes` | string | No | User notes |
+| `ai_notes` | string | No | AI analysis notes — always include |
+| `summary` | string | No | AI summary |
+| `draft_message` | string | No | Saved draft for user review |
+| `reminder` | string | No | ISO datetime, date, natural language, or `"clear"` |
 | `archive` | object | No | `{archived: true/false, reason: "..."}` |
 
-Archive reasons: `not_a_fit`, `ghosted`, `later`, `client`, `competitor`, `networking`, `personal`.
+**Archive reasons:** `not_a_fit`, `ghosted`, `later`, `client`, `competitor`, `networking`, `personal`. **`not_a_fit` is an archive reason, NOT a stage.**
 
-### `bulk_classify`
+**Drafting:** Call `get_draft_prompt(id)` first and follow its instructions. Don't draft without it.
 
-Bulk update multiple conversations in one call. Max 100 per call. **Does NOT support `draft_message`** — use `update_conversation` for drafts.
+### `bulk_update`
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `updates` | array | Yes | Array of update objects |
+Bulk update conversations. Two modes:
 
-Each update object: `{id, stage, tags, notes, ai_notes, summary, reminder, archive}`. All fields optional except `id`.
-
-**Not supported in `bulk_classify`:** `draft_message`. To save AI drafts, use `update_conversation` for each conversation individually.
-
-### `classify` *(deprecated)*
-
-Use `update_conversation` instead. Legacy tool for single classification updates.
-
----
-
-## Connections
-
-### `connections`
-
-List LinkedIn connections with optional filters.
+- **Filter mode** — provide `filter` + an action; the server applies the action to ALL matches in one call.
+- **Updates mode** — provide `updates` array with per-conversation changes.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `query` | string | No | Search by name or headline |
-| `detailed` | boolean | No | Include LinkedIn URLs |
-| `message_status` | string | No | `has_messages`, `no_messages` |
-| `tag` | string | No | Filter by connection tag |
-| `limit` | integer | No | Max results |
+| `preview_only` | boolean | No | With filter: returns count + sample, no changes |
+| `filter` | object | No | Filter criteria (same shape as `search_conversations`) |
+| `add_tags` | array | No | (filter mode action) tags to add |
+| `remove_tags` | array | No | (filter mode action) tags to remove |
+| `stage` | string | No | (filter mode action) set stage |
+| `archive` | object | No | (filter mode action) archive/unarchive |
+| `reminder` | string | No | (filter mode action) set reminder |
+| `notes` | string | No | (filter mode action) set user notes |
+| `ai_notes` | string | No | (filter mode action) set AI notes |
+| `summary` | string | No | (filter mode action) set summary |
+| `updates` | array | No | (updates mode) per-conversation `{id, stage, tags, add_tags, remove_tags, notes, ai_notes, summary, reminder, archive, draft_message}` |
 
-### `scan_connections`
+**Filter mode does NOT support `draft_message`** — drafts vary per-conversation, use updates mode for those.
 
-Server-side headline keyword scan across all connections (up to 30k).
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `headline_keywords` | array | No | Include keywords (at least one must match) |
-| `headline_exclude` | array | No | Exclude keywords (none can match) |
-| `has_conversation` | boolean | No | Filter: has/hasn't been messaged |
-| `tags` | array | No | Filter by connection tags |
-| `connected_after` | string | No | ISO date — only recent connections |
-| `limit` | integer | No | Max results (default 200, max 500) |
+**Don't paginate `search_conversations` first if you intend to apply uniformly** — call `bulk_update` directly with the same filter (controller's own guidance). Use `preview_only: true` to verify scope before mutating.
 
 ### `tag_connections`
 
-Add or remove tags on connections.
+Add or remove tags on connections. Two modes (filter or `connection_ids`).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `connection_ids` | array | Yes | Array of connection IDs |
+| `preview_only` | boolean | No | With filter: returns count + sample |
+| `connection_ids` | array | No | Specific connection integer IDs |
+| `filter` | object | No | Filter criteria (`headline_keywords`, `headline_exclude`, `has_conversation`, `connected_after`, `list_tags`, `query`, `company`, `location`, `title`) |
 | `add_tags` | array | No | Tags to add |
 | `remove_tags` | array | No | Tags to remove |
 
 ---
 
-## Batch Jobs
+## Templates
 
-### `start_batch_classify`
+Templates are reusable message skeletons with `{{variable}}` placeholders. Available placeholders: `first_name`, `last_name`, `full_name`, `headline`. Six categories: `opening`, `follow_up`, `closing`, `nurture`, `objection`, `value_add`.
 
-Start server-side AI classification job. Max 500 conversations per job.
+Two distinct guidance fields:
+- `agent_guidance` — suggestive ("Open with a Pattern Interrupt"). AI can flex.
+- `guardrails` — hard constraints ("Must include the deck URL. No meeting asks."). Non-negotiable.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `unclassified_only` | boolean | No | Only process unclassified conversations |
-| `stage` | string | No | Only process conversations in this stage |
-| `limit` | integer | No | Max conversations to process (max 500) |
-| `instructions` | string | No | Custom instructions for the classifier |
+Optional advancement rules:
+- `advance_tag_to` — after send, advance contact to this tag
+- `advance_stage_to` — after send, advance conversation to this stage
 
-**Returns:** Job ID. Check progress with `job_status`.
+Templates are *captured at job creation* — deleting doesn't affect in-flight jobs.
 
-### `job_status`
-
-Check progress of a batch classification job.
+### `list_templates`
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `job_id` | string | Yes | Job ID from `start_batch_classify` |
+| `tag` | string | No | Filter by linked tag key |
+| `category` | enum | No | Filter by category |
+| `stage` | string | No | Filter by pipeline stage |
+| `query` | string | No | Search name or content |
 
-**Returns:** Status (`pending`, `processing`, `completed`, `failed`), progress percentage, results summary.
+### `create_template`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | Yes | Template name |
+| `content` | string | Yes | Message content with `{{variable}}` placeholders |
+| `category` | enum | Yes | `opening`/`follow_up`/`closing`/`nurture`/`objection`/`value_add` |
+| `stage` | string | No | Pipeline stage (null = all stages) |
+| `tag_key` | string | No | Link to a tag for outbound sequences |
+| `agent_guidance` | string | No | Personalisation guidance (suggestive) |
+| `guardrails` | string | No | Hard constraints (non-negotiable) |
+| `advance_tag_to` | string | No | Tag to advance to after send |
+| `advance_stage_to` | string | No | Stage to advance to after send |
+
+### `update_template`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Template ID |
+| `name`, `content`, `category`, `stage`, `tag_key`, `agent_guidance`, `guardrails`, `advance_tag_to`, `advance_stage_to` | various | No | Set `""` to clear a string field |
+
+### `delete_template`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer | Yes | Template ID. Cannot be undone. |
 
 ---
 
-## Tool Usage by Skill
+## Enrichment
 
-| Skill | Primary Tools | Secondary Tools |
-|-------|--------------|-----------------|
-| full-morning-triage | `pipeline_stats`, `search`, `fetch`, `bulk_classify` | `export`, `start_batch_classify` |
-| dm-writing | `fetch`, `get_context`, `search` | — |
-| cold-outreach | `get_context`, `scan_connections`, `search`, `update_conversation` | `fetch` |
-| reply-handling | `get_context`, `fetch`, `search`, `update_conversation` | — |
-| objection-handling | `get_context`, `fetch`, `update_conversation` | — |
-| call-booking | `get_context`, `fetch`, `update_conversation` | — |
-| batch-drafting | `search`, `fetch`, `bulk_classify` | `export` |
-| pipeline-health-check | `pipeline_stats`, `export`, `search` | `get_context` |
-| icp-definition | `get_context`, `update_context`, `scan_connections` | `start_batch_classify`, `job_status` |
-| voice-profile-setup | `export`, `fetch`, `get_context`, `update_context` | — |
-| stage-configuration | `stages`, `get_context`, `update_context` | — |
-| prospect-scan | `get_context`, `scan_connections`, `tag_connections` | `connections` |
-| campaign-launch | `scan_connections`, `tag_connections`, `bulk_classify` | `search`, `get_context`, `pipeline_stats` |
-| cold-rescue | `search`, `fetch`, `bulk_classify` | `update_conversation` |
-| won-deal-analysis | `export`, `pipeline_stats`, `get_context`, `update_context` | `search` |
-| pipeline-cleanup | `search`, `export`, `bulk_classify` | `fetch`, `start_batch_classify`, `job_status` |
-| smart-tagging | `search`, `fetch`, `bulk_classify`, `get_context`, `tags` | `pipeline_stats`, `scan_connections`, `tag_connections` |
-| conversation-summarizer | `export`, `bulk_classify`, `get_context` | `pipeline_stats`, `start_batch_classify`, `job_status` |
-| stage-review | `export`, `fetch`, `bulk_classify`, `get_context`, `stages` | `pipeline_stats`, `search`, `start_batch_classify`, `job_status` |
-| reminder-engine | `search`, `bulk_classify`, `get_context`, `pipeline_stats` | `fetch` |
-| reply-rate-analysis | `pipeline_stats`, `export`, `search`, `get_context` | — |
-| stage-conversion-analysis | `pipeline_stats`, `stages`, `get_context`, `export` | — |
-| lost-deal-analysis | `export`, `get_context`, `pipeline_stats` | `search`, `update_conversation`, `update_context` |
+### `enrich_connections`
+
+Async Sales Navigator enrichment job. Captures: company, title, location, summary, work experience, education, skills, certifications, projects, languages, contact info, recent posts (5), volunteer, interests, groups, causes, network counts, account flags.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `connection_ids` | array | No | Specific integer IDs |
+| `filter` | object | No | Filter criteria (`headline_keywords`, `headline_exclude`, `has_conversation`, `connected_after`, `list_tags`, `is_enriched`, `company`, `location`, `title`) |
+| `preview_only` | boolean | No | Return count + sample, no enrichment |
+| `force` | boolean | No | Re-enrich already-enriched (always pair with `re_enrich_after_days`) |
+| `re_enrich_after_days` | integer | No | Only re-enrich connections older than N days. Defaults 30 with `force=true`. |
+| `limit` | integer | No | Max to enrich (default 100, max 500, capped by daily quota) |
+
+**Async.** Returns `job_id` immediately, not the data. Read enriched data via `get_enrichment(ids: [...])` after the job completes.
+
+**Timing.** ~6 sec/connection. 100 connections = ~10 min, 200 = ~20 min. For >50, return `job_id` to the user with an ETA — don't block.
+
+**Daily quota.** 200 enrichments/day shared with lead-list enrichment. Check `quota` in every response.
+
+**Default skips already-enriched** — no quota cost on duplicates.
+
+---
+
+## Async Jobs
+
+LinkNinja's async jobs follow this pattern (`ai_execution.job_protocols` in `get_context` is authoritative):
+
+- `start_*` returns a `job_id` immediately. Do NOT consider the job done at this point.
+- Poll `get_get_job_status(job_id)` until status is ready (recommended 2-second interval).
+- For draft and classify jobs, loop `get_job_chunk → submit_job_results(claim_next=true)` until completion.
+- After the job completes, call `get_job_results` to fetch and share the saved payload.
+- "Do not tell the user the job is done until `submit_job_results` has succeeded."
+- "If the user says continue/resume/keep going, call `continue_active_job` first."
+- "Do not start a new batch job if an active one already exists."
+
+### `start_batch_classify`
+
+Start a server-side AI classification job. Up to 500 conversations per job.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `conversation_ids` | array | No | Specific IDs (mutually exclusive with `filter`) |
+| `filter` | object | No | Filter criteria |
+| `unclassified_only` | boolean | No | Only process unclassified |
+| `limit` | integer | No | Max conversations (max 500) |
+| `instructions` | string | No | Custom classifier instructions |
+| `eager_first_chunk` | boolean | No | Inline first chunk if job is small |
+
+### `start_batch_draft`
+
+Start a draft-reply job. **Does NOT write drafts by itself** — creates items for the AI to draft. Drafted in chunks via `get_job_chunk` / `submit_job_results`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `conversation_ids` | array | No | Specific IDs (mutually exclusive with `filter`) |
+| `filter` | object | No | Filter criteria |
+| `outputs` | array | No | What to generate. Default: `["draft_message"]` (only supported value) |
+| `template_id` | integer | No | Template to use as drafting skeleton |
+| `draft_mode` | enum | No | `locked` (server renders variables only, no AI) / `guided` (default — AI personalises within structure) / `flexible` (template as loose reference) |
+| `reply_intent` | enum | No | `nurture` / `qualify` / `advance` |
+| `instructions` | string | No | Additional drafting instructions |
+| `limit` | integer | No | Max conversations (default 500, max 1000) |
+| `eager_first_chunk` | boolean | No | Inline first chunk if job is small |
+
+**Constraints (verbatim from controller):**
+- "Drafts can only be `applied` or `failed` (skipped not allowed)."
+- "Every item must be drafted."
+- "`reply_mode` is required" — `reply` (direct response) or `follow_up` (re-engaging silence).
+
+### `get_job_status`
+
+Check progress of any background job.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | Yes | From `start_batch_*`, `bulk_update`, `tag_connections`, or `enrich_connections` |
+
+**Returns:** status, progress counts (`matched`, `processed`, `applied`, `failed`, `low_confidence`), `recommended_poll_seconds`, `next_tool` hint.
+
+### `get_job_results`
+
+View per-conversation results from a completed AI job. For draft jobs, returns saved drafts ready to share with the user. Paginated.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | Yes | The job ID |
+| `page` | integer | No | Page number (default 1) |
+| `limit` | integer | No | Per page (default 50, max 200) |
+| `status` | string | No | Filter by `applied`, `skipped`, `failed` |
+
+### `get_job_chunk`
+
+Claim the next batch of items from an in-progress job. Returns transcripts plus an instruction bundle. For draft jobs, each item includes a `draft_prompt` with saved AI context.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | Yes | Job ID |
+| `limit` | integer | No | Items per chunk (default 10, max 25) |
+
+**Returns:** `chunk_token` (required for submit), `shared_bundle` (voice_profile, personal_story, positioning_context, additional_context, stages, tags), `items[]`, `remaining_after_this_chunk`.
+
+> Return every claimed item via `submit_job_results` before claiming more.
+
+### `submit_job_results`
+
+Submit processed results for a claimed chunk. Every claimed item must be returned with a decision.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | Yes | Job ID |
+| `chunk_token` | string | Yes | From `get_job_chunk` response |
+| `items` | array | Yes | Per-item results |
+| `claim_next` | boolean | No | Claim next chunk inline (reduces round trips) |
+| `next_chunk_limit` | integer | No | Chunk size for auto-claimed next chunk |
+| `include_shared_bundle` | boolean | No | Include shared bundle in auto-claimed chunk (default true; required for classify) |
+
+Each item: `{id, status, ...}` where status is one of:
+
+- `applied` — completed successfully
+  - For classify: `stage`, `confidence` (`high`/`medium`/`low`), `reasoning`, `summary`, `ai_notes`, `list_tags`
+  - For draft: `draft_message`, `reply_mode` (`reply`/`follow_up`), optional `context_used`
+- `skipped` — only allowed for classify; provide `reason`
+- `failed` — provide `error`
+
+### `continue_active_job`
+
+Resume or check the active job. Use this when the user says "continue", "resume", or "keep going" — and to check whether a job is already in flight before starting a new one.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | No | Specific job; omit to use the most recent active |
+| `type` | enum | No | `draft_reply` / `classify` |
+| `max_items` | integer | No | Cap items processed in this resumption |
+| `resume_key` | string | No | Resume from a specific point |
+| `amend_instructions` | string | No | Adjust instructions on resume |
+| `include_shared_bundle` | boolean | No | Include shared bundle |
+
+### `cancel_job`
+
+Terminate a background job.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `job_id` | string | Yes | Job ID |
+
+---
+
+## Quick Reference: Common Patterns
+
+| Goal | Pattern |
+|------|---------|
+| Find conversations | `search_conversations(filter)` — paginate via `has_more` |
+| Read one conversation | `get_conversation(id)` |
+| Draft one reply | `get_draft_prompt(id)` → `update_conversation(id, draft_message, ai_notes)` |
+| Draft many replies | `start_batch_draft(filter, template_id?, draft_mode?, reply_intent?)` → `continue_active_job` → `submit_job_results(claim_next=true)` loop → `get_job_results` |
+| Classify many | `start_batch_classify(filter)` → loop chunks → `get_job_results` |
+| Tag many connections | `tag_connections(filter, add_tags, preview_only=true)` then re-call without preview |
+| Update many conversations uniformly | `bulk_update(filter, action, preview_only=true)` then re-call without preview |
+| Enrich a segment for personalisation | `enrich_connections(filter)` → poll → `get_enrichment(ids, sections=["recent_posts","experience"])` |
+| Build a sequence | `create_template` → `start_batch_draft(template_id)` |
+
+## Confidentiality
+
+Don't surface job IDs, chunk tokens, lease mechanics, or protocol internals to users. Describe progress in user terms ("drafting in batches…", "X of Y drafts ready"). Internal architecture is out of scope per the `confidentiality` block in `get_context`.

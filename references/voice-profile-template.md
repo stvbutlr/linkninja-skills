@@ -24,7 +24,7 @@ Use this framework to analyze a user's messages and build a voice profile. The p
 ### Step 1: Collect messages
 
 ```
-export(include_messages=true, limit=50)
+export_conversations(include_messages=true, limit=50)
 ```
 
 Focus on messages the **user sent** — ignore prospect messages. Need at least 10-15 sent messages.

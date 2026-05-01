@@ -285,6 +285,15 @@ export_conversations(stage="lost", format="csv", include_messages=true)
 - Offer CSV export for users who want offline analysis.
 - Confirm all context updates with the user before saving. These affect all future AI operations.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule monthly first-Tuesday lost-deal-analysis` — find systemic loss patterns before they become habits. Pair with won-deal-analysis on first-Monday for a complete monthly review.
+- **Hook:** `Stop` hook pushes the report to Notion alongside won-deal insights so patterns surface across runs.
+- **MCP:** Notion (loss-pattern database).
+- **Model:** Opus 4.7 — frontier reasoning matters when finding subtle loss patterns.
+
 ## Related Skills
 
 - **won-deal-analysis** — Complementary: find winning patterns (run both for the full picture)

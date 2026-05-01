@@ -220,6 +220,10 @@ The `references/` directory contains documentation shared across skills:
 | [template-modes.md](references/template-modes.md) | `locked` / `guided` / `flexible` draft modes; placeholders; advancement rules |
 | [enrichment-sections.md](references/enrichment-sections.md) | Sales Navigator enrichment sections, quota, and re-enrich semantics |
 
+## Power-Ups (Optional)
+
+Once you're running the skills interactively, [POWER-UPS.md](POWER-UPS.md) shows how to layer Claude Code's bleeding-edge features for full automation: scheduled runs (`/schedule`, `/loop`, GitHub Actions cron), workflow hooks (voice-validation pre-tool, batch-complete notifications), the SDK for programmatic execution, subagent patterns (drafter + reviewer, parallel research), complementary MCPs (Calendar, Gmail, Slack, Notion, GitHub, Linear), and per-skill model config. Pick what serves you — these are opt-in.
+
 ## Validation
 
 ```bash

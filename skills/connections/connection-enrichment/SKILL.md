@@ -219,6 +219,14 @@ Enrichment is async — sometimes you need to abort or resume:
 - Don't surface job IDs in user-facing reports — translate to user terms ("enriching ~50 contacts, ~5 min").
 - Pair enrichment with **cold-outreach** or **batch-drafting** in the same session — the data is freshest right after enrichment.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule weekly Sunday 6am connection-enrichment "refresh stale ICP-match cohort"` — keeps `recent_posts` fresh for the next week's drafting.
+- **Subagent:** For >50-contact batches, spawn parallel poll-and-fetch agents so the chunked retrieval doesn't block.
+- **Programmatic:** SDK can run enrichment asynchronously from a worker, freeing the interactive session.
+
 ## Related Skills
 
 - **campaign-launch** — Inserts an enrichment step before drafting the campaign cohort

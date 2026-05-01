@@ -256,6 +256,15 @@ See `references/benchmarks.md` for healthy ranges by metric.
 - For large pipelines (200+), use `get_stats()` for the snapshot and targeted `search_conversations` queries for specifics. Avoid exporting everything.
 - Offer CSV export for users who want offline/spreadsheet analysis.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule weekly Sunday 8am pipeline-health-check` — week-in-review snapshot before Monday plans.
+- **Hook:** `Stop` hook pushes results to Notion with comparison vs. last week's snapshot.
+- **MCP:** Notion (snapshot logging), Slack (post the Sunday summary to a #pipeline channel).
+- **Model:** Opus 4.7 (pattern detection across many conversations benefits from frontier reasoning; weekly cadence makes the cost reasonable).
+
 ## Related Skills
 
 - **won-deal-analysis** — Deep pattern detection in closed deals

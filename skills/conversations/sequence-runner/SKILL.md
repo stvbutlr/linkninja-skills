@@ -223,6 +223,16 @@ Sequence touches use `start_batch_draft` jobs — same recovery primitives as **
 - **Set the reply intent to match the touch:** nurture for early relationship-building, qualify for mid-funnel A–B Method work, advance for the call-booking close.
 - **Templates are captured at job creation.** If you edit a template mid-job, the active job uses the *original* template content. New jobs use the updated version.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup. Sequences are the highest-leverage place to layer automation.
+
+- **Scheduled touches:** After kicking off a cohort with `gr1`, schedule the touches: `/schedule once "in 2 days at 10am" sequence-runner "GR2 touch"`, `/schedule once "in 6 days at 10am" sequence-runner "GR3 touch"`, etc. Each touch advances the tag automatically.
+- **Hooks:** `PreToolUse` voice-check on every drafted touch; `Stop` notifies you when a chunk batch lands.
+- **Subagent:** Drafter + reviewer pair per item — sequences accumulate quality drift fast without a reviewer pass.
+- **MCP:** Calendar (auto-create discovery events on call-booking touches), Linear (sync sequence state to a project board).
+- **Model:** Sonnet 4.6+ (voice nuance + speed at scale).
+
 ## Related Skills
 
 - **template-library** — Manage the template chain (CRUD operations)

@@ -268,6 +268,13 @@ For the bulk classify shortcut path:
 - For "refresh" modes, write from scratch. Do not carry over language from the old summary.
 - If the pipeline has 500+ conversations, suggest working stage by stage rather than all at once.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule weekly Wednesday 2pm conversation-summarizer "refresh stale summaries"` — mid-week refresh so weekend analysis (pipeline-health-check, won/lost analysis) has fresh notes.
+- **MCP:** Notion — also push summaries into a notes database so insights surface across runs.
+
 ## Related Skills
 
 - **full-morning-triage** — Daily pipeline processing (classifies, drafts, and summarizes as part of a larger workflow)

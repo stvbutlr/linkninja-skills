@@ -215,6 +215,15 @@ Present the full analysis as a structured report:
 - Handle pagination on every export. Missing pages means missing patterns.
 - If lost deals are empty, note the gap but proceed with won-only analysis. Lost deal comparison is valuable but not required.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule monthly first-Monday won-deal-analysis` — refine ICP from real wins on a monthly cadence.
+- **Hook:** `Stop` hook pushes the analysis report to Notion with patterns from prior runs.
+- **MCP:** Notion (insight database), Stripe / billing (tie won deals to actual revenue, not just stage flips).
+- **Model:** Opus 4.7 — pattern detection across many conversations benefits from frontier reasoning. Monthly cadence makes the cost reasonable.
+
 ## Related Skills
 
 - **pipeline-health-check** — Overall pipeline diagnosis (conversion funnels, bottlenecks)

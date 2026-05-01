@@ -247,6 +247,14 @@ For the server-side batch classify path:
 - `bulk_update` supports stage, tags, summary, ai_notes, reminder, and archive. Draft messages must be saved individually via `update_conversation`.
 - For the hybrid approach (Phase 3), let the server-side job run while you manually review edge cases. Don't wait idle.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule weekly Monday 9am pipeline-cleanup` — Monday hygiene pass.
+- **Model:** Haiku 4.5 (high-volume classification; quality bar lower than drafting; cost matters).
+- **Subagents:** Parallel classification chunks for large unclassified backlogs (>500).
+
 ## Related Skills
 
 - **full-morning-triage** — Daily pipeline processing (hot leads, cold follow-ups, new threads)

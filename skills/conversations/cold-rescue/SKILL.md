@@ -260,6 +260,15 @@ For each cold conversation, ask in order:
 - Batch processing is the key to throughput. Triage first, save drafts individually via `update_conversation`, then batch non-draft updates (reminders, archives, tags) via `bulk_update`.
 - Do not re-engage more than 20-30 conversations at once. The user needs to handle replies.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule weekly Friday 4pm cold-rescue` — Friday afternoon push (less salesy heading into the weekend).
+- **Hook:** `PreToolUse` voice-check on re-engagement drafts (re-engagement is where "just checking in" sneaks in).
+- **MCP:** Gmail / Outlook for cross-channel rescue when LinkedIn has gone fully silent.
+- **Subagent:** Specialist re-engagement subagent fed past successful re-engagements for sharper hooks.
+
 ## Related Skills
 
 - **full-morning-triage** -- Handles daily cold conversation triage as part of morning routine

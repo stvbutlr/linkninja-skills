@@ -273,6 +273,16 @@ Long-running async jobs (classify, draft, enrich) sometimes need to be aborted o
 - If the pipeline has 50+ unclassified conversations, consider `start_batch_classify()` instead of manual classification.
 - Flag any conversations that need the user's judgment (ambiguous stage, unusual situation) in the report.
 
+## Power-Ups (Optional)
+
+Turn this from "the skill I run when I remember" into a daily operator routine. See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule daily 7am full-morning-triage` — drafts queued before you sit down.
+- **Hooks:** `PreToolUse` voice-check on every `update_conversation`; `Stop` hook posts a summary to Slack.
+- **Subagents:** Mixed-mode batch — drafter + reviewer pairs for the hot-lead phase.
+- **MCPs:** Slack (end-of-triage notification), Notion (daily-snapshot logging).
+- **Model:** Sonnet 4.6+ (handles the variety of triage decisions well).
+
 ## Related Skills
 
 - **dm-writing** — Router that identifies the right DM skill per situation

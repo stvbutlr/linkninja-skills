@@ -296,6 +296,14 @@ After any reminder operation, deliver a summary:
 - Default to the stage cadence table. Adjust if the user specifies custom intervals.
 - Process stages in priority order: closing > discovery > qualified > chatting > opening.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Cron:** `/schedule daily 6pm reminder-engine "what's overdue"` — end-of-day audit catches conversations slipping through.
+- **MCP:** Linear / Asana / Jira to sync LinkNinja reminders into your task system; Calendar to surface follow-up commitments alongside meetings.
+- **Programmatic:** SDK script can sync reminder state with external systems on cron.
+
 ## Related Skills
 
 - **batch-drafting** -- Draft messages at scale for conversations with reminders set

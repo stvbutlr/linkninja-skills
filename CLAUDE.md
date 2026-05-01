@@ -21,6 +21,7 @@ Named frameworks the skills use directly: **Three Opening Rules**, **Precision F
   - `analysis/` — Pipeline health, conversion rates, won/lost deal patterns
 - `references/` — Shared reference docs loaded on demand by any skill
 - `.claude/skills/steve-voice/` — Voice rules for Steve-authored user-facing copy in this repo
+- `POWER-UPS.md` — Optional Claude Code config (cron, hooks, SDK, subagents, MCPs, model selection) per skill
 
 **Sales Navigator note:** `connection-enrichment`, `lead-research`, and the enrichment branches inside several other skills require an active Sales Navigator connection. Without Sales Nav, those skills fall back to headline-only personalisation.
 

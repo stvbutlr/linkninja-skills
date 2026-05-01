@@ -256,6 +256,15 @@ The enrichment data is rich — recent posts (often public, but sometimes filter
 - Don't surface job IDs, chunk tokens, or quota mechanics in user-facing reports. Translate to user terms ("enriching ~50 contacts, ~5 min").
 - This skill is research, not drafting. Hand off after the brief is built.
 
+## Power-Ups (Optional)
+
+See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
+
+- **Subagent:** Parallel research agents — for cohorts of 100+, spawn 5 subagents (20 contacts each). Cuts wall-clock time ~5× and lets you run cohort research while you do something else.
+- **MCP:** GitHub — if your ICP includes technical buyers, pull their open-source activity to deepen Precision Flattery beyond what Sales Nav surfaces.
+- **MCP:** Notion — save each research brief to your knowledge base so you can re-use insights without re-running enrichment.
+- **Model:** Sonnet 4.6+ (good balance of quality and cost; brief generation isn't reasoning-heavy).
+
 ## Related Skills
 
 - **connection-enrichment** — The raw enrichment mechanics (preview, force, re-enrich); lead-research is the user-facing wrapper that adds the brief layer

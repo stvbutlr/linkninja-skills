@@ -41,7 +41,7 @@ Three techniques the rules enable:
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | "I need your ICP to target the right people and frame messages correctly. Want to set that up?" Run **icp-definition** |
-| Positioning (`positioning_context`) | Yes | "What do you sell? I need this to frame the value-add." Configure in dashboard or inline. |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What are you offering them? I need this to frame the value-add — without it the cold DM has nothing real to anchor to."* Configure in dashboard or inline. |
 | Voice Profile (`voice_profile`) | Recommended | Draft in neutral professional tone. Suggest **voice-profile-setup** after. |
 | Personal Story (`personal_story`) | Optional | Proceed without — do NOT use in first cold message anyway. |
 

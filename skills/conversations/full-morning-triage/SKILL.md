@@ -26,7 +26,7 @@ Process the entire LinkedIn DM pipeline in a single compound workflow. Hot leads
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | Stop. "I need your ICP configured before I can triage effectively. Want to set that up now?" Run **icp-definition** |
-| Positioning (`positioning_context`) | Recommended | "What do you sell? Knowing this helps me draft better messages." |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What are you offering them? I need this to draft anything useful — without it the morning triage produces generic drafts."* Don't proceed until set. |
 | Voice Profile (`voice_profile`) | Recommended | Draft in a neutral professional tone. Suggest **voice-profile-setup** after. |
 | Personal Story (`personal_story`) | Optional | Proceed without — use for credibility references when available |
 

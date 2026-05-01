@@ -32,7 +32,7 @@ get_conversation(id="<conversation_id>")
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | Needed to reframe value in their terms. Run **icp-definition** if empty. |
-| Positioning (`positioning_context`) | Yes | Needed to reframe "too expensive" and "not for me." Must know what the user offers. |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What are you offering? I need this to reframe price / fit / timing objections — without it the response is generic acknowledgment with no real reframe."* |
 | Voice Profile (`voice_profile`) | Recommended | Objections require maintaining safety. Wrong tone kills trust. |
 | Personal Story (`personal_story`) | Useful | Addresses "tried before" — real examples of what you did differently. |
 

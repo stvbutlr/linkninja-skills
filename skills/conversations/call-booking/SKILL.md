@@ -32,7 +32,7 @@ get_conversation(id="<conversation_id>")
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | Needed to confirm qualification. Must know what "qualified" looks like. |
-| Positioning (`positioning_context`) | Yes | Defines what the call delivers. "I'll walk through the framework that solved this for [similar company]." |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What's the call going to deliver for them? I need this to frame the invite — without it the ask is just 'let's chat'."* Defines what the call delivers. |
 | Voice Profile (`voice_profile`) | Recommended | The invite must sound like the user, not an AI. |
 | Personal Story (`personal_story`) | Useful | Adds credibility to the invite. "I've helped teams like yours..." |
 

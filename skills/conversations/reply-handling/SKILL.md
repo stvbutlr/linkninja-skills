@@ -32,7 +32,7 @@ get_conversation(id="<conversation_id>")
 | Field | Required | If Empty |
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | "I need your ICP to know what qualifies them. Want to set that up?" Run **icp-definition** |
-| Positioning (`positioning_context`) | Yes | "What do you sell? Helps me frame questions and value correctly." |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What are you offering them? I need this to frame the qualifying questions and value correctly — without it the reply is generic."* |
 | Voice Profile (`voice_profile`) | Recommended | Match their energy level. Suggest **voice-profile-setup** after. |
 | Personal Story (`personal_story`) | Useful | Adds credibility when sharing relevant experience. "I helped a team like yours..." |
 

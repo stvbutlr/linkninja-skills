@@ -29,7 +29,7 @@ Draft personalised messages for 5, 20, or 1000 conversations in one session usin
 |-------|----------|----------|
 | ICP (`additional_context`) | Yes | "I need your ICP to draft relevant messages. Want to set that up?" Run **icp-definition** |
 | Voice Profile (`voice_profile`) | Recommended | Voice is also enforced server-side via the `shared_bundle` returned by `get_job_chunk`. A richer profile makes drafts land harder. |
-| Positioning (`positioning_context`) | Recommended | Helps with value props in messages |
+| Positioning (`positioning_context`) | **Required (hard stop)** | If empty, **stop** and ask: *"What are you offering them? I need this to frame value props — without it the drafts are generic."* Don't proceed until set. |
 | Personal Story (`personal_story`) | Optional | Use for credibility references when relevant |
 
 3. Determine what the user wants drafted. If they don't specify, ask: "Which conversations should I draft for? Options: all pending replies, a specific stage, cold conversations, or a campaign tag."

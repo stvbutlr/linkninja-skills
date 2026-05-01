@@ -2,7 +2,7 @@
 
 A pile of skills for your AI agent that turns [LinkNinja](https://linkninja.co) into the LinkedIn DM operator you wish you had time to be.
 
-Built around the playbook I actually use to sell by chat — not generic LinkedIn-bro advice. The thesis is simple: **stop selling, start serving.** Skills embed the named moves from the [Sell By Chat Playbook](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) directly — Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1/3/7 cadence — so the AI sounds like someone who's done this before, not a script.
+Built around the playbook top practitioners actually use to sell by chat — not generic LinkedIn-bro advice. The thesis is simple: **stop selling, start serving.** Skills embed the named moves from the [Sell By Chat Playbook](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) directly — Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1/3/7 cadence — so the AI sounds like someone who's done this before, not a script.
 
 Treat them as conceptual tools, not finished scripts… tweak the examples, swap the archetypes, edit the voice to fit your actual customers. They're starting points wired up with real frameworks and real LinkNinja flows — not one-size-fits-all templates. If a tweak makes one of these more useful for you, [contribute it back](CONTRIBUTING.md).
 

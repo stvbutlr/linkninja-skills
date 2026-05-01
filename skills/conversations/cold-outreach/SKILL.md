@@ -88,7 +88,7 @@ Before drafting, extract signals from their LinkedIn profile:
 | **Mutual connections** | Shared network | Social proof: "[Name] and I connected over..." |
 | **Location/culture** | Geography, industry norms | Use insider vocabulary and references. |
 
-Use the vocabulary and framing they use in their headline and posts. If they say "demand gen," don't say "lead generation." If they say "scaling," don't say "growing." Language mirroring builds subconscious trust. See `references/cold-dm-framework.md` for the full language mirroring rules.
+Use the vocabulary and framing they use in their headline and posts. If they say "discovery call," don't say "intro session." If they say "cohort," don't say "class." If they say "AUM," don't say "assets." Language mirroring builds subconscious trust. See `references/cold-dm-framework.md` for the full language mirroring rules.
 
 ## The Cold DM Checklist
 
@@ -96,9 +96,9 @@ Every cold DM must pass 5 checks. If any fail, rewrite before saving:
 
 | Check | Test | Example |
 |-------|------|---------|
-| **Specific to them** | Could this message only go to this person? | "Noticed you're scaling the SDR team post-Series B" (pass) vs "I help companies grow" (fail) |
+| **Specific to them** | Could this message only go to this person? | "Noticed you've been opening up to a second cohort for your sales coaching program" (pass) vs "I help businesses grow" (fail) |
 | **Personalized** | Does it reference something real from their world? | Their headline, a post, their company news, a mutual connection |
-| **Insider vocabulary** | Does it use words from their world, not yours? | "ramp time" for sales leaders, "probation constraints" for German HR |
+| **Insider vocabulary** | Does it use words from their world, not yours? | "discovery call → engagement conversion" for consultants, "AUM threshold" for advisors, "scope creep" for agency owners |
 | **Permission close** | Does it ask before offering? | "Would that be useful?" "Happy to share if relevant." |
 | **Easy out** | Can they say no without friction? | "No pressure." "Totally fine if timing's off." |
 
@@ -117,15 +117,15 @@ Every cold DM must pass 5 checks. If any fail, rewrite before saving:
 
 ### Good: Headline-Referenced
 
-> Hey Sarah -- noticed you're scaling the SDR team at Acme post-Series B. Most teams at that stage lose 3-4 months per new rep just on ramp time.
+> Hey Sarah… saw you've opened a second cohort for your executive coaching program. Most coaches at that stage tell me lead-flow goes feast or famine right around the 6-month mark.
 >
-> I helped another B2B SaaS team cut that from 9 months to 3. Happy to share the structure if useful -- no pitch, just the framework. Would that be helpful?
+> I helped another solo coach (similar offer, similar size) move from launch-then-pray to a steady stream of qualified DMs. Happy to share the structure if useful — no pitch, just the framework. Useful?
 
-**Why it works:** Names her situation (SDR team, Series B). Concrete result from a similar company. Offers something useful. Permission close. Easy out.
+**Why it works:** Names her situation (second cohort, exec coaching). Concrete result from a similar operator. Offers something useful. Permission close. Easy out.
 
 ### Good: Activity-Referenced
 
-> Hey Tom -- your headline says "Building demand gen engines for B2B SaaS." Curious how you're handling the attribution side. Most teams I talk to say it's the hardest part of the stack to get right.
+> Hey Tom… your headline says "Helping fractional CFOs land $5K+/month retainers." Curious how you're handling the discovery-to-engagement conversion. Most fractional folks I talk to say that step is where deals quietly die.
 
 **Why it works:** Uses his exact words. Asks about a known pain in his space. Short. No pitch.
 
@@ -152,7 +152,7 @@ Same checklist, but the event becomes your hook. Reference something specific th
 
 ### Good Post-Event
 
-> Hey Sarah -- really enjoyed your question during the webinar about scaling outbound at speed. That's exactly the problem I see most teams run into after Series A. Curious -- have you found anything that works at your current scale?
+> Hey Sarah… really enjoyed your question during the workshop about getting your discovery calls to convert higher. That's exactly the wall I see most consultants hit around year 2. Curious — have you tried anything that's actually moved the needle on it?
 
 ### Bad Post-Event
 

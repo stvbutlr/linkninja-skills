@@ -18,6 +18,8 @@ metadata:
 
 Walk a brand-new LinkNinja user through the foundational setup in one guided session, so every other skill they later run has the context it needs. Sets ICP, positioning, voice profile, and pipeline-stage criteria. Framed in the playbook's language: *Stop selling. Start serving.* — what we're building together is the foundation for serving prospects well.
 
+The setup is a starting point, not a finished product. Capture what's true today; refine as the user learns what their real customers actually respond to. Subsequent runs of `icp-definition`, `voice-profile-setup`, and `stage-configuration` are how the foundation gets sharper over time.
+
 ## Before Starting
 
 1. Run `get_context()` to see how much is already configured.

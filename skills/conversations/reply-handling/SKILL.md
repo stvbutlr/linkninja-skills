@@ -100,7 +100,7 @@ Each reply either builds trust or stalls the conversation. After a cold DM gets 
 
 ### Good Example
 
-> **Them:** "Yeah, we're hiring 5 more SDRs this quarter. It's been a challenge finding good ones."
+> **Them:** "Yeah, we're opening a second cohort this quarter. Finding the right fit students has been a challenge."
 >
 > **You:** That's a real bottleneck -- especially in this market. Are you finding the issue is more about sourcing quality candidates, or about getting them productive once they start?
 
@@ -108,9 +108,9 @@ Each reply either builds trust or stalls the conversation. After a cold DM gets 
 
 ### Bad Example
 
-> **Them:** "Yeah, we're hiring 5 more SDRs this quarter."
+> **Them:** "Yeah, we're opening a second cohort this quarter."
 >
-> **You:** That's great! We actually have a solution that helps SDR teams ramp faster. I'd love to tell you more about it. Can we book 15 minutes?
+> **You:** That's great! We actually have a solution that helps coaches fill their cohorts faster. I'd love to tell you more about it. Can we book 15 minutes?
 
 **Why it fails:** Ignores what they shared. Jumps to pitch. Asks for a call before trust is built.
 
@@ -184,11 +184,11 @@ When pain is daily, anchor your questions to the specific moment they feel it. "
 
 ### Good Qualifying Example
 
-> **You:** When you mentioned losing reps during probation -- is that mostly in the first 3 months or later?
+> **You:** When you mentioned discovery calls not converting — is that mostly in the first call or after the second one?
 >
-> **Them:** First 3 months. We're losing about 30% before they're even ramped.
+> **Them:** First one. About 70% of my discovery calls go nowhere after the call ends.
 >
-> **You:** That's expensive. At your scale that's probably 6 figures per year just in failed hires. If you could cut that to under 10% attrition in probation, what would that change for you?
+> **You:** That's a lot of energy going into calls that don't convert. If you could move that to under 30% drop-off — so 7 of every 10 discovery calls turn into a real conversation about working together — what would that mean for your year?
 
 **Why it works:** Uses their data. Surfaces the cost. Helps them feel the gap.
 

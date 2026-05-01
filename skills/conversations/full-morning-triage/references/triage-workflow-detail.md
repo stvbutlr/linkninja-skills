@@ -82,7 +82,7 @@ Draft messages must be saved one at a time via `update_conversation` (`bulk_upda
 update_conversation(
   id="conv_abc",
   draft_message="Hey Sarah, great question on pricing. For a team your size, most clients see ROI within the first quarter. Want me to walk you through the numbers for a 50-person org?",
-  ai_notes="Replied to pricing question. Reframed around ROI. She's VP Sales at mid-market SaaS. Next: wait for budget confirmation."
+  ai_notes="Replied to pricing question. Reframed around ROI. She's a solo executive coach with a second cohort opening. Next: wait for budget confirmation."
 )
 
 update_conversation(
@@ -94,7 +94,7 @@ update_conversation(
 update_conversation(
   id="conv_ghi",
   draft_message="That's a real bottleneck. Are you finding the issue is more about sourcing quality candidates, or about getting them productive once they start?",
-  ai_notes="They mentioned hiring 5 SDRs. Asked deepening question to surface specific pain. Stage: chatting. Next: qualify based on answer."
+  ai_notes="They mentioned opening a second cohort. Asked deepening question to surface specific pain (lead flow vs candidate fit). Stage: chatting. Next: qualify based on answer."
 )
 ```
 
@@ -135,12 +135,12 @@ Save each draft individually, then batch the reminders:
 update_conversation(
   id="conv_jkl",
   draft_message="Hey James, was working with another team this week who had the same ramp-time problem you mentioned. They found that restructuring the first 30 days made the biggest difference. Thought you'd find that interesting.",
-  ai_notes="Re-engagement attempt #1. Shared relevant insight about SDR ramp time. Last topic was onboarding challenges."
+  ai_notes="Re-engagement attempt #1. Shared relevant insight about discovery → engagement conversion. Last topic was getting more discovery calls to convert."
 )
 
 update_conversation(
   id="conv_mno",
-  draft_message="Hey Lisa, saw this piece on Q1 demand gen trends and thought of our conversation about scaling your pipeline. Worth a look if you have 2 minutes.",
+  draft_message="Hey Lisa… saw this piece on lead-flow patterns for solo practitioners and thought of our conversation about your pipeline going feast-or-famine. Worth a look if you have 2 minutes.",
   ai_notes="Re-engagement attempt #1. Shared relevant resource tied to her pipeline scaling comment."
 )
 
@@ -199,7 +199,7 @@ Save re-engagement drafts one at a time, then batch archives and reminders:
 // Drafts one at a time
 update_conversation(
   id="conv_pqr",
-  draft_message="Hey Sarah, I remember you mentioned the SDR ramp issue was becoming urgent. Was working on something related this week and thought of you. No rush — just wanted to share if useful.",
+  draft_message="Hey Sarah… I remember you mentioned the cohort fill issue was becoming urgent. Was working on something related this week and thought of you. No rush — just wanted to share if useful.",
   ai_notes="Re-engagement attempt #2 for qualified ghost. She had budget signals. Shared new angle. If no reply after this, send door-open in 7 days."
 )
 
@@ -287,7 +287,7 @@ bulk_update(updates=[
     id: "conv_class2",
     stage: "qualified",
     tags: ["decision_maker", "budget_confirmed"],
-    summary: "CTO at Series B SaaS. Needs analytics tool by end of Q1.",
+    summary: "Founder of a 12-person creative agency. Needs steadier inbound pipeline by end of Q1.",
     ai_notes: "Explicit timeline, authority confirmed, asked about pricing."
   },
   {

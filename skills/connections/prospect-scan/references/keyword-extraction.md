@@ -6,12 +6,12 @@ How to translate an ICP description into headline keywords for `scan_connections
 
 | ICP Element | Headline Signal | Keyword Examples |
 |-------------|----------------|-----------------|
-| Job title / role | Direct title match | "VP Sales", "Head of Growth", "CRO", "Founder", "CEO", "COO" |
-| Industry / sector | Company or sector terms | "SaaS", "FinTech", "Construction", "Healthcare", "EdTech" |
-| Company stage | Stage indicators | "Series A", "Startup", "Scale-up", "Pre-seed", "Growth-stage" |
-| Seniority | Level markers | "Director", "Chief", "SVP", "Partner", "Senior", "Lead" |
-| Function | Department signals | "Revenue", "Marketing", "Engineering", "Operations", "People" |
-| Ownership | Business owner signals | "Founder", "Owner", "Co-Founder", "Managing Director", "Principal" |
+| Service offering | What they sell or help with | "Coach", "Consultant", "Advisor", "Strategist", "Specialist" |
+| Niche / vertical | Their specific area | "Recruitment", "Wealth Management", "Leadership", "SEO", "Career", "Wellness" |
+| Business model | How they operate | "Founder", "Owner", "Solo", "Boutique", "Practice", "Independent" |
+| Buyer titles (when targeting buyers) | Direct title match | "Founder", "CEO", "Owner", "Managing Director", "Principal", "Partner" |
+| Seniority (when targeting employers) | Level markers | "Director", "VP", "Head of", "Chief", "Partner" |
+| Industry / sector (broader) | Company or sector terms | "Financial Services", "Healthcare", "Professional Services", "Creative", "B2B Services" |
 
 ## Include Keywords: Expansion Patterns
 
@@ -21,24 +21,24 @@ When the initial scan is too narrow, expand with adjacent terms.
 
 | Core Title | Adjacent Titles |
 |-----------|----------------|
-| Founder | Co-Founder, CEO, Managing Director, Owner, Principal |
-| VP Sales | Sales Director, Head of Revenue, CRO, Head of Sales, Sales Leader |
-| Head of Marketing | Marketing Director, CMO, VP Marketing, Growth Lead |
-| CTO | VP Engineering, Head of Engineering, Technical Director |
 | Consultant | Advisor, Strategist, Specialist, Expert, Practitioner |
 | Coach | Mentor, Facilitator, Trainer, Guide |
-| Agency Owner | Creative Director, Managing Partner, Agency Founder |
+| Financial Advisor | Wealth Manager, Financial Planner, Investment Advisor, Private Wealth |
+| Agency Owner | Creative Director, Managing Partner, Agency Founder, Founder |
+| Founder | Co-Founder, CEO, Managing Director, Owner, Principal |
+| Fractional [X] | Interim [X], Part-time [X], On-Demand [X] |
+| Service Provider | Specialist, Practitioner, Boutique [X] |
 
 ### Industry Expansions
 
 | Core Term | Adjacent Terms |
 |----------|---------------|
-| SaaS | Software, Platform, Cloud, Tech, Digital |
-| FinTech | Financial Technology, Banking, Payments, InsurTech |
-| Healthcare | MedTech, Health Tech, Digital Health, Clinical |
-| EdTech | Education, Learning, Training, Curriculum |
-| Construction | Building, Property, Real Estate, Infrastructure |
-| Recruiting | Talent, Staffing, HR, People Operations |
+| Professional Services | Consulting, Advisory, Strategy, Business Services |
+| Coaching | Personal Development, Mentoring, Training, Performance |
+| Financial Services | Wealth Management, Financial Planning, Advisory, Investment |
+| Creative Services | Branding, Design, Content, Marketing |
+| Wellness / Health | Coaching, Therapy, Nutrition, Fitness |
+| Recruiting / Talent | Talent Acquisition, Staffing, HR Consulting, People Operations |
 
 ### Seniority Expansions
 
@@ -81,29 +81,34 @@ Pre-built keyword sets for common subsegment scans. Use these when the user want
 | Subsegment | Include Keywords |
 |-----------|-----------------|
 | Recruitment consultants | "Recruitment", "Talent", "Staffing", "Executive Search", "Talent Acquisition" |
-| IT consultants | "IT Consulting", "Technology Advisor", "Digital Transformation", "IT Strategy" |
 | Management consultants | "Management Consulting", "Strategy Consulting", "Business Transformation" |
-| Financial consultants | "Financial Advisor", "Wealth Management", "CFO Services", "Financial Planning" |
 | HR consultants | "HR Consulting", "People Strategy", "Organizational Development", "Culture" |
-
-### SaaS Niches
-
-| Subsegment | Include Keywords |
-|-----------|-----------------|
-| AI/ML SaaS | "AI", "Machine Learning", "GPT", "LLM", "Artificial Intelligence", "ML" |
-| FinTech SaaS | "FinTech", "Financial Technology", "Banking", "Payments", "Lending" |
-| HR Tech | "HR Tech", "People Platform", "HRIS", "Talent Management" |
-| MarTech | "Marketing Technology", "MarTech", "Marketing Automation", "CRM" |
-| DevTools | "Developer Tools", "DevOps", "Platform Engineering", "Infrastructure" |
+| IT / digital transformation consultants | "IT Consulting", "Technology Advisor", "Digital Transformation", "IT Strategy" |
+| Marketing consultants | "Marketing Consultant", "Demand Gen Consultant", "Brand Strategist" |
+| Operations consultants | "Operations Consulting", "Process Improvement", "Operational Excellence" |
+| Sustainability / ESG consultants | "Sustainability", "ESG Advisor", "Climate Consultant" |
 
 ### Coaching Niches
 
 | Subsegment | Include Keywords |
 |-----------|-----------------|
-| Executive coaches for tech | "Executive Coach", "Leadership Coach", "CTO Coach", "Tech Leader" |
+| Executive coaches | "Executive Coach", "Leadership Coach", "C-Suite Coach" |
 | Career coaches | "Career Coach", "Career Transition", "Career Strategy", "Job Search" |
-| Business coaches | "Business Coach", "Growth Coach", "Entrepreneur Coach", "Scale" |
+| Business / founder coaches | "Business Coach", "Growth Coach", "Founder Coach", "Entrepreneur Coach" |
 | Sales coaches | "Sales Coach", "Revenue Coach", "Sales Trainer", "Sales Leadership" |
+| Performance / mindset coaches | "Performance Coach", "Mindset Coach", "High Performance" |
+| Health / wellness coaches | "Health Coach", "Nutrition Coach", "Wellness Coach" |
+| Creative / artist coaches | "Creative Coach", "Artist Coach", "Author Coach" |
+
+### Financial Advisory Niches
+
+| Subsegment | Include Keywords |
+|-----------|-----------------|
+| Independent financial advisors | "Financial Advisor", "Independent Advisor", "Fiduciary" |
+| Wealth managers | "Wealth Manager", "Private Wealth", "Wealth Advisor", "Family Office" |
+| Fractional CFOs | "Fractional CFO", "CFO Services", "Outsourced CFO", "Part-Time CFO" |
+| Tax / accounting specialists | "Tax Advisor", "Tax Strategist", "Specialist Accountant", "Boutique CPA" |
+| Investment advisors | "Investment Advisor", "Portfolio Manager", "Asset Management" |
 
 ### Agency Niches
 
@@ -114,6 +119,17 @@ Pre-built keyword sets for common subsegment scans. Use these when the user want
 | Creative / branding | "Creative Director", "Brand Agency", "Design Agency", "Brand Strategy" |
 | Web development | "Web Agency", "Development Agency", "WordPress", "Shopify", "Web Studio" |
 | Content agencies | "Content Agency", "Content Strategy", "Copywriting Agency", "Content Marketing" |
+| LinkedIn / social media agencies | "LinkedIn Agency", "Social Media Strategist", "Personal Brand" |
+
+### Niche Service Sellers
+
+| Subsegment | Include Keywords |
+|-----------|-----------------|
+| Course creators / educators | "Course Creator", "Educator", "Online Course", "Curriculum" |
+| Authors / thought leaders | "Author", "Speaker", "Thought Leader", "Keynote" |
+| Specialist freelancers | "Copywriter", "Designer", "Developer", "Editor", "Producer" |
+| Fractional executives | "Fractional CMO", "Fractional COO", "Fractional CTO", "Interim Leader" |
+| Therapists / counsellors | "Therapist", "Counsellor", "Psychologist", "Mental Health" |
 
 ## Keyword Quality Checklist
 

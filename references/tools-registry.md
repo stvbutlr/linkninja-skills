@@ -348,10 +348,12 @@ Async Sales Navigator enrichment job. Captures: company, title, location, summar
 
 ## Async Jobs
 
+> **Agent-only documentation.** The parameters in this section — `job_id`, `chunk_token`, `lease_token`, polling intervals, claim/submit mechanics — are for agent-to-server protocol calls. **Never surface these in user-facing reports or skill output.** Translate progress to user terms ("drafting in batches…", "X of Y ready", "wrapping up the batch"). The `confidentiality` block returned by `get_context` is authoritative: do not discuss internal job mechanics with users.
+
 LinkNinja's async jobs follow this pattern (`ai_execution.job_protocols` in `get_context` is authoritative):
 
 - `start_*` returns a `job_id` immediately. Do NOT consider the job done at this point.
-- Poll `get_get_job_status(job_id)` until status is ready (recommended 2-second interval).
+- Poll `get_job_status(job_id)` until status is ready (recommended 2-second interval).
 - For draft and classify jobs, loop `get_job_chunk → submit_job_results(claim_next=true)` until completion.
 - After the job completes, call `get_job_results` to fetch and share the saved payload.
 - "Do not tell the user the job is done until `submit_job_results` has succeeded."

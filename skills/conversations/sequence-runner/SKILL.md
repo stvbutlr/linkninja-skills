@@ -51,6 +51,8 @@ Each touch must add new value. If you have nothing new to say, **skip and extend
 
 ## Workflow Per Touch
 
+> **Agent-only documentation below.** The chunked flow uses `start_batch_draft` and the same protocol mechanics as `batch-drafting` — `job_id`, `chunk_token`, claim/submit. **Never surface these in user-facing reports.** Describe progress to the user in touch-and-cohort terms ("Day 7 touch underway for 47 contacts in the GR3 cohort", "drafts ready, pending your review").
+
 ### Step 1: Identify the Cohort For This Touch
 
 Different cohort logic per touch:

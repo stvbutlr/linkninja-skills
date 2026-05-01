@@ -72,11 +72,11 @@ After the interview, extract headline keywords for `scan_connections`:
 
 | ICP Element | Headline Signal | Keyword Examples |
 |-------------|----------------|-----------------|
-| Job title / role | Direct match | "VP Sales", "Head of Growth", "Founder" |
-| Industry | Company/sector terms | "SaaS", "FinTech", "Healthcare" |
-| Company stage | Stage indicators | "Series A", "Startup", "Scale-up" |
-| Seniority | Level markers | "Director", "Chief", "SVP", "Partner" |
-| Function | Department signals | "Revenue", "Marketing", "Operations" |
+| Service offering | What they sell or help with | "Coach", "Consultant", "Advisor", "Strategist" |
+| Niche / vertical | Specific area | "Recruitment", "Wealth", "Leadership", "Career", "SEO" |
+| Business model | How they operate | "Founder", "Owner", "Solo", "Boutique", "Independent" |
+| Industry / sector (if needed) | Broader context | "Financial Services", "Professional Services", "Healthcare", "Creative" |
+| Seniority (when targeting buyers in firms) | Level markers | "Director", "VP", "Partner", "Principal" |
 
 Common exclude keywords:
 - "Student", "Intern", "Looking for opportunities", "Seeking", "Open to work"

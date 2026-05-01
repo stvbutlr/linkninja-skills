@@ -153,15 +153,15 @@ Ask: "I drafted a reply for [name]. Does it sound like you wrote it?"
 
 ### Messages collected:
 
-> "Hey Tom -- saw your post about the hiring crunch. Are you still seeing that with senior devs?"
+> "Hey Tom… saw your post about discovery calls not converting. Are you still hitting that wall with the higher-ticket prospects?"
 
-> "Hey Lisa -- curious about something. You mentioned your team's struggling with onboarding. Is that a process issue or a people issue?"
+> "Hey Lisa… curious about something. You mentioned your second cohort is filling slowly. Is that a positioning thing or a lead-flow thing?"
 
-> "Makes sense. Honestly the biggest thing I see with teams your size is the ramp time kills you before the hire quality does."
+> "Makes sense. Honestly the biggest thing I see with practices your size is the discovery-to-engagement conversion is what eats your time before the lead quality does."
 
-> "Hey -- no rush on this. Just thought you'd find it useful."
+> "Hey… no rush on this. Just thought you'd find it useful."
 
-> "Ha -- not exactly rocket science but somehow everyone overcomplicates it. Want me to send the framework?"
+> "Ha — not exactly rocket science but somehow everyone overcomplicates it. Want me to send the framework?"
 
 ### Profile built:
 
@@ -174,13 +174,13 @@ VOICE PROFILE
 - Questions: Frequent. One per message. Direct and specific, not open-ended.
 - Emoji: Never.
 - Humor: Occasional dry humor. Self-aware, not try-hard.
-- Jargon: Uses industry terms naturally ("ramp time", "hire quality") but avoids marketing-speak.
+- Jargon: Uses industry terms naturally ("discovery → engagement conversion", "cohort fill", "feast or famine") but avoids marketing-speak.
 - Sentence structure: Short, punchy. Uses dashes instead of commas.
 - Contractions: Always. "don't", "I'm", "can't".
 - Fillers: "honestly", "curious about", "makes sense".
 - Punctuation: Dashes over commas. Light on exclamation marks. Occasional double-dash for asides.
 
-WORDS THEY USE: "ramp time", "hire quality", "makes sense", "honestly", "curious about", "no rush"
+WORDS THEY USE: "discovery → engagement conversion", "cohort fill", "feast or famine", "makes sense", "honestly", "curious about", "no rush"
 WORDS THEY NEVER USE: "synergy", "leverage", "circle back", "touch base", "I hope this finds you well", "I'd love to", "excited to"
 ```
 

@@ -30,7 +30,7 @@ Pull Sales Navigator profile data so subsequent drafts can reference one specifi
 |--------|-----|
 | Specific connections | `connection_ids: [<int>, <int>, ...]` |
 | Tagged segment | `filter: {tags: ["icp-match", "campaign-q1"]}` |
-| Headline keywords | `filter: {headline_keywords: ["VP Sales", "Founder"]}` |
+| Headline keywords | `filter: {headline_keywords: ["Founder", "Coach", "Consultant", "Advisor"]}` |
 | Recently connected | `filter: {connected_after: "<ISO date>"}` |
 | Filter by enrichment status | `filter: {is_enriched: false}` |
 
@@ -212,7 +212,7 @@ Enrichment is async — sometimes you need to abort or resume:
 ## Guidelines
 
 - **Always preview first** for batches >20. Quota is finite.
-- For >50 contacts, return the `job_id` and ETA to the user — don't block.
+- For >50 contacts, return the **estimated time** to the user (e.g., "~10 min for these 100 contacts") and let them get on with other work — don't block. Track the job internally; surface progress in user terms, never raw `job_id` / `chunk_token` mechanics.
 - Use `re_enrich_after_days` whenever paired with `force=true` to avoid wasting quota.
 - Pull only the `sections` you need. Smaller payloads = faster downstream loops.
 - Per-contact errors are normal (LinkedIn rate-limits, profile privacy). Continue with the rest.

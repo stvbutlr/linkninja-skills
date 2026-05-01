@@ -281,7 +281,7 @@ Example with evidence:
 
 ```
 bulk_update(updates=[
-  {"id": "conv_xxx", "tags": ["decision_maker", "icp-verified"], "ai_notes": "Tagged decision_maker. Evidence: identity.title='VP of Engineering' at 200-person SaaS. experience shows 8 yrs in VP/Director eng roles. Conversation: said 'I make this call.'"}
+  {"id": "conv_xxx", "tags": ["decision_maker", "icp-verified"], "ai_notes": "Tagged decision_maker. Evidence: identity.title='Founder, Boutique Recruitment Practice'. experience shows 7 yrs running her own firm. Conversation: said 'I make this call — it's just me and my ops lead.'"}
 ])
 ```
 

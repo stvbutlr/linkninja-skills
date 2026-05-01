@@ -4,6 +4,8 @@ A pile of skills for your AI agent that turns [LinkNinja](https://linkninja.co) 
 
 Built around the playbook I actually use to sell by chat — not generic LinkedIn-bro advice. The thesis is simple: **stop selling, start serving.** Skills embed the named moves from the [Sell By Chat Playbook](https://library.sevenfigurecreators.com/3/the-sell-by-chat-playbook) directly — Three Opening Rules, Precision Flattery, Pattern Interrupt, Preloaded Value, A–B Method, Acknowledge → Ask Context → Reframe, Micro-commitments, Day 1/3/7 cadence — so the AI sounds like someone who's done this before, not a script.
 
+Treat them as conceptual tools, not finished scripts… tweak the examples, swap the archetypes, edit the voice to fit your actual customers. They're starting points wired up with real frameworks and real LinkNinja flows — not one-size-fits-all templates. If a tweak makes one of these more useful for you, [contribute it back](CONTRIBUTING.md).
+
 Works with any MCP-compatible agent: Claude Code, Claude.ai, OpenAI Codex, ChatGPT, Gemini, Groq, Manus.
 
 > **Note on enrichment.** Skills that pull Sales Navigator data (`connection-enrichment`, `lead-research`, plus enrichment hooks inside `cold-outreach`, `prospect-scan`, `campaign-launch`, `full-morning-triage`, `reply-handling`, `smart-tagging`, `sequence-runner`) need an active Sales Navigator connection. Without Sales Nav, those skills fall back to headline-level personalisation — still useful, just less specific.
@@ -228,4 +230,4 @@ Checks frontmatter format, naming conventions, line counts, and required section
 
 ## License
 
-FSL-1.1-MIT — Free to use with LinkNinja MCP. Converts to MIT after 2 years. See [LICENSE](LICENSE).
+Proprietary — © 2026 LinkNinja and Steve Butler. Free to use with the LinkNinja product. Community contributions welcome via PR. See [LICENSE](LICENSE) and [CONTRIBUTING.md](CONTRIBUTING.md).

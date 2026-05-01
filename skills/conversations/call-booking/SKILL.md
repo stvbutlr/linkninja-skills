@@ -107,7 +107,7 @@ When the prospect is qualified but hasn't moved toward a call yet, help them see
 
 If they've shared data during qualifying, reference it:
 
-- "You mentioned losing 30% of hires in probation. At your current hiring pace, that's roughly [X] more by end of quarter."
+- "You mentioned 70% of your discovery calls don't convert into engagements. At your current call volume, that's roughly [X] hours/month going into calls that don't pay back."
 - "You said pipeline velocity dropped 40% this quarter. Every week that continues is [Y] in lost deals."
 
 ### Use Their Timeline

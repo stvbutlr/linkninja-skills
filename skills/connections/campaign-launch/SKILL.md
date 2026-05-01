@@ -42,9 +42,9 @@ Specific enough that the right person knows in under 3 seconds. Stack 2-3 identi
 
 | Layer | Example |
 |-------|---------|
-| Role + industry | "B2B SaaS founders doing $1-5M ARR" |
-| Life stage | "Just hired their first 2-5 SDRs" |
-| Emotional reality | "Watching less experienced competitors close deals they should be winning" |
+| Role + niche | "Solo executive coaches in year 2-3 with one signature offer" |
+| Life stage | "Just opened a second cohort or hired their first ops support" |
+| Emotional reality | "Watching less experienced peers fill cohorts faster while their own lead flow goes feast-or-famine" |
 
 **2. What do they get?**
 Tangible outcome, not vague learning. The test: can they picture what they hold in their hands when it is over?
@@ -151,7 +151,7 @@ Save each draft individually, then batch the stage/tag updates:
 
 ```
 // Save drafts one at a time (bulk_classify does not support draft_message)
-update_conversation(id="abc", draft_message="Hey Sarah -- noticed you're scaling your SDR team...", ai_notes="Cold open. Referenced headline: 'VP Sales scaling SDR team'. Campaign: Mar 2026 workshop.")
+update_conversation(id="abc", draft_message="Hey Sarah… noticed you're opening a second coaching cohort…", ai_notes="Cold open. Referenced headline: 'Executive Coach, opening second cohort'. Campaign: Mar 2026 workshop.")
 update_conversation(id="def", draft_message="Hey James -- saw your post about outbound challenges...", ai_notes="Cold open. Referenced recent post about outbound. Campaign: Mar 2026 workshop.")
 // ...repeat for each prospect
 

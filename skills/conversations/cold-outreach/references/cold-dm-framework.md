@@ -15,10 +15,10 @@ Every cold DM sits on two axes. Your goal is always the top-right quadrant:
 
 | Level | Example | Approximate Reply Rate |
 |-------|---------|----------------------|
-| Zero | "I help companies with sales" | ~1% |
-| Low | "I help SaaS companies with sales" | ~3% |
-| Medium | "I help B2B SaaS teams post-Series B" | ~8% |
-| High | "I help B2B SaaS teams scaling from 50 to 200 headcount post-Series B with onboarding" | 15%+ |
+| Zero | "I help businesses grow" | ~1% |
+| Low | "I help consultants land clients" | ~3% |
+| Medium | "I help solo consultants land 5-figure retainers" | ~8% |
+| High | "I help solo recruitment consultants land 5-figure retainers from LinkedIn DMs without buying ads" | 15%+ |
 
 The test: could this message work for 100 people, or only this one person?
 
@@ -28,9 +28,9 @@ The test: could this message work for 100 people, or only this one person?
 |--------|------------------|---------------|
 | Their headline | Profile | Mirror their exact words |
 | Recent post | Activity feed | Reference the specific topic |
-| Company news | LinkedIn or news | "Congrats on the Series B" |
+| New offer / launch | Their content | "Saw the new [program/cohort/service] — looks sharp" |
 | Mutual connection | Network | Social proof: "[Name] and I connected over..." |
-| Shared background | Profile | Authentic connection point |
+| Shared background | Profile | Authentic connection point (same school, same prior firm, same conference circuit) |
 
 ## Language Mirroring Rules
 
@@ -42,21 +42,21 @@ When reading a prospect's profile and posts, extract language from these layers:
 
 | Layer | What It Is | Example | Use In DM |
 |-------|-----------|---------|-----------|
-| **Functional** | Industry terms for what they do daily | "pipeline velocity," "sprint planning," "deal desk" | Use their exact terms, not synonyms |
-| **Technical** | Tools and metrics they reference | "HubSpot sequences," "ARR," "MRR churn" | Show you know their stack |
-| **Cultural** | How their industry talks informally | "eating our own dog food," "drinking from the firehose" | Signals insider status |
-| **Psychic** | Emotional language about their challenges | "drowning in," "keeping the lights on," "herding cats" | Mirror frustration or aspiration |
-| **Narrative** | The story they tell about their role | "building from scratch," "turning things around" | Reference their journey |
+| **Functional** | Industry terms for what they do daily | "discovery call", "engagement", "retainer", "scope creep" | Use their exact terms, not synonyms |
+| **Technical** | Tools and frameworks they reference | "Calendly bookings", "Notion CRM", "AUM", "billable hours" | Show you know their stack |
+| **Cultural** | How their industry talks informally | "feast or famine months", "wearing all the hats", "the hustle" | Signals insider status |
+| **Psychic** | Emotional language about their challenges | "drowning in admin", "the dream client problem", "imposter syndrome week" | Mirror frustration or aspiration |
+| **Narrative** | The story they tell about their role | "left corporate to do this", "scaled past replacing my salary", "year 3 in solo practice" | Reference their journey |
 
 ### Stacking Rule
 
 Use 2-3 layers per message. More than 3 feels forced. Zero feels generic.
 
 **Good stacking (Functional + Psychic):**
-> "Most teams scaling past 50 SDRs say ramp time is the thing keeping them up at night."
+> "Most solo consultants past their first 6-figure year say lead flow is the thing that keeps them up at night."
 
 **Over-stacking (all 5):**
-> "As someone building demand gen from scratch at a Series B using HubSpot while drinking from the firehose on this scaling journey..." — too much.
+> "As someone scaling a boutique advisory practice while drowning in admin and finally cracking the dream client problem in year 3 of solo work…" — too much.
 
 ### Anti-Patterns
 

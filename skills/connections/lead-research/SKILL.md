@@ -111,20 +111,20 @@ Source: [which section + which item]
 Examples:
 
 ```
-Sarah Liu — VP of Engineering at Acme (Series B SaaS)
-Hook: Recent post (Apr 22) on rebuilding her hiring loop after losing two senior eng leads — concrete pain, fresh.
+Sarah Liu — Founder, boutique executive coaching practice
+Hook: Recent post (Apr 22) on opening her second cohort and finding the right-fit candidates is harder than expected — concrete pain, fresh.
 Source: recent_posts[0]
 ```
 
 ```
-Tom Chen — Founder, demand gen agency (8-person team)
-Hook: Co-authored a piece on attribution in B2B SaaS in March; aligns with what your positioning addresses.
-Source: recent_posts[2] + experience.previous (former Marketo PM)
+Tom Chen — Independent fractional CFO (services 6-figure agency owners)
+Hook: Co-authored a piece on cash-flow forecasting for boutique service firms in March; aligns directly with what your positioning addresses.
+Source: recent_posts[2] + experience.previous (former practice CFO)
 ```
 
 ```
-James Walker — Head of Sales at FinTech start-up
-Hook: Same school as you (Sydney Uni, computer science). Can lead with the shared anchor before any pitch.
+James Walker — Independent financial advisor, 5 years post-corporate
+Hook: Same school as you (Sydney Uni, finance). Can lead with the shared anchor before any pitch.
 Source: education[0] (mutual)
 ```
 
@@ -140,7 +140,7 @@ Source: education[0] (mutual)
 If the data genuinely doesn't yield a specific hook (no recent posts, no mutual signals, generic experience), say so:
 
 ```
-James Park — IT consultant
+James Park — Independent IT consultant
 Hook: NONE — last post was 2023, no mutual signals, generic experience. Skip or fallback to headline.
 ```
 
@@ -154,8 +154,8 @@ Save the brief in two places:
 
 ```
 bulk_update(updates=[
-  {id: "conv_xxx", ai_notes: "Lead research brief: VP Eng at Acme, Series B. Hook: Apr 22 post on rebuilding hiring loop. Source: recent_posts[0]."},
-  {id: "conv_yyy", ai_notes: "Lead research brief: Founder, demand gen agency. Hook: March attribution piece + Marketo background. Source: recent_posts[2] + experience.previous."}
+  {id: "conv_xxx", ai_notes: "Lead research brief: Founder, boutique exec coaching practice. Hook: Apr 22 post on opening second cohort + finding right-fit candidates. Source: recent_posts[0]."},
+  {id: "conv_yyy", ai_notes: "Lead research brief: Fractional CFO for service firms. Hook: March cash-flow piece + practice CFO background. Source: recent_posts[2] + experience.previous."}
 ])
 ```
 

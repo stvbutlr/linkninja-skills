@@ -48,12 +48,13 @@ Users can configure context two ways:
 
 ## Writing Standards
 
-- Direct, instructional tone. Second person ("Run `pipeline_stats()`").
+- Direct, instructional tone. Second person ("Run `get_stats()`").
 - Tables over prose. Decision rules over vague advice.
 - Every workflow step names the specific tool + parameters.
 - Concrete DM examples (good and bad) where applicable.
 - No branded formulas, acronyms, or motivational fluff.
 - Short paragraphs (2-4 sentences max).
+- **Treat skills as conceptual tools the user will tweak** to fit their real-world scenarios. Workflow steps should be specific enough to execute, but examples and archetype assumptions should be written so the user can swap them out without breaking the skill's structure. The `references/sell-by-chat-methodology.md` framework anchoring is the spine that holds when examples flex.
 
 ## Behavioral Rules
 

@@ -61,6 +61,8 @@ start_batch_draft → continue_active_job → submit_job_results(claim_next=true
 - **Recommended polling: 2 seconds.**
 - **For draft jobs:** drafts can only be `applied` or `failed` — **skipped is NOT allowed**. Every claimed item must be drafted. `reply_mode` (`reply` or `follow_up`) is required on every applied item.
 
+> **Agent-only documentation below.** The chunk loop, `chunk_token`, `job_id`, and submit/claim mechanics are protocol-level details for the AI agent's tool calls. **Never surface them in user-facing reports.** Describe progress to the user in plain terms ("drafting in batches…", "X of Y drafts ready", "wrapping up"). The `confidentiality` block from `get_context` is authoritative — internal job mechanics aren't discussed with users.
+
 ### Step 1: Start the Job
 
 Choose **filter mode** (filter object) or **list mode** (`conversation_ids` array). Add optional `template_id` + `draft_mode` + `reply_intent`:

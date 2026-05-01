@@ -41,9 +41,10 @@ Break down each ICP element:
 
 | ICP Element | What to Look For in Headlines | Keyword Examples |
 |-------------|------------------------------|-----------------|
-| Job title / role | Direct title match | "VP Sales", "Head of Growth", "Founder", "CEO" |
-| Industry / sector | Company or sector terms | "SaaS", "FinTech", "Construction", "Healthcare" |
-| Company stage | Stage indicators | "Series A", "Startup", "Scale-up" |
+| Service offering | What they sell or help with | "Coach", "Consultant", "Advisor", "Strategist" |
+| Niche / vertical | Their specific area | "Recruitment", "Wealth Management", "Leadership", "SEO", "Career" |
+| Business model | How they operate | "Founder", "Owner", "Solo", "Boutique", "Independent" |
+| Industry / sector (if needed) | Broader context | "Financial Services", "Healthcare", "Professional Services", "Creative" |
 | Seniority | Level markers | "Director", "Chief", "SVP", "Partner" |
 | Function | Department signals | "Revenue", "Marketing", "Engineering" |
 
@@ -80,8 +81,9 @@ If results are thin, try adjacent terms:
 | Original | Adjacent Terms to Try |
 |----------|-----------------------|
 | "Founder" | "Co-Founder", "Managing Director", "Principal", "Owner" |
-| "VP Sales" | "Sales Director", "Head of Revenue", "CRO", "Sales Leader" |
-| "SaaS" | "Software", "Platform", "Tech", "Cloud" |
+| "Coach" | "Mentor", "Facilitator", "Trainer", "Guide" |
+| "Consultant" | "Advisor", "Strategist", "Specialist", "Practitioner" |
+| "Financial Advisor" | "Wealth Manager", "Financial Planner", "Investment Advisor", "Fiduciary" |
 | "Consultant" | "Advisor", "Strategist", "Specialist" |
 
 ### Step 3: Scan for Re-engagement Opportunities (Already Messaged)
@@ -171,8 +173,8 @@ Users can run targeted scans for niches within their broader ICP. The main ICP s
 |-----------|-----------|---------------|
 | Consultants | Recruitment consultants | `["Recruitment", "Talent", "Staffing", "Executive Search"]` |
 | Consultants | IT consultants | `["IT Consulting", "Technology Advisor", "Digital Transformation"]` |
-| SaaS founders | AI/ML SaaS | `["AI", "Machine Learning", "GPT", "LLM"]` |
-| SaaS founders | FinTech SaaS | `["FinTech", "Financial Technology", "Banking", "Payments"]` |
+| Financial advisors | Wealth managers / fiduciaries | `["Wealth", "Independent Advisor", "Fiduciary", "Family Office"]` |
+| Fractional executives | Fractional CFO / CMO / COO | `["Fractional", "Interim", "Outsourced CFO", "On-Demand"]` |
 | Coaches | Executive coaches for tech | `["Executive Coach", "Leadership Coach", "CTO Coach"]` |
 | Coaches | Career coaches | `["Career Coach", "Career Transition", "Career Strategy"]` |
 | Agency owners | SEO agencies | `["SEO Agency", "Search Marketing", "Organic Growth"]` |

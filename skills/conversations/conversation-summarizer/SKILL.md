@@ -52,7 +52,7 @@ If `summary_instructions` exist in context, follow those. Otherwise use this def
 
 | Quality | Example |
 |---------|---------|
-| Good | "CTO at Series B SaaS. Needs analytics tool by end of Q1. Waiting for proposal after successful demo." |
+| Good | "Solo executive coach, year 3. Needs steady DM lead flow before Q1 cohort launch. Waiting for proposal after positive discovery call." |
 | Good | "Marketing director, 50-person agency. Exploring onboarding solutions. Asked about pricing, awaiting reply." |
 | Bad | "We talked about their business needs and they seemed interested." |
 | Bad | "Good conversation. Follow up soon." |
@@ -93,7 +93,7 @@ export_conversations(include_messages=true, page=2)
 
 ```
 bulk_update(updates=[
-  {"id": "abc", "summary": "CTO at Series B SaaS. Needs analytics tool by Q1. Waiting for proposal after demo.", "ai_notes": "Buying signals: budget confirmed ($50K), timeline (Q1), authority (CTO). Stage: discovery. Next: send proposal."},
+  {"id": "abc", "summary": "Founder of a 12-person creative agency. Needs steadier inbound pipeline before Q1 hiring push. Waiting for proposal after discovery call.", "ai_notes": "Buying signals: budget confirmed ($25K), timeline (Q1 hiring push), authority (sole founder). Stage: discovery. Next: send proposal."},
   {"id": "def", "summary": "Marketing manager at mid-size agency. Early rapport about content strategy.", "ai_notes": "No buying signals. General industry conversation. Stage: chatting. Next: ask about their current pain points."},
   {"id": "ghi", "summary": "Founder, 10-person startup. Asked about pricing after seeing a case study.", "ai_notes": "Interest signal: initiated pricing question. ICP fit: small startup, decision maker. Stage: qualified. Next: answer pricing and qualify budget."},
   ...

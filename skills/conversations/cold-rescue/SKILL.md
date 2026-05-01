@@ -114,8 +114,8 @@ Once you have triaged and drafted for a batch, apply updates in bulk:
 **Re-engage batch** (drafts saved individually, then reminders batched):
 ```
 // Save drafts one at a time (bulk_classify does not support draft_message)
-update_conversation(id="abc", draft_message="Hey Sarah -- was thinking about your onboarding challenge...", ai_notes="Cold rescue. Last active 3 weeks ago. Had real engagement: she mentioned onboarding ramp time was killing productivity. Re-engaging with new insight.")
-update_conversation(id="def", draft_message="Hey James -- something reminded me of our scaling conversation...", ai_notes="Cold rescue. Qualified but ghosted 2 weeks ago. Was discussing SDR team scaling. High-priority re-engage.")
+update_conversation(id="abc", draft_message="Hey Sarah… was thinking about what you said about discovery calls not converting…", ai_notes="Cold rescue. Last active 3 weeks ago. Had real engagement: she mentioned discovery → engagement conversion was costing her. Re-engaging with new insight.")
+update_conversation(id="def", draft_message="Hey James… something reminded me of our cohort-launch conversation…", ai_notes="Cold rescue. Qualified but ghosted 2 weeks ago. Was discussing scaling his coaching program past first cohort. High-priority re-engage.")
 
 // Batch reminders
 bulk_update(updates=[

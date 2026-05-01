@@ -17,6 +17,8 @@ metadata:
 
 Configure LinkNinja's sales context so every AI tool — classification, scanning, drafting, analysis — operates with precision instead of guessing. The ICP is the foundation. Everything else builds on it.
 
+Treat the templates and example archetypes here as starting points. Refine your ICP from real customer language — phrases your best clients actually use, frustrations they describe in their own words, the specific moment they decided to seek help. Polished marketing-speak is forgettable; their actual phrasing is what makes drafts land.
+
 ## Before Starting
 
 1. Run `get_context()` to load the user's current sales context
@@ -148,7 +150,7 @@ After the main ICP is set, users can run niche campaigns for subsegments. Help t
 | Broad ICP | Subsegment | Scan Keywords |
 |-----------|-----------|---------------|
 | Consultants | Recruitment consultants | `["Recruitment", "Talent", "Staffing"]` |
-| SaaS founders | AI/ML SaaS | `["AI", "Machine Learning", "GPT"]` |
+| Financial advisors | Independent advisors / fiduciaries | `["Financial Advisor", "Independent", "Fiduciary"]` |
 | Coaches | Executive coaches for tech | `["Executive Coach", "CTO Coach"]` |
 | Agency owners | SEO agencies | `["SEO Agency", "Search Marketing"]` |
 

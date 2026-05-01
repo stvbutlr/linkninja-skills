@@ -63,7 +63,7 @@ Read every won conversation and extract patterns across these dimensions:
 | Qualifying questions | Which questions surfaced real needs? Which fell flat? | "Asking about current tools always led somewhere. Asking about budget directly never worked." |
 | Time to close | Days from first message to won stage | "Average 23 days. Fastest: 8 days. Slowest: 67 days" |
 | Common tags | Which tags appear most often across won deals? | "decision_maker on 80% of wins. urgent on 40%." |
-| Prospect profile | Industries, roles, company sizes that converted | "VP/Director level at 50-200 person SaaS companies" |
+| Prospect profile | Industries, roles, business sizes that converted | "Solo coaches in year 2-3 with one signature offer; or boutique consulting firms 3-15 staff" |
 | Who initiated next step | Did you suggest the call, or did they? | "They asked for a call in 6/10 wins. You asked in 4/10." |
 
 Present findings in a summary table:

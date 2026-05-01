@@ -29,7 +29,7 @@ If the result is negative, they object. Your job is not to overcome the objectio
 
 Wild claims increase perceived value but destroy perceived likelihood. "Double your business in 7 days" = low likelihood = trust collapses.
 
-Smaller, believable improvements convert more often. "Cut ramp time from 9 months to 3" is more believable than "transform your entire hiring process."
+Smaller, believable improvements convert more often. "Move your discovery → engagement conversion from 30% to 50%" is more believable than "transform your entire sales process."
 
 ## The Three Risks
 

@@ -74,11 +74,12 @@ Ask these questions to identify how their process differs from the defaults:
 | Business Type | Typical Customization |
 |---------------|----------------------|
 | High-ticket consulting ($10k+) | Stricter `qualified` criteria: budget confirmation, authority check |
-| SaaS / product | `discovery` = demo scheduled. `closing` = trial started or pricing sent. |
 | Coaching / services | `qualified` = expressed personal pain + willingness to invest. Less formal. |
+| Financial advisory | `qualified` = stated planning need + AUM threshold. `discovery` = exploratory call booked. |
 | Agency | `discovery` = audit or strategy session. `closing` = proposal with scope. |
 | Recruiting | `qualified` = confirmed open role + budget range. `closing` = terms being negotiated. |
 | Events / workshops | `qualified` = said yes to attending. `discovery` may not apply. |
+| Product-led (SaaS, courses) | `discovery` = demo / preview / trial active. `closing` = pricing sent or trial expiring. |
 
 ### Step 2: Customize Stage Criteria
 
@@ -168,21 +169,21 @@ update_context(stages=[
 ])
 ```
 
-### SaaS with Demo Flow
+### Financial Advisory / Wealth Management
 
 ```
 update_context(stages=[
   {
-    "key": "discovery",
-    "entrance_criteria": "Demo scheduled or completed. Prospect has seen the product.",
-    "exit_criteria": "Trial started or proposal sent with pricing.",
-    "ai_context": "We always do a live demo before sending pricing. If pricing was discussed without a demo, keep in qualified."
+    "key": "qualified",
+    "entrance_criteria": "Prospect mentioned a specific planning need (retirement, succession, tax, estate) AND has assets at or above our minimum. Don't qualify on curiosity alone — listen for AUM signals or stated investable assets.",
+    "exit_criteria": "Discovery / fact-find call booked.",
+    "ai_context": "Our minimum is $500K investable. Below that, hand off to colleagues at the firm or politely decline. Compliance: no pricing or recommendations in DMs."
   },
   {
-    "key": "closing",
-    "entrance_criteria": "Trial active or proposal sent with specific pricing.",
-    "exit_criteria": "Signed up for paid plan or declined.",
-    "ai_context": "Trial length is 14 days. If trial expires with no conversion, move to lost unless they asked for an extension."
+    "key": "discovery",
+    "entrance_criteria": "Discovery call booked or completed. Risk profile and goals mapped.",
+    "exit_criteria": "Plan or proposal presented.",
+    "ai_context": "Two-meeting close is the norm — discovery, then plan presentation. Don't skip the discovery."
   }
 ])
 ```

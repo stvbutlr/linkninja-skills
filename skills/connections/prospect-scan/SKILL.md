@@ -5,7 +5,8 @@ description: >
   prospect lists, and prioritize who to message first. Use when the user says "find
   prospects", "scan my connections", "who should I message", "find leads", "who
   matches my ICP", "search my network", "find people to reach out to", or names a
-  specific segment like "find SaaS founders" or "find coaches". Supports subsegment
+  specific segment like "find recruitment consultants" or "find executive coaches"
+  or "find financial advisors with $100M+ AUM". Supports subsegment
   campaigns for niche targeting within a broader ICP. Related: icp-definition for
   setting up ICP first, campaign-launch for running a campaign after scanning,
   dm-writing for crafting messages to scan results.

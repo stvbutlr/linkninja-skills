@@ -1,12 +1,14 @@
 ---
 name: objection-handling
 description: >
-  Handle objections and concerns in LinkedIn DM conversations. Maps to app template
-  category: objection. Use when the user says "handle this objection", "they said too
-  expensive", "they're hesitating", "how to respond to pushback", or when the prospect
-  raises price, timing, trust, or fit concerns. Covers 6 objection types with the
-  acknowledge-ask-address-exit pattern. Related: reply-handling for non-objection replies,
-  call-booking for moving past resolved objections, cold-rescue for complete silence.
+  Handle objections and concerns in DM conversations — Acknowledge → Ask Context
+  → Reframe, plus the "never use 'but'" rule. Use when the user says "handle this
+  objection", "they said too expensive", "they're hesitating", "how to respond
+  to pushback", "they're thinking about it", "draft a reply to this objection",
+  or when a prospect raises price, timing, trust, or fit concerns. Covers 6
+  objection types with the playbook pattern + easy-out close. Related:
+  reply-handling for non-objection replies, call-booking once the objection is
+  resolved, cold-rescue if they go silent after the objection.
 metadata:
   version: "1.0"
   author: linkninja

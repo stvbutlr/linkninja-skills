@@ -28,6 +28,18 @@ Things we generally won't merge:
 4. **Validate.** Run `./validate-skills.sh` before pushing. PRs that fail the validator won't be reviewed.
 5. **Submit a PR** with a short description of the problem you ran into and how your change fixes it. Concrete examples help.
 
+### Building a New Skill from Scratch
+
+If you're authoring a brand-new skill (not patching an existing one), use the [Anthropic skill-creator skill](https://github.com/anthropics/skills/tree/main/skills/skill-creator) for the development workflow. It walks you through the parts that actually matter:
+
+- **Capture intent** — what should the skill let an AI agent do, what should trigger it, what's the expected output
+- **Draft + test** — write a short SKILL.md, generate 2-3 realistic test prompts, run with-skill vs without-skill
+- **Evaluate** — grade the outputs, identify where the skill is or isn't pulling weight
+- **Iterate** — keep tightening until the skill works across varied user contexts, not just your own examples
+- **Description optimisation** — the description IS the trigger; specific about what AND when, "a little pushy" with trigger contexts to avoid undertriggering
+
+The bar to ship a new skill into this repo: it should produce noticeably better output *with* the skill loaded than *without* it, on prompts a real user would actually say. If the difference is marginal, the skill isn't ready — keep iterating, or fold the improvement into an existing skill instead of creating a new one.
+
 ## Voice and Style
 
 User-facing copy in this repo (README, examples, sample DMs) should sound like Steve, not generic AI marketing copy. The voice rules live in `.claude/skills/steve-voice/SKILL.md` and the playbook reference at `references/sell-by-chat-methodology.md`.

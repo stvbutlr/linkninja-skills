@@ -1,12 +1,14 @@
 ---
 name: call-booking
 description: >
-  Book discovery calls and next steps with qualified prospects. Maps to app template
-  category: closing. Use when the user says "book a call", "move to discovery",
-  "schedule a meeting", "how to invite them to a call", or when a prospect shows
-  readiness signals after qualification. Covers readiness assessment, the 3-element
-  invite, "why now" framing, and post-confirmation follow-up. Related: reply-handling
-  for conversations still qualifying, objection-handling when they hesitate at the ask.
+  Book discovery calls and move qualified prospects to the next step — Micro-commitments,
+  the 3-element invite, "why now" framing, post-confirmation follow-up. Use when the
+  user says "book a call", "move to discovery", "schedule a meeting", "how to invite
+  them to a call", "draft a call invite", "they're ready to chat — what now", or
+  when a prospect's qualifying signals indicate readiness. Covers readiness
+  assessment, low-friction time slots, day-before confirmations. Related:
+  reply-handling for conversations still qualifying, objection-handling when they
+  hesitate at the ask, cold-rescue if they go quiet after the invite.
 metadata:
   version: "1.0"
   author: linkninja

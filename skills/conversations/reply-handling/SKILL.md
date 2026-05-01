@@ -1,12 +1,14 @@
 ---
 name: reply-handling
 description: >
-  Handle replies and qualify prospects through conversation. Maps to app template
-  category: follow_up. Use when the user says "they replied", "how should I respond",
-  "what should I say back", "qualifying", "they asked about", or when drafting a
-  follow-up message. Covers first replies through qualification with trust progression
-  and pain depth assessment. Related: cold-outreach for first messages,
-  objection-handling when they push back, call-booking when they're ready.
+  Handle replies and qualify prospects through conversation — A–B Method, Question
+  Sequence, trust progression. Use when the user says "they replied", "how should
+  I respond", "what should I say back", "qualifying", "they asked about", "draft
+  a reply", "follow-up message for [name]", or when a prospect's reply needs a
+  qualifying follow-up. Covers first replies through qualification with trust
+  progression and pain-depth assessment. Related: cold-outreach when no reply
+  yet, objection-handling when they push back, call-booking when they're ready
+  to move forward.
 metadata:
   version: "1.0"
   author: linkninja

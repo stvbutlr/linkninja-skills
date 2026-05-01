@@ -1,12 +1,15 @@
 ---
 name: cold-outreach
 description: >
-  Craft cold DMs and post-event openers that earn replies. Maps to app template
-  categories: opening, value_add. Use when the user says "write a cold DM", "first
-  message to", "reach out to", "post-event follow-up", or when drafting an opening
-  or value-add message. Uses specificity-personalization framework, insider vocabulary
-  signals, and permission-based closing. Related: reply-handling for when they respond,
-  campaign-launch for structured outreach at scale, voice-profile-setup for tone matching.
+  Craft cold DMs and post-event openers that actually earn replies — anchored in
+  the Three Opening Rules, Precision Flattery, Pattern Interrupt, and Preloaded
+  Value. Use when the user says "write a cold DM", "first message to [name]",
+  "reach out to [name]", "post-event follow-up", "draft an opener", "DM this
+  prospect", or any first-touch on someone they haven't messaged yet. Uses
+  specificity-personalisation framework, insider-vocabulary mirroring, and
+  permission-based closing. Related: reply-handling for when they respond,
+  campaign-launch for structured outreach at scale, lead-research for the
+  Precision-Flattery briefs, voice-profile-setup for tone matching.
 metadata:
   version: "1.0"
   author: linkninja

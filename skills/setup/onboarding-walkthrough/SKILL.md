@@ -33,6 +33,35 @@ The setup is a starting point, not a finished product. Capture what's true today
 
 3. Check whether the user has any conversations yet (`get_stats`). If not, that's fine — they can configure ahead of importing DMs.
 
+## Step 0 — What Kind of Business Are You? (Archetype Detection)
+
+Before walking through the foundation, ask the user what kind of business they run. Different archetypes have different ICP shapes, voice patterns, and pipeline shapes — using a known archetype as a starting point makes the rest of setup sharper and faster, not generic.
+
+**Ask:**
+
+> Quick one before we dive in — which best describes what you do?
+>
+> 1. **Consultant** (recruitment, IT, business strategy, ops, marketing, sustainability)
+> 2. **Coach** (executive, career, leadership, sales, business, performance, health)
+> 3. **Financial advisor or wealth manager**
+> 4. **Agency owner** (SEO, creative, content, paid media, web)
+> 5. **Niche service seller** (specialist accountant, fractional CFO/CMO, copywriter, course creator, therapist, etc.)
+> 6. **Something else** — I'll describe it
+
+Once they answer, branch the rest of this walkthrough using the archetype as a starting point. **Always confirm before saving** — the archetype gives sensible defaults, the user fine-tunes from there.
+
+### Archetype Shaping (How Each Archetype Bends the Rest of Setup)
+
+| Archetype | ICP shape | Voice tendency to flag | Pipeline shape |
+|-----------|-----------|------------------------|----------------|
+| Consultant | SMB-to-mid-market buyers; specific functions inside firms | Over-jargon — encourage plain language | Discovery → scope → engagement |
+| Coach | Individual buyers (1:1) or cohort participants | Over-affirm — encourage candour | Discovery → enrolment, or cohort intake |
+| Financial advisor | AUM-qualified individuals; compliance-aware | Over-formal — encourage warmth, watch compliance | Fact-find → plan → engagement (often 2-meeting) |
+| Agency owner | SMB-to-mid-market clients | Founder voice vs agency-marketing voice — keep founder | Discovery → audit/proposal → scope |
+| Niche service seller | Highly varied; depends on niche | Depends — surface their distinctive voice | Depends — often 1-2 meeting close |
+
+For deeper archetype-specific ICP starting points, point the user to **icp-definition**'s Archetype Templates section after Step 4 below.
+
 ## The Onboarding Arc
 
 This is one session, four moves. Each move ties to a playbook framework so the user understands *why* we're configuring this, not just what.
@@ -118,17 +147,20 @@ update_context(
 
 Show the user the full configured context (read it back from `get_context` post-save):
 
-> Setup complete. Here's what we've configured:
+> Setup complete. Here's what we've configured for [archetype]:
 >
 > - **ICP**: [first sentence of additional_context]
 > - **Positioning**: [first sentence of positioning_context]
-> - **Voice**: [tone summary]
+> - **Voice**: [tone summary, including any archetype-specific flags from Step 0]
 > - **Personal story**: [one-line summary]
 > - **Pipeline**: 7 stages, [N] customised
 >
 > Next step:
-> - If you have existing DMs: run **full-morning-triage** to classify and process the inbound
-> - If you're starting fresh: run **prospect-scan** to find ICP matches in your network and **campaign-launch** to plan your first outreach push
+>
+> - **Sharpen the foundation**: run **icp-definition** for a deeper interview tied to your archetype's templates, then **voice-profile-setup** once you have 5+ sent DMs to analyse, then **stage-configuration** if your pipeline shape needs more nuance than the defaults.
+> - **Start working the pipeline**: if you have existing DMs, run **full-morning-triage**; if you're starting fresh, run **prospect-scan** then **campaign-launch**.
+
+The setup is sharper after a few weeks of real conversations — the AI's classifications and your own observations will surface what to refine.
 
 ## Guidelines
 
@@ -142,9 +174,14 @@ Show the user the full configured context (read it back from `get_context` post-
 
 ## Related Skills
 
-- **icp-definition** — Deep 6-dimension ICP interview with network validation
-- **voice-profile-setup** — 12-dimension voice analysis from real sent messages
-- **stage-configuration** — Tailored stage criteria with business-type customisation patterns
-- **prospect-scan** — First action after onboarding: find ICP matches in the network
-- **campaign-launch** — Plan and run the first outreach campaign once setup is done
-- **full-morning-triage** — Daily compound workflow to use once DMs are flowing
+The setup arc continues from here:
+
+- **icp-definition** — Deep ICP work. Includes archetype templates aligned with Step 0's branches.
+- **voice-profile-setup** — 12-dimension voice analysis. Includes archetype-specific tendency tables.
+- **stage-configuration** — Tailored stage criteria with archetype-specific examples.
+
+Once setup is done:
+
+- **prospect-scan** — Find ICP matches in the network using the saved keywords
+- **campaign-launch** — Run the first targeted outreach push
+- **full-morning-triage** — Daily compound workflow once DMs are flowing

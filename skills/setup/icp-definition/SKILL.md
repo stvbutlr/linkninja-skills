@@ -34,6 +34,22 @@ Treat the templates and example archetypes here as starting points. Refine your 
 3. If ICP already exists: summarize it and ask "Want to refine this or start fresh?"
 4. If ICP is empty: start the interview
 
+## Archetype Templates (Starting Points)
+
+If the user has already gone through `onboarding-walkthrough`, they've named their archetype. Surface the matching template from `references/archetype-templates.md` as a starting point — then refine each section with their actual language.
+
+The archetypes covered:
+
+| Archetype | Best for |
+|-----------|----------|
+| Solo Consultant | Recruitment, IT, business strategy, ops, marketing, sustainability — usually project + retainer mix |
+| Coach | Executive, business, career, leadership, sales, performance, health — 1:1 or cohort |
+| Independent Financial Advisor / Wealth Manager | Compliance-aware, AUM-qualified buyers |
+| Agency Owner | SEO, creative, content, paid media, web — 5–30 staff, founder-led sales |
+| Niche Service Seller | Specialist accountants, fractional executives, copywriters, course creators, therapists, authors, etc. |
+
+If the user's business doesn't fit, skip the templates and run the 6-dimension interview below from scratch. That's the point — these are starting points, not a fixed list.
+
 ## Workflow
 
 ### Step 1: Interview — 6 Dimensions
@@ -167,8 +183,14 @@ The ICP stays broad. Subsegments are targeted via `scan_connections` keywords an
 
 ## Related Skills
 
+The setup arc:
+
+- **onboarding-walkthrough** — Start here for first-time setup. Archetype detection (Step 0) feeds the templates in this skill.
+- **voice-profile-setup** — Next step after ICP. The archetype shapes voice tendencies; check the matching tendencies table there.
+- **stage-configuration** — After voice. The archetype shapes pipeline stage criteria; check the matching examples there.
+
+After setup:
+
 - **prospect-scan** — Use after ICP is defined to find matching connections
-- **voice-profile-setup** — Set up voice matching after ICP is configured
-- **stage-configuration** — Customize pipeline stages for the user's sales process
 - **campaign-launch** — Launch a targeted outreach campaign using the ICP
-- **won-deal-analysis** — Refine ICP based on actual win/loss data
+- **won-deal-analysis** — Refine ICP based on actual win/loss data — this is where the templates here get sharpened from real outcomes

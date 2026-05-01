@@ -34,6 +34,20 @@ If the user has no `voice_profile` yet, the fallback baseline is the playbook's 
 
 ## Workflow
 
+## Voice Tendencies by Archetype
+
+Different archetypes have characteristic voice tendencies and anti-patterns. Use these as starting points to flag during voice analysis — they're tendencies, not rules. Your job is to surface what's specifically true for *this* user, not impose the archetype default.
+
+| Archetype | Common voice tendency | Anti-pattern to flag |
+|-----------|----------------------|----------------------|
+| Solo Consultant | Direct, fact-heavy, can over-jargon | "Strategic alignment", "value proposition", "stakeholder buy-in" — corporate-speak that signals they've been institutionalised |
+| Coach | Warm, empathetic, can over-affirm | "I see you", "honour", "you're already enough" — endless validation without substance |
+| Financial Advisor | Polished, formal, compliance-driven | "Reach out", "circle back", "set up an appointment" — stiff and bureaucratic; signals corporate brand voice rather than the person |
+| Agency Owner | Casual founder voice OR agency-marketing voice | "We help brands unlock their full potential" — agency-website voice. Their REAL voice (founder energy) is distinct from how the agency talks externally. |
+| Niche Service Seller | Highly distinctive, often quirky | Defaulting to mass-market service-business framing instead of their genuine niche language |
+
+**Practical check:** read the user's last 10 sent messages. If they sound like an institutional press release more than a person, the archetype tendency has overcorrected. The voice profile should pull them back toward their natural register — direct, warm, specific.
+
 ### Step 1: Collect Messages
 
 Pull conversations with full message transcripts:
@@ -237,7 +251,8 @@ Repeat for each conversation. `bulk_update` does not support `draft_message`.
 
 ## Related Skills
 
-- **dm-writing** -- Uses the voice profile when drafting individual messages
-- **batch-drafting** -- Uses the voice profile for bulk message generation
-- **icp-definition** -- Complementary setup. ICP defines who to target, voice defines how to sound
-- **stage-configuration** -- Another setup skill, often done in the same onboarding session
+- **onboarding-walkthrough** — The setup arc starts here. Archetype detection (Step 0) flags voice tendencies upfront.
+- **icp-definition** — Complementary setup. ICP defines who to target, voice defines how to sound. Use the archetype templates there to inform voice tendencies here.
+- **stage-configuration** — Next step in the setup arc after voice. Stages tie the voice work to actual pipeline shape.
+- **dm-writing** — Consumes the voice profile when drafting individual messages
+- **batch-drafting** — Uses the voice profile (via `shared_bundle`) for bulk message generation

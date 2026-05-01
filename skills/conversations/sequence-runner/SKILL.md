@@ -105,6 +105,11 @@ Then loop the chunked flow per **batch-drafting**:
 get_job_status → get_job_chunk → AI drafts each item → submit_job_results(claim_next: true) → repeat → get_job_results
 ```
 
+**Constraint reminder:** for draft jobs, every claimed item must be returned with `status: applied` (with `draft_message` + `reply_mode`) or `status: failed` — **`skipped` is not allowed** on draft jobs. If a contact genuinely doesn't fit the sequence touch (e.g., wrong stage, no usable transcript), mark `failed` with an `error` reason rather than fabricating a draft.
+
+```
+```
+
 Operational rules from the live `ai_execution.job_protocols.draft_reply` block:
 
 - Don't stop after start. Continue calling tools in the same turn.

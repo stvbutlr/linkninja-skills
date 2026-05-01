@@ -230,7 +230,7 @@ See [POWER-UPS.md](../../../POWER-UPS.md) for full setup. Sequences are the high
 - **Scheduled touches:** After kicking off a cohort with `gr1`, schedule the touches: `/schedule once "in 2 days at 10am" sequence-runner "GR2 touch"`, `/schedule once "in 6 days at 10am" sequence-runner "GR3 touch"`, etc. Each touch advances the tag automatically.
 - **Hooks:** `PreToolUse` voice-check on every drafted touch.
 - **Subagent:** Drafter + reviewer pair per item — sequences accumulate quality drift fast without a reviewer pass.
-- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect) — touches can reference past similar conversations and what's worked. Calendar MCP only useful at call-booking touches (to propose specific times).
+- **Context MCPs:** wire into your KB (Obsidian / Notion / mem.ai / Reflect / Google Drive) — touches can reference past similar conversations and what's worked. SFC members can layer the Seven Figure Creators MCP alongside for sequence patterns + case studies. Calendar MCP only useful at call-booking touches (to propose specific times).
 - **Model:** Sonnet 4.6+ (voice nuance + speed at scale).
 
 ## Related Skills

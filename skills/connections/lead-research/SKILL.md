@@ -261,7 +261,7 @@ The enrichment data is rich — recent posts (often public, but sometimes filter
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Subagent:** Parallel research agents — for cohorts of 100+, spawn 5 subagents (20 contacts each). Cuts wall-clock time ~5× and lets you run cohort research while you do something else.
-- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you keep prospect research) — briefs can be enriched with anything you've already captured about the prospect or their archetype, and new briefs save back into the same store for reuse.
+- **Context MCPs:** wire into your KB (Obsidian / Notion / mem.ai / Reflect / Google Drive / wherever you keep prospect research) — briefs can be enriched with anything you've already captured about the prospect or their archetype, and new briefs save back into the same store for reuse. SFC members can layer the Seven Figure Creators MCP alongside for archetype-specific context patterns.
 - **Context MCP:** GitHub — for technical buyers (founders, CTOs, devtool buyers), pull open-source activity to deepen Precision Flattery beyond what Sales Nav surfaces.
 - **Context MCP:** Web search (Brave / Perplexity-style) — fresh signals about the prospect's company today (news, podcasts, recent talks).
 - **Model:** Sonnet 4.6+ (good balance of quality and cost; brief generation isn't reasoning-heavy).

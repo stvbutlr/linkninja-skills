@@ -304,7 +304,7 @@ See [POWER-UPS.md](../../../POWER-UPS.md) for full setup. Batch-drafting is the 
 
 - **Hook:** `PreToolUse` voice-check on every `submit_job_results` call — catches voice slips before they save.
 - **Subagent:** Drafter + reviewer pair per chunk item — drafter generates, reviewer checks against `voice_profile` + framework + `positioning_context` fit before submission. Two-pass quality at the cost of an extra subagent call.
-- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect) — drafts can pull "what worked for similar prospects" from your past notes, not just from the conversation transcript alone.
+- **Context MCPs:** wire into your KB (Obsidian / Notion / mem.ai / Reflect / Google Drive) — drafts can pull "what worked for similar prospects" from your past notes, not just from the conversation transcript alone. SFC members can layer the Seven Figure Creators MCP alongside for the playbook examples drafted at scale across many practitioners.
 - **Model:** Sonnet 4.6+ (best balance of quality + speed for prose generation at scale).
 
 ## Related Skills

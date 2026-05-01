@@ -190,21 +190,30 @@ Stack the patterns: a "morning operator" team that runs at 7am — a triage agen
 
 ## Context MCPs (Make Skills Smarter)
 
-Skills get sharper when they can read context you've accumulated elsewhere — your own knowledge base of customer notes, your email history with a prospect, fresh external signals about their company today. **The recommendation: wire skills into wherever YOU already store context, plus a couple of fresh-context sources.**
+Skills are pipelines that orchestrate the LinkNinja MCP — read pipeline, draft, run jobs. Context MCPs layered alongside make those pipelines smarter by injecting the right context at the right step in the right process.
 
-The wrong frame is "where does the data go" (Slack notifications, Linear tasks, Stripe sync). Those are effectors, not context. The right frame is "what context makes the skill smarter than running cold."
+The mental model:
 
-### Your own knowledge base (the highest-leverage layer)
+- **LinkNinja MCP** = the live pipeline state (who's where, what they said, what stage they're in)
+- **Your knowledge base** = your specific customer history, framework refinements, "what worked" learnings
+- **Seven Figure Creators MCP** (optional, if you're an SFC member) = the playbook with patterns and case studies that worked across many practitioners
+- **Fresh external context** (optional) = web search for prospect news, GitHub for technical buyers, email for cross-channel signal
 
-Most operators already capture customer insights, framework refinements, and "what worked" learnings somewhere. That's gold for the AI to read.
+Each layer adds a kind of context the others can't. Three or four layers chained together is much sharper than any one alone. The wrong frame is "where does the data go" (Slack notifications, Linear tasks, Stripe sync). Those are effectors, not context. The right frame is "what context makes the skill smarter than running cold."
 
-| Where you store context | Skills it amplifies | What context it provides |
-|-------------------------|---------------------|--------------------------|
-| Obsidian | All skills, especially DM, lead-research, analysis | Past customer notes, framework variations you've tried, "what worked for fractional CFOs" learnings, your own playbook annotations |
-| Notion | Same | Same — operators with structured databases of past customers / objections / wins benefit most |
-| Reflect / Roam / Logseq | Same | Networked notes — useful for surfacing past similar conversations |
-| Apple Notes / Google Docs | Same (more limited; via community MCPs or browser automation) | Quick capture; less structured |
-| Custom CRM-like setup | Same | Whatever you've built — operators who've put the time into a structured store get the most lift |
+### Your own knowledge base (the highest-leverage layer for most operators)
+
+Whatever you already use to capture customer insights, framework refinements, and "what worked" learnings. Operators store this in different places — and most have a community MCP that lets Claude read the content:
+
+| Where you store context | Notes |
+|-------------------------|-------|
+| Obsidian | Markdown files in a vault. Several community MCPs exist. |
+| Notion | Structured databases. Official MCP available. |
+| mem.ai | AI-native notes. |
+| Reflect / Roam / Logseq | Networked notes — good for surfacing past similar conversations. |
+| Google Drive / Google Docs | Loose docs. Useful via Google MCPs. |
+| Apple Notes | Lighter capture. Often via browser automation. |
+| Custom CRM-like setup | Whatever you've built — operators with a structured store get the most lift. |
 
 **Skill-specific context wins:**
 
@@ -212,6 +221,14 @@ Most operators already capture customer insights, framework refinements, and "wh
 - `objection-handling` reading your "objections that came up" notes → response shaped by what actually resolved them last time
 - `won-deal-analysis` reading past analysis run notes → patterns surface across runs, not just within one
 - `icp-definition` reading your existing customer notes → archetype templates refined from real client language
+
+### Seven Figure Creators MCP (if you're an SFC member)
+
+SFC ships an MCP server with the full Sell By Chat playbook plus accumulated DM patterns and case studies queryable as context. Layer it alongside the LinkNinja MCP and your own KB — drafts get the operational live state from LinkNinja, your specific learnings from your KB, and the broader playbook patterns from SFC, all in one chain.
+
+Best for the DM situation skills (`cold-outreach`, `reply-handling`, `objection-handling`, `call-booking`, `cold-rescue`), `batch-drafting`, `sequence-runner`, and the setup arc (`icp-definition` templates, `voice-profile-setup` tendencies). Less directly useful for analysis skills, where your own KB carries more specific signal.
+
+If you're not an SFC member, skip this layer. The other context layers still provide most of the lift.
 
 ### Fresh external context
 
@@ -299,29 +316,33 @@ Stack scheduling + hooks + skills + MCPs into full routines.
 
 ## Per-Skill Power-Up Cheatsheet
 
-The **Context** column = "wire this skill into wherever you store your own customer / framework / playbook notes" (Obsidian / Notion / Reflect / Roam / Logseq / Apple Notes / your CRM-like setup — pick the one with a community MCP for your system). The skills get sharper when they can read what you've already learned.
+The **Context** column reads as a chain — the LinkNinja MCP is always running underneath; these are the additional context layers worth adding alongside.
+
+- **your KB** = wire this skill into wherever you store your own customer / framework / playbook notes (Obsidian / Notion / mem.ai / Reflect / Roam / Logseq / Google Drive / Apple Notes / your CRM-like setup — pick the one with a community MCP for your system).
+- **SFC MCP** = optional layer for SFC members (Sell By Chat playbook patterns + case studies as queryable context). Skip if you're not a member.
+- Other entries are specific external context that helps that skill type.
 
 | Skill | Cron | Hook | Subagent | Context | Model |
 |-------|:---:|:---:|:---:|:---|:---:|
-| onboarding-walkthrough | — | — | — | your KB (existing customer notes) | Opus |
-| icp-definition | — | — | archetype-classifier | your KB (mine past customer language) | Opus |
-| voice-profile-setup | — | — | — | your sent-message archive | Opus |
-| stage-configuration | — | — | — | — | Opus |
+| onboarding-walkthrough | — | — | — | your KB (existing customer notes), SFC MCP | Opus |
+| icp-definition | — | — | archetype-classifier | your KB (past customer language), SFC MCP (archetype examples) | Opus |
+| voice-profile-setup | — | — | — | your sent-message archive, SFC MCP (voice patterns) | Opus |
+| stage-configuration | — | — | — | SFC MCP (stage criteria patterns) | Opus |
 | prospect-scan | — | — | — | GitHub (technical), Crunchbase / Apollo (firmographic), Web search | Sonnet |
 | connection-enrichment | weekly re-enrich | — | parallel enrich | — | Sonnet |
 | lead-research | — | — | parallel research | your KB, GitHub, Web search | Sonnet |
-| campaign-launch | — | voice-check | drafter+reviewer | your KB (past campaign notes) | Sonnet |
+| campaign-launch | — | voice-check | drafter+reviewer | your KB (past campaigns), SFC MCP (campaign patterns) | Sonnet |
 | smart-tagging | — | — | — | your KB, GitHub | Haiku |
 | dm-writing (router) | — | — | — | — | Haiku |
-| cold-outreach | — | voice-check | — | your KB (past similar prospects), Web search (fresh signals) | Sonnet |
-| reply-handling | — | voice-check | qualifier | your KB | Sonnet |
-| objection-handling | — | voice-check | objection-resolver | your KB (past resolved objections) | Sonnet |
-| call-booking | — | voice-check | — | Calendar | Sonnet |
-| batch-drafting | — | voice-check, Stop notify | drafter+reviewer | your KB | Sonnet |
-| sequence-runner | scheduled touches | voice-check | drafter+reviewer | your KB, Calendar (call-booking touches) | Sonnet |
-| cold-rescue | weekly | voice-check | — | your KB, Email (cross-channel context) | Sonnet |
-| template-library | — | — | — | your KB | Sonnet |
-| full-morning-triage | daily 7am | voice-check, Stop notify | mixed | your KB | Sonnet |
+| cold-outreach | — | voice-check | — | your KB (past similar prospects), SFC MCP (opener patterns), Web search (fresh signals) | Sonnet |
+| reply-handling | — | voice-check | qualifier | your KB, SFC MCP (qualifying patterns) | Sonnet |
+| objection-handling | — | voice-check | objection-resolver | your KB (past resolved objections), SFC MCP (objection responses) | Sonnet |
+| call-booking | — | voice-check | — | SFC MCP (call-booking patterns), Calendar | Sonnet |
+| batch-drafting | — | voice-check, Stop notify | drafter+reviewer | your KB, SFC MCP | Sonnet |
+| sequence-runner | scheduled touches | voice-check | drafter+reviewer | your KB, SFC MCP (sequence patterns), Calendar (call-booking touches) | Sonnet |
+| cold-rescue | weekly | voice-check | — | your KB, SFC MCP (re-engagement patterns), Email (cross-channel) | Sonnet |
+| template-library | — | — | — | your KB, SFC MCP (template library examples) | Sonnet |
+| full-morning-triage | daily 7am | voice-check, Stop notify | mixed | your KB, SFC MCP | Sonnet |
 | pipeline-cleanup | weekly Mon | — | — | — | Haiku |
 | stage-review | — | — | — | — | Sonnet |
 | conversation-summarizer | weekly Wed | — | — | your KB (sync summaries to your notes) | Sonnet |

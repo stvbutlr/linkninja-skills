@@ -280,7 +280,7 @@ Turn this from "the skill I run when I remember" into a daily operator routine. 
 - **Cron:** `/schedule daily 7am full-morning-triage` — drafts queued before you sit down.
 - **Hooks:** `PreToolUse` voice-check on every `update_conversation` (catches voice drift in batch).
 - **Subagents:** Mixed-mode batch — drafter + reviewer pairs for the hot-lead phase.
-- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you store past customer notes) — drafts can reference what's worked before for similar prospects, instead of starting cold.
+- **Context MCPs:** wire into your KB (Obsidian / Notion / mem.ai / Reflect / Google Drive / wherever you store past customer notes) — drafts can reference what's worked before for similar prospects. SFC members can layer the Seven Figure Creators MCP alongside for the playbook patterns that worked across many practitioners.
 - **Model:** Sonnet 4.6+ (handles the variety of triage decisions well).
 
 ## Related Skills

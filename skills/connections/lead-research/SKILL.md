@@ -261,8 +261,9 @@ The enrichment data is rich — recent posts (often public, but sometimes filter
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Subagent:** Parallel research agents — for cohorts of 100+, spawn 5 subagents (20 contacts each). Cuts wall-clock time ~5× and lets you run cohort research while you do something else.
-- **MCP:** GitHub — if your ICP includes technical buyers, pull their open-source activity to deepen Precision Flattery beyond what Sales Nav surfaces.
-- **MCP:** Notion — save each research brief to your knowledge base so you can re-use insights without re-running enrichment.
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you keep prospect research) — briefs can be enriched with anything you've already captured about the prospect or their archetype, and new briefs save back into the same store for reuse.
+- **Context MCP:** GitHub — for technical buyers (founders, CTOs, devtool buyers), pull open-source activity to deepen Precision Flattery beyond what Sales Nav surfaces.
+- **Context MCP:** Web search (Brave / Perplexity-style) — fresh signals about the prospect's company today (news, podcasts, recent talks).
 - **Model:** Sonnet 4.6+ (good balance of quality and cost; brief generation isn't reasoning-heavy).
 
 ## Related Skills

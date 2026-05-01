@@ -220,8 +220,7 @@ Present the full analysis as a structured report:
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule monthly first-Monday won-deal-analysis` — refine ICP from real wins on a monthly cadence.
-- **Hook:** `Stop` hook pushes the analysis report to Notion with patterns from prior runs.
-- **MCP:** Notion (insight database), Stripe / billing (tie won deals to actual revenue, not just stage flips).
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you keep past won-deal notes) — patterns surface across runs, not just within one month. Capture each run's findings back into the KB so next month's run reads them.
 - **Model:** Opus 4.7 — pattern detection across many conversations benefits from frontier reasoning. Monthly cadence makes the cost reasonable.
 
 ## Related Skills

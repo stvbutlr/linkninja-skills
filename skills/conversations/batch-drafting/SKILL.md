@@ -303,9 +303,8 @@ After the job completes:
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup. Batch-drafting is the highest-leverage place to invest in automation.
 
 - **Hook:** `PreToolUse` voice-check on every `submit_job_results` call — catches voice slips before they save.
-- **Hook:** `Stop` hook notifies on Slack when a 100-contact batch finishes (so you know when to review).
 - **Subagent:** Drafter + reviewer pair per chunk item — drafter generates, reviewer checks against `voice_profile` + framework + `positioning_context` fit before submission. Two-pass quality at the cost of an extra subagent call.
-- **MCP:** Slack (batch-complete notifications).
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect) — drafts can pull "what worked for similar prospects" from your past notes, not just from the conversation transcript alone.
 - **Model:** Sonnet 4.6+ (best balance of quality + speed for prose generation at scale).
 
 ## Related Skills

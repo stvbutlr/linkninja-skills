@@ -266,7 +266,8 @@ See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule weekly Friday 4pm cold-rescue` — Friday afternoon push (less salesy heading into the weekend).
 - **Hook:** `PreToolUse` voice-check on re-engagement drafts (re-engagement is where "just checking in" sneaks in).
-- **MCP:** Gmail / Outlook for cross-channel rescue when LinkedIn has gone fully silent.
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect) for past successful re-engagements — re-engagement messages can reference what specifically worked before with similar profiles.
+- **Context MCP:** Email (Gmail / Outlook) — if a prospect went silent on LinkedIn but you've emailed before, the inbox is context for finding a fresh re-engagement angle.
 - **Subagent:** Specialist re-engagement subagent fed past successful re-engagements for sharper hooks.
 
 ## Related Skills

@@ -222,7 +222,9 @@ The `references/` directory contains documentation shared across skills:
 
 ## Power-Ups (Optional)
 
-Once you're running the skills interactively, [POWER-UPS.md](POWER-UPS.md) shows how to layer Claude Code's bleeding-edge features for full automation: scheduled runs (`/schedule`, `/loop`, GitHub Actions cron), workflow hooks (voice-validation pre-tool, batch-complete notifications), the SDK for programmatic execution, subagent patterns (drafter + reviewer, parallel research), complementary MCPs (Calendar, Gmail, Slack, Notion, GitHub, Linear), and per-skill model config. Pick what serves you — these are opt-in.
+Once you're running the skills interactively, [POWER-UPS.md](POWER-UPS.md) shows how to layer Claude Code's bleeding-edge features for full automation: scheduled runs (`/schedule`, `/loop`, GitHub Actions cron), workflow hooks (voice-validation pre-tool, batch-complete notifications), the SDK for programmatic execution, subagent patterns (drafter + reviewer, parallel research), and per-skill model config.
+
+The biggest single quality lift comes from wiring skills into **your own context store** — Obsidian, Notion, Reflect, Roam, Logseq, Apple Notes, or wherever you already keep customer notes, framework refinements, and "what worked" learnings. Skills get sharper when they can read what you've already learned. POWER-UPS.md covers the pattern. All opt-in.
 
 ## Validation
 

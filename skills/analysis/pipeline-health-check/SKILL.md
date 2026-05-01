@@ -261,8 +261,7 @@ See `references/benchmarks.md` for healthy ranges by metric.
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule weekly Sunday 8am pipeline-health-check` — week-in-review snapshot before Monday plans.
-- **Hook:** `Stop` hook pushes results to Notion with comparison vs. last week's snapshot.
-- **MCP:** Notion (snapshot logging), Slack (post the Sunday summary to a #pipeline channel).
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you keep past health-check notes) — comparison vs. prior weeks surfaces naturally, not just one snapshot in isolation.
 - **Model:** Opus 4.7 (pattern detection across many conversations benefits from frontier reasoning; weekly cadence makes the cost reasonable).
 
 ## Related Skills

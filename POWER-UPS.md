@@ -188,22 +188,50 @@ Stack the patterns: a "morning operator" team that runs at 7am — a triage agen
 
 ---
 
-## Additional MCPs That Complement LinkNinja
+## Context MCPs (Make Skills Smarter)
 
-Layer these in for a more complete sales-ops stack:
+Skills get sharper when they can read context you've accumulated elsewhere — your own knowledge base of customer notes, your email history with a prospect, fresh external signals about their company today. **The recommendation: wire skills into wherever YOU already store context, plus a couple of fresh-context sources.**
 
-| MCP | Skills it amplifies | Use case |
-|-----|---------------------|----------|
-| Google Calendar / Cal.com | `call-booking`, `sequence-runner` | When prospect agrees to a call, auto-create the event with their thread context preloaded into the description. |
-| Gmail / Outlook | `cold-rescue`, `conversation-summarizer` | Cross-channel follow-up when LinkedIn has gone silent — same context, different inbox. |
-| Slack / Discord | `full-morning-triage`, `sequence-runner`, `pipeline-health-check` | End-of-day digest of pipeline state pings to a channel; team visibility. |
-| Notion / Obsidian | `won-deal-analysis`, `lost-deal-analysis`, `pipeline-health-check` | Capture insights from analysis runs into your knowledge base; surface patterns across runs over time. |
-| GitHub | `smart-tagging`, `lead-research` | If your ICP includes technical buyers (founders, CTOs, dev-tools), pull their open-source activity to deepen Precision Flattery. |
-| Linear / Asana / Jira | `reminder-engine`, `sequence-runner` | Sync reminders from LinkNinja into your task system; close the loop on follow-up commitments. |
-| Stripe / billing MCP | `won-deal-analysis` | Tie won deals to actual revenue, not just stage flips. |
-| Browser automation (Playwright / Puppeteer MCP) | Any | If you want to trigger LinkedIn UI actions LinkNinja doesn't expose, layer browser automation. |
+The wrong frame is "where does the data go" (Slack notifications, Linear tasks, Stripe sync). Those are effectors, not context. The right frame is "what context makes the skill smarter than running cold."
 
-Setup pattern: install the MCP, give Claude Code permission, then in the skill's workflow you can chain LinkNinja MCP calls with the new MCP's calls.
+### Your own knowledge base (the highest-leverage layer)
+
+Most operators already capture customer insights, framework refinements, and "what worked" learnings somewhere. That's gold for the AI to read.
+
+| Where you store context | Skills it amplifies | What context it provides |
+|-------------------------|---------------------|--------------------------|
+| Obsidian | All skills, especially DM, lead-research, analysis | Past customer notes, framework variations you've tried, "what worked for fractional CFOs" learnings, your own playbook annotations |
+| Notion | Same | Same — operators with structured databases of past customers / objections / wins benefit most |
+| Reflect / Roam / Logseq | Same | Networked notes — useful for surfacing past similar conversations |
+| Apple Notes / Google Docs | Same (more limited; via community MCPs or browser automation) | Quick capture; less structured |
+| Custom CRM-like setup | Same | Whatever you've built — operators who've put the time into a structured store get the most lift |
+
+**Skill-specific context wins:**
+
+- `cold-outreach` reading your "past similar prospects" notes → opener that references what's worked before
+- `objection-handling` reading your "objections that came up" notes → response shaped by what actually resolved them last time
+- `won-deal-analysis` reading past analysis run notes → patterns surface across runs, not just within one
+- `icp-definition` reading your existing customer notes → archetype templates refined from real client language
+
+### Fresh external context
+
+| MCP | Skills it amplifies | What it adds |
+|-----|---------------------|--------------|
+| Web search (Brave / Perplexity-style) | `cold-outreach`, `lead-research`, `cold-rescue` | Fresh prospect signals — company news, recent press, podcast appearances, conference talks. Beyond what Sales Nav captures. |
+| Browser automation (Playwright / Puppeteer MCP) | `lead-research`, `cold-outreach` | Read the prospect's website, blog, or LinkedIn profile UI directly when the API data is sparse or stale. |
+| GitHub | `smart-tagging`, `lead-research`, `prospect-scan` | Open-source activity, commits, repos. Especially for technical buyers (founders, CTOs, devtool buyers) — Precision Flattery beyond what Sales Nav surfaces. |
+| Crunchbase / Apollo / Clearbit (if/when MCPs available) | `prospect-scan`, `lead-research` | Funding history, hiring signals, tech stack. Augments LinkedIn data. |
+| Email (Gmail / Outlook MCP) | `cold-rescue`, `conversation-summarizer` | If a prospect went silent on LinkedIn but you've emailed before, the inbox is context — read past threads to find a re-engagement angle. |
+
+### Narrow effector MCPs (where they genuinely help one specific skill's flow)
+
+Most "integrate with my task system" requests aren't context — they're plumbing. Skip those unless they directly serve a skill's workflow:
+
+| MCP | Skill | When |
+|-----|-------|------|
+| Calendar (Google / Cal.com) | `call-booking` | When the prospect says yes — pull your availability so the invite proposes specific times. Otherwise generic invites land worse. |
+
+Setup pattern for any of the above: install the MCP, give Claude Code permission, then in the skill's workflow you can chain LinkNinja MCP calls with reads from your context store. The skill's quality goes up in proportion to the quality of context it can read.
 
 ---
 
@@ -241,65 +269,68 @@ Stack scheduling + hooks + skills + MCPs into full routines.
 ### "Daily sales operator" routine
 
 - **7am cron**: `/full-morning-triage` runs unattended.
+- **Context read**: skill reads your KB (Obsidian / Notion / wherever) for past-customer notes — drafts reference what's worked before for similar prospects.
 - **Pre-tool hook**: each `update_conversation` draft passes through voice-check.sh before saving.
-- **Stop hook**: when triage finishes, post a Slack summary to `#linkedin-pipeline` with `N drafts ready for review`.
 - **You**: open your dashboard at 7:30am, review the drafts, hit send.
 
 ### "Weekly pipeline health" routine
 
 - **Sunday 8am cron**: `/pipeline-health-check` runs.
-- **Stop hook**: results pushed to a Notion database with comparison vs. last week's snapshot.
-- **You**: Sunday afternoon, glance at the dashboard, decide what to focus on Monday.
+- **Context read**: skill reads your past health-check notes from your KB → comparison surfaces vs. prior weeks naturally, not just one snapshot in isolation.
+- **You**: Sunday afternoon, glance at the dashboard, capture the new week's findings back into your KB so next week's run has them, decide what to focus on Monday.
 
 ### "Sequence engine" routine
 
 - Tag a cohort with `gr1`.
 - Cron schedules touches at Day 1, 3, 7, 14.
 - Pre-tool hook validates each draft against voice profile.
-- Calendar MCP creates events for any contacts who book a call.
+- Each touch reads your context store (Obsidian / Notion / wherever) for past similar conversations and what's worked.
+- Calendar MCP fills in availability when a touch lands at a call-booking step.
 - Sunday review surfaces which touches are converting.
 
 ### "Quarterly ICP refinement" routine
 
 - **First Monday of quarter**: `won-deal-analysis` runs (cron, Opus model).
 - **First Tuesday of quarter**: `lost-deal-analysis` runs.
-- Both push insights to Notion via the Notion MCP.
-- You manually review insights and decide which ICP refinements to apply via `update_context()`.
+- Both READ your context store for past analysis run notes — patterns surface across runs, not just within one.
+- You review, decide which ICP refinements to apply via `update_context()`, capture the decision back into your context store for next quarter's run.
 
 ---
 
 ## Per-Skill Power-Up Cheatsheet
 
-| Skill | Cron | Hook | Subagent | MCP | Model |
-|-------|:---:|:---:|:---:|:---:|:---:|
-| onboarding-walkthrough | — | — | — | — | Opus |
-| icp-definition | — | — | archetype-classifier | — | Opus |
-| voice-profile-setup | — | — | — | — | Opus |
+The **Context** column = "wire this skill into wherever you store your own customer / framework / playbook notes" (Obsidian / Notion / Reflect / Roam / Logseq / Apple Notes / your CRM-like setup — pick the one with a community MCP for your system). The skills get sharper when they can read what you've already learned.
+
+| Skill | Cron | Hook | Subagent | Context | Model |
+|-------|:---:|:---:|:---:|:---|:---:|
+| onboarding-walkthrough | — | — | — | your KB (existing customer notes) | Opus |
+| icp-definition | — | — | archetype-classifier | your KB (mine past customer language) | Opus |
+| voice-profile-setup | — | — | — | your sent-message archive | Opus |
 | stage-configuration | — | — | — | — | Opus |
-| prospect-scan | — | — | — | GitHub (technical buyers) | Sonnet |
+| prospect-scan | — | — | — | GitHub (technical), Crunchbase / Apollo (firmographic), Web search | Sonnet |
 | connection-enrichment | weekly re-enrich | — | parallel enrich | — | Sonnet |
-| lead-research | — | — | parallel research | GitHub | Sonnet |
-| campaign-launch | — | voice-check | drafter+reviewer | Calendar | Sonnet |
-| smart-tagging | — | — | — | GitHub | Haiku |
+| lead-research | — | — | parallel research | your KB, GitHub, Web search | Sonnet |
+| campaign-launch | — | voice-check | drafter+reviewer | your KB (past campaign notes) | Sonnet |
+| smart-tagging | — | — | — | your KB, GitHub | Haiku |
 | dm-writing (router) | — | — | — | — | Haiku |
-| cold-outreach | — | voice-check | — | Calendar (post-event) | Sonnet |
-| reply-handling | — | voice-check | qualifier | — | Sonnet |
-| objection-handling | — | voice-check | objection-resolver | — | Sonnet |
+| cold-outreach | — | voice-check | — | your KB (past similar prospects), Web search (fresh signals) | Sonnet |
+| reply-handling | — | voice-check | qualifier | your KB | Sonnet |
+| objection-handling | — | voice-check | objection-resolver | your KB (past resolved objections) | Sonnet |
 | call-booking | — | voice-check | — | Calendar | Sonnet |
-| batch-drafting | — | voice-check, Stop notify | drafter+reviewer | Slack | Sonnet |
-| sequence-runner | scheduled touches | voice-check | drafter+reviewer | Calendar, Linear | Sonnet |
-| cold-rescue | weekly | voice-check | — | Gmail | Sonnet |
-| template-library | — | — | — | — | Sonnet |
-| full-morning-triage | daily 7am | voice-check, Stop notify | mixed | Slack | Sonnet |
+| batch-drafting | — | voice-check, Stop notify | drafter+reviewer | your KB | Sonnet |
+| sequence-runner | scheduled touches | voice-check | drafter+reviewer | your KB, Calendar (call-booking touches) | Sonnet |
+| cold-rescue | weekly | voice-check | — | your KB, Email (cross-channel context) | Sonnet |
+| template-library | — | — | — | your KB | Sonnet |
+| full-morning-triage | daily 7am | voice-check, Stop notify | mixed | your KB | Sonnet |
 | pipeline-cleanup | weekly Mon | — | — | — | Haiku |
 | stage-review | — | — | — | — | Sonnet |
-| conversation-summarizer | weekly Wed | — | — | Notion | Sonnet |
-| reminder-engine | daily overdue | — | — | Linear / Calendar | Sonnet |
-| pipeline-health-check | weekly Sun | Stop → Notion | — | Notion, Slack | Opus |
-| reply-rate-analysis | — | — | — | Notion | Opus |
-| stage-conversion-analysis | — | — | — | Notion | Opus |
-| won-deal-analysis | monthly first-Mon | Stop → Notion | — | Notion, Stripe | Opus |
-| lost-deal-analysis | monthly first-Tue | Stop → Notion | — | Notion | Opus |
+| conversation-summarizer | weekly Wed | — | — | your KB (sync summaries to your notes) | Sonnet |
+| reminder-engine | daily overdue | — | — | — | Sonnet |
+| pipeline-health-check | weekly Sun | — | — | your KB (compare past health snapshots) | Opus |
+| reply-rate-analysis | — | — | — | your KB | Opus |
+| stage-conversion-analysis | — | — | — | your KB | Opus |
+| won-deal-analysis | monthly first-Mon | — | — | your KB (insight database) | Opus |
+| lost-deal-analysis | monthly first-Tue | — | — | your KB (loss-pattern database) | Opus |
 
 ---
 
@@ -308,7 +339,7 @@ Stack scheduling + hooks + skills + MCPs into full routines.
 1. **Pick one routine that solves an actual problem you have.** Most operators start with the daily sales operator.
 2. **Get one piece of it working.** Just the cron, nothing else. Run it for 3 days and see what breaks.
 3. **Add the hooks once the cron is stable.** Voice-check first; it prevents the most common quality issue.
-4. **Add MCPs as integration needs become real.** Don't pre-emptively wire up Notion if you're not actually using it.
+4. **Wire in your context store before any other MCP.** The biggest single quality lift comes from skills being able to read your existing customer notes / framework refinements / "what worked" learnings. Notification MCPs can wait.
 5. **Tune model config last.** Default Sonnet is fine for everything; only optimise once you have actual cost/quality data.
 
 The trap to avoid: setting up all of this on day 1, having nothing actually work, and concluding "the skills don't work." The skills work. The automation layer is what compounds them. Build it slowly.

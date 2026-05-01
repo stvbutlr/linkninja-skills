@@ -301,8 +301,7 @@ After any reminder operation, deliver a summary:
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule daily 6pm reminder-engine "what's overdue"` — end-of-day audit catches conversations slipping through.
-- **MCP:** Linear / Asana / Jira to sync LinkNinja reminders into your task system; Calendar to surface follow-up commitments alongside meetings.
-- **Programmatic:** SDK script can sync reminder state with external systems on cron.
+- **Programmatic:** SDK script can run the overdue audit on cron from a server you control if you want it independent of your local Claude Code session.
 
 ## Related Skills
 

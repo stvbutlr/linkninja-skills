@@ -273,7 +273,7 @@ For the bulk classify shortcut path:
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule weekly Wednesday 2pm conversation-summarizer "refresh stale summaries"` — mid-week refresh so weekend analysis (pipeline-health-check, won/lost analysis) has fresh notes.
-- **MCP:** Notion — also push summaries into a notes database so insights surface across runs.
+- **Context MCP:** wire into your KB (Obsidian / Notion / Reflect / wherever you keep prospect notes) — sync summaries into your own knowledge base so you can read them back from there in any other context, not just inside LinkNinja's UI.
 
 ## Related Skills
 

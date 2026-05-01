@@ -290,8 +290,7 @@ export_conversations(stage="lost", format="csv", include_messages=true)
 See [POWER-UPS.md](../../../POWER-UPS.md) for full setup.
 
 - **Cron:** `/schedule monthly first-Tuesday lost-deal-analysis` — find systemic loss patterns before they become habits. Pair with won-deal-analysis on first-Monday for a complete monthly review.
-- **Hook:** `Stop` hook pushes the report to Notion alongside won-deal insights so patterns surface across runs.
-- **MCP:** Notion (loss-pattern database).
+- **Context MCP:** wire into your KB (Obsidian / Notion / wherever you keep past loss-pattern notes) — surfaces recurring failure modes across runs, not just snapshot views.
 - **Model:** Opus 4.7 — frontier reasoning matters when finding subtle loss patterns.
 
 ## Related Skills

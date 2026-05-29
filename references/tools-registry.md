@@ -249,3 +249,4 @@ Check progress of a batch classification job.
 | reply-rate-analysis | `pipeline_stats`, `export`, `search`, `get_context` | — |
 | stage-conversion-analysis | `pipeline_stats`, `stages`, `get_context`, `export` | — |
 | lost-deal-analysis | `export`, `get_context`, `pipeline_stats` | `search`, `update_conversation`, `update_context` |
+| pipeline-snapshot | `pipeline_stats`, `get_context` | `stages`, `search` |

@@ -6,7 +6,7 @@ A collection of AI agent skills for LinkNinja MCP users. Each skill in `skills/`
 
 ## Structure
 
-- `skills/` — 23 skills organized into 4 categories
+- `skills/` — 24 skills organized into 4 categories
   - `setup/` — ICP, voice profile, stage configuration
   - `connections/` — Prospect scanning, campaigns, smart tagging
   - `conversations/` — Triage, DM writing, batch drafting, cleanup, reminders

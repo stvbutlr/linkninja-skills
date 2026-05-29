@@ -14,7 +14,7 @@ Named frameworks the skills use directly: **Three Opening Rules**, **Precision F
 
 ## Structure
 
-- `skills/` — 28 skills organized into 4 categories
+- `skills/` — 29 skills organized into 4 categories
   - `setup/` — ICP, voice profile, stage configuration, onboarding
   - `connections/` — Prospect scanning, enrichment, lead research, campaigns, smart tagging
   - `conversations/` — Triage, DM writing, batch drafting, templates, sequences, cleanup, reminders

@@ -66,7 +66,7 @@ The skills are plain markdown files. Clone the repo and point your agent at the 
 git clone https://github.com/stvbutlr/linkninja-skills.git
 ```
 
-## Skills Catalog (28 Skills)
+## Skills Catalog (29 Skills)
 
 ### Setup (`skills/setup/`)
 
@@ -112,6 +112,7 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
+| [pipeline-snapshot](skills/analysis/pipeline-snapshot/) | At-a-glance pipeline metrics with Sell By Chat benchmarks — daily / weekly / summary cadences, bake-able into a Routine | "pipeline snapshot", "daily brief", "weekly summary", "operator scorecard" |
 | [pipeline-health-check](skills/analysis/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "pipeline health" |
 | [reply-rate-analysis](skills/analysis/reply-rate-analysis/) | Analyze opening-to-reply conversion rates and message patterns | "analyze my reply rate", "which openers worked" |
 | [stage-conversion-analysis](skills/analysis/stage-conversion-analysis/) | Stage-by-stage conversion funnel — find where deals stall and why | "stage conversion analysis", "where am I losing deals" |
@@ -162,7 +163,8 @@ flowchart TD
 
     subgraph Analysis
         direction LR
-        PHC[pipeline-health-check] --- RRA[reply-rate-analysis]
+        PSN[pipeline-snapshot] --- PHC[pipeline-health-check]
+        PHC --- RRA[reply-rate-analysis]
         SCA[stage-conversion-analysis] --- WDA[won-deal-analysis]
         LDA[lost-deal-analysis]
     end

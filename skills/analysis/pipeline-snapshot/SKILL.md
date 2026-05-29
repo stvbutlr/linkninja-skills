@@ -25,8 +25,8 @@ Pipeline state with Sell By Chat-aligned movement metrics. Four modes — pick t
 | Mode | Cadence | What you get |
 |------|---------|--------------|
 | Interactive | ad hoc | Current per-stage table, no deltas |
-| `daily` | daily | Per-stage deltas + my-turn backlog by age + you-ghosted + heads-up |
-| `weekly` | weekly | Daily metrics + flow (new chats / replies / calls / closes) + cold rate |
+| `daily` | daily | Activity today (chats opened, contacts messaged, back-and-forth) + per-stage deltas + my-turn backlog by age + you-ghosted + heads-up |
+| `weekly` | weekly | Daily metrics rolled to 7 days + flow (new chats / replies / calls / closes) + cold rate |
 | `summary` | weekly | Weekly metrics + conversion funnel vs Sell By Chat benchmarks + persistence (touch 5 rule) + touch count distribution |
 
 **This skill does NOT:**
@@ -132,24 +132,37 @@ Extract per-stage counts.
 
 ### Step 4: Mode-specific metric gathering
 
-**Daily mode** — add 1 search for the my-turn backlog by age:
+**Daily mode** — activity metrics from real message data plus my-turn backlog:
 
 ```
 search_conversations(my_turn=true, compact=true)
+export_conversations(since="<24h ago, ISO>", include_messages=true)
 ```
 
-Bucket by age of `last_message_at`:
+From the export, compute the three core activity metrics — what the operator did today:
+
+| Metric | How to count |
+|--------|--------------|
+| **Chats opened today** | Conversations where the first message timestamp is within the last 24h |
+| **Contacts messaged today** | Distinct conversations with at least one outbound message in the last 24h |
+| **Back-and-forth conversations** | Conversations with at least one outbound AND one inbound message in the last 24h |
+| **Back-and-forth message count** | Total messages (inbound + outbound) across the back-and-forth conversations in the last 24h |
+
+Then bucket the my-turn backlog by age of `last_message_at`:
 - `<24h`, `1–3d`, `3–7d`, `7+d` (the 7+d bucket is the embarrassment number)
 
-**Weekly mode** — daily metrics PLUS flow approximations:
+If `export_conversations` paginates (`has_more: true`), fetch additional pages — daily activity rarely exceeds one page but a busy operator can spill.
+
+**Weekly mode** — same activity metrics rolled to 7 days plus flow approximations:
 
 ```
 search_conversations(my_turn=true, compact=true)
+export_conversations(since="<7 days ago, ISO>", include_messages=true)
 ```
 
+Activity metrics (same definitions as daily, just with a 7-day window).
+
 Flow metrics (derive from current vs previous baseline):
-- **New chats this week** ≈ `Δ(total pipeline) + Δ(won + lost)` (net new entries)
-- **Replies received** ≈ `Δ(chatting + qualified + discovery + closing + won + lost)` (net chats that have at least one reply)
 - **Calls booked** ≈ `Δ(discovery) + Δ(closing) + max(0, Δ(won))` (forward movement into discovery+ plus net wins)
 - **Deals closed** = `Δ(won)` and `Δ(lost)` reported separately as `W{n}/L{n}`
 - **Cold rate (active)** = `cold_in_chatting+qualified+discovery+closing / total_active` × 100
@@ -198,6 +211,11 @@ If `get_stats()` returns zero conversations, skip the write — don't pollute th
 ```
 Pipeline brief — daily, <today> (vs <previous date>)
 
+Activity today:
+- Chats opened: 3
+- Contacts messaged: 17
+- Back-and-forth conversations: 9 (47 messages)
+
 | Stage | Now | Δ |
 |-------|-----|---|
 | Opening | 47 | +5 |
@@ -221,11 +239,14 @@ Heads up: 1 conversation awaiting reply 7+ days — Sell By Chat: speed wins.
 ```
 Pipeline brief — week ending <today> (vs <previous date>)
 
+Activity this week:
+- Chats opened: 14
+- Contacts messaged: 78
+- Back-and-forth conversations: 31 (210 messages)
+
 [Per-stage table with Δ]
 
 Flow this week:
-- New chats: 14 (approx)
-- Replies received: 9
 - Calls booked: 3
 - Deals closed: W1 / L3
 
@@ -244,8 +265,9 @@ Weekly summary — week ending <today>
 
 [Per-stage table with Δ]
 
-Flow:
-- New chats: 14 · Replies: 9 · Calls booked: 3 · Closed: W1/L3
+Activity this week:
+- Chats opened: 14 · Contacts messaged: 78 · Back-and-forth: 31 (210 messages)
+- Calls booked: 3 · Closed: W1/L3
 
 Conversion vs Sell By Chat benchmarks:
 | Transition | Rate | Benchmark | Status |
@@ -299,7 +321,7 @@ claude schedule create \
   --cron "0 8 * * *" \
   --timezone "Australia/Sydney" \
   --prompt-file ~/.claude/routines/pipeline-daily.prompt.md \
-  --allowed-tools "get_context,get_stats,search_conversations,Read,Write"
+  --allowed-tools "get_context,get_stats,search_conversations,export_conversations,Read,Write"
 
 # Weekly — Monday 8am
 claude schedule create \
@@ -307,7 +329,7 @@ claude schedule create \
   --cron "0 8 * * 1" \
   --timezone "Australia/Sydney" \
   --prompt-file ~/.claude/routines/pipeline-weekly.prompt.md \
-  --allowed-tools "get_context,get_stats,search_conversations,Read,Write"
+  --allowed-tools "get_context,get_stats,search_conversations,export_conversations,Read,Write"
 
 # Summary — Monday 9am (after weekly brief)
 claude schedule create \
@@ -329,13 +351,14 @@ Steps:
 3. Read ~/.linkninja/state/pipeline-snapshot-daily.json (previous baseline). If missing, first run.
 4. Compute per-stage deltas.
 5. search_conversations(my_turn=true, compact=true) — bucket by age.
-6. Write the new snapshot to ~/.linkninja/state/pipeline-snapshot-daily.json.
-7. Output ONLY the daily brief — no preamble, no commentary.
+6. export_conversations(since="<24h ago, ISO>", include_messages=true) — compute chats opened, contacts messaged, back-and-forth conversations + message count.
+7. Write the new snapshot to ~/.linkninja/state/pipeline-snapshot-daily.json.
+8. Output ONLY the daily brief — no preamble, no commentary.
 
 Read-only. Do not change stages, write drafts, or archive.
 ```
 
-Weekly: swap the cadence to `weekly` and add the flow-metrics steps from Step 4. Summary: add `export_conversations(include_messages=true, since="<7 days ago>")` for touch counts + conversion benchmarks.
+Weekly: swap the window to 7 days for the export. Summary: add the 7-day export for touch counts + conversion benchmarks + persistence.
 
 ### Routine specs (universal)
 
@@ -345,16 +368,16 @@ routine:
   slug: pipeline-daily
   schedule: "0 8 * * *"
   prompt_file: ~/.claude/routines/pipeline-daily.prompt.md
-  allowed_tools: [get_context, get_stats, search_conversations, Read, Write]
-  caps: { max_tool_calls_per_run: 6, max_drafts_per_run: 0, max_runs_per_day: 2 }
+  allowed_tools: [get_context, get_stats, search_conversations, export_conversations, Read, Write]
+  caps: { max_tool_calls_per_run: 10, max_drafts_per_run: 0, max_runs_per_day: 2 }
 
 # Weekly
 routine:
   slug: pipeline-weekly
   schedule: "0 8 * * 1"
   prompt_file: ~/.claude/routines/pipeline-weekly.prompt.md
-  allowed_tools: [get_context, get_stats, search_conversations, Read, Write]
-  caps: { max_tool_calls_per_run: 8, max_drafts_per_run: 0, max_runs_per_day: 1 }
+  allowed_tools: [get_context, get_stats, search_conversations, export_conversations, Read, Write]
+  caps: { max_tool_calls_per_run: 12, max_drafts_per_run: 0, max_runs_per_day: 1 }
 
 # Summary (heaviest — uses export_conversations)
 routine:
@@ -389,8 +412,9 @@ Routines write the brief to a log — they do not push it. To get it delivered:
 - Read-only. Never change a stage, draft, or archive from this skill.
 - Each cadence has its own baseline. Don't cross-read (daily reads daily.json, etc.).
 - First run for any cadence: render without Δ, mark "First snapshot captured."
-- Flow metrics are approximations from delta math, not exact creation counts — the `since` filter on `search_conversations` is activity-based, not creation-based. Acceptable for directional signal.
-- Summary mode uses `export_conversations(include_messages=true)` — expensive. Don't run it at daily cadence.
+- Activity metrics (chats opened, contacts messaged, back-and-forth) come from real message data via `export_conversations(include_messages=true)`. Exact, not approximated.
+- Flow metrics in weekly mode (calls booked, deals closed) are derived from delta math against the previous baseline — directional signal, not exact event counts.
+- Daily mode runs `export_conversations` with a 24h window — usually one page, cheap. Weekly uses a 7-day window — may need pagination. Summary uses 7 days + transcript inspection for touch counts.
 - Conversion rates in summary mode are cumulative-pipeline-based, not period-based. They drift toward the long-term rate as the pipeline matures.
 - Benchmarks come from the Sell By Chat playbook (`references/sell-by-chat-methodology.md`). Status thresholds: ≥ benchmark = OK, ≥ half = LOW, < half = CRITICAL.
 - The "abandoned before touch 5" metric is the Sell By Chat signal that matters most for persistence — surface it prominently in summary mode.

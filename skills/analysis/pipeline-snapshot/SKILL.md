@@ -310,93 +310,134 @@ Stop after rendering.
 
 ## Bake it into a Routine
 
-Pick a cadence — daily / weekly / summary. Each gets its own routine + baseline file. They are independent.
+Pick a cadence — daily / weekly / summary. Each cadence is one scheduled job with its own prompt file and baseline file. The skill body is identical; the schedule changes.
 
-### Anthropic Routines (cloud)
+Cron expressions:
 
-```bash
-# Daily — 8am every day
-claude schedule create \
-  --name "pipeline-daily" \
-  --cron "0 8 * * *" \
-  --timezone "Australia/Sydney" \
-  --prompt-file ~/.claude/routines/pipeline-daily.prompt.md \
-  --allowed-tools "get_context,get_stats,search_conversations,export_conversations,Read,Write"
+| Cadence | Cron | When it fires |
+|---------|------|---------------|
+| Daily | `0 8 * * *` | 8am every day |
+| Weekly | `0 8 * * 1` | 8am every Monday |
+| Summary | `0 9 * * 1` | 9am every Monday (after weekly) |
 
-# Weekly — Monday 8am
-claude schedule create \
-  --name "pipeline-weekly" \
-  --cron "0 8 * * 1" \
-  --timezone "Australia/Sydney" \
-  --prompt-file ~/.claude/routines/pipeline-weekly.prompt.md \
-  --allowed-tools "get_context,get_stats,search_conversations,export_conversations,Read,Write"
+### Shared: prompt file
 
-# Summary — Monday 9am (after weekly brief)
-claude schedule create \
-  --name "pipeline-summary" \
-  --cron "0 9 * * 1" \
-  --timezone "Australia/Sydney" \
-  --prompt-file ~/.claude/routines/pipeline-summary.prompt.md \
-  --allowed-tools "get_context,get_stats,search_conversations,export_conversations,Read,Write"
-```
-
-Prompt files (one per cadence). Daily example at `~/.claude/routines/pipeline-daily.prompt.md`:
+Each cadence reads the same shape of prompt. Save as `~/.claude/routines/pipeline-<cadence>.prompt.md`:
 
 ```
-Run the /pipeline-snapshot skill in routine mode for cadence "daily".
+Run the /pipeline-snapshot skill in routine mode for cadence "<daily|weekly|summary>".
 
 Steps:
 1. get_context()
 2. get_stats()
-3. Read ~/.linkninja/state/pipeline-snapshot-daily.json (previous baseline). If missing, first run.
+3. Read ~/.linkninja/state/pipeline-snapshot-<cadence>.json (previous baseline). If missing, first run.
 4. Compute per-stage deltas.
-5. search_conversations(my_turn=true, compact=true) — bucket by age.
-6. export_conversations(since="<24h ago, ISO>", include_messages=true) — compute chats opened, contacts messaged, back-and-forth conversations + message count.
-7. Write the new snapshot to ~/.linkninja/state/pipeline-snapshot-daily.json.
-8. Output ONLY the daily brief — no preamble, no commentary.
+5. search_conversations(my_turn=true, compact=true) — bucket the my-turn backlog by age.
+6. export_conversations(since="<window>", include_messages=true) — compute chats opened, contacts messaged, back-and-forth.
+   Window: 24h for daily, 7 days for weekly and summary.
+7. Summary only: compute conversion rates vs Sell By Chat benchmarks + touch count distribution.
+8. Write the new snapshot to ~/.linkninja/state/pipeline-snapshot-<cadence>.json.
+9. Output ONLY the brief — no preamble, no commentary.
 
 Read-only. Do not change stages, write drafts, or archive.
 ```
 
-Weekly: swap the window to 7 days for the export. Summary: add the 7-day export for touch counts + conversion benchmarks + persistence.
+### Option A — macOS launchd (local, verified)
 
-### Routine specs (universal)
+`~/Library/LaunchAgents/com.linkninja.pipeline-daily.plist`:
 
-```yaml
-# Daily
-routine:
-  slug: pipeline-daily
-  schedule: "0 8 * * *"
-  prompt_file: ~/.claude/routines/pipeline-daily.prompt.md
-  allowed_tools: [get_context, get_stats, search_conversations, export_conversations, Read, Write]
-  caps: { max_tool_calls_per_run: 10, max_drafts_per_run: 0, max_runs_per_day: 2 }
-
-# Weekly
-routine:
-  slug: pipeline-weekly
-  schedule: "0 8 * * 1"
-  prompt_file: ~/.claude/routines/pipeline-weekly.prompt.md
-  allowed_tools: [get_context, get_stats, search_conversations, export_conversations, Read, Write]
-  caps: { max_tool_calls_per_run: 12, max_drafts_per_run: 0, max_runs_per_day: 1 }
-
-# Summary (heaviest — uses export_conversations)
-routine:
-  slug: pipeline-summary
-  schedule: "0 9 * * 1"
-  prompt_file: ~/.claude/routines/pipeline-summary.prompt.md
-  allowed_tools: [get_context, get_stats, search_conversations, export_conversations, Read, Write]
-  caps: { max_tool_calls_per_run: 12, max_drafts_per_run: 0, max_runs_per_day: 1 }
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.linkninja.pipeline-daily</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/env</string>
+    <string>bash</string>
+    <string>-c</string>
+    <string>claude -p "$(cat ~/.claude/routines/pipeline-daily.prompt.md)" >> /tmp/pipeline-daily.log 2>&amp;1</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>8</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+  <key>StandardOutPath</key><string>/tmp/pipeline-daily.log</string>
+  <key>StandardErrorPath</key><string>/tmp/pipeline-daily.err</string>
+</dict>
+</plist>
 ```
+
+Load: `launchctl load ~/Library/LaunchAgents/com.linkninja.pipeline-daily.plist`
+
+For weekly / summary, copy the plist with the right label, prompt-file name, and add `<key>Weekday</key><integer>1</integer>` to `StartCalendarInterval` for Monday-only firing.
+
+### Option B — Linux cron (local, verified)
+
+`crontab -e`:
+
+```cron
+0 8 * * *   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-daily.prompt.md)" >> /tmp/pipeline-daily.log 2>&1'
+0 8 * * 1   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-weekly.prompt.md)" >> /tmp/pipeline-weekly.log 2>&1'
+0 9 * * 1   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-summary.prompt.md)" >> /tmp/pipeline-summary.log 2>&1'
+```
+
+### Option C — Claude Code's `/schedule` skill
+
+If you're on a Claude plan that includes scheduled routines, the `/schedule` skill registers them inside Claude itself (no OS-level cron needed). Invoke `/schedule` and follow its interview — point it at the prompt file from the shared step above. Check current Claude Code docs for what surface (Claude Desktop, web, etc.) the routine output shows up in for your plan.
 
 ## Delivery Options
 
-Routines write the brief to a log — they do not push it. To get it delivered:
+By default a scheduled routine writes its output to a log file — it does not push to you. Pick a delivery channel and add one line to the routine prompt's final step.
+
+### Notification recipes
+
+Each recipe adds a single shell line to the routine prompt's last step. The skill body stays the same.
+
+**ntfy.sh** — lowest friction, no account, free. Subscribe to a topic in the ntfy iOS/Android app (or web) and the routine pushes to it:
+
+```
+curl -d "$(cat /tmp/pipeline-<cadence>.log | tail -n 50)" ntfy.sh/<your-topic>
+```
+
+Pick any topic string that's hard to guess (it's the URL — anyone with the topic can read it). Verify the exact current syntax at https://ntfy.sh.
+
+**macOS native notification** (local-only — routine runs via launchd):
+
+```
+osascript -e 'display notification "Pipeline brief ready — tail /tmp/pipeline-daily.log" with title "LinkNinja"'
+```
+
+Tap the notification to focus Terminal. Note: newer macOS may require granting notification permission to the parent process (Terminal / iTerm / Claude Code) before notifications show.
+
+**Slack incoming webhook** — create the webhook in Slack first (App settings → Incoming Webhooks):
+
+```
+curl -X POST -H 'Content-type: application/json' \
+  --data "$(jq -Rs '{text: .}' < /tmp/pipeline-<cadence>.log)" \
+  <your-webhook-url>
+```
+
+**Discord webhook** — same pattern, get the URL from server settings → Integrations → Webhooks:
+
+```
+curl -X POST -H 'Content-type: application/json' \
+  --data "$(jq -Rs '{content: .}' < /tmp/pipeline-<cadence>.log)" \
+  <your-webhook-url>
+```
+
+### Passive options (no push, you go look)
 
 | Option | How | When to choose |
 |--------|-----|----------------|
-| Wrap in a Monitor | `/monitor-architect` — same skill body, Monitor adds Telegram / email / push | You want it pushed to a channel |
-| Tail the log | `tail -f /tmp/pipeline-<mode>.log` | Spot-check, not paged |
-| Read the baseline | `cat ~/.linkninja/state/pipeline-snapshot-<mode>.json` | Latest snapshot on demand |
+| Tail the log | `tail -f /tmp/pipeline-<cadence>.log` | Spot-check from terminal |
+| Read the baseline | `cat ~/.linkninja/state/pipeline-snapshot-<cadence>.json` | Latest snapshot on demand without firing the skill |
+
+### Note on Claude Desktop / `/schedule`
+
+If you register the routine via Claude Code's `/schedule` instead of OS-native cron/launchd, whether you get a push notification (badge, OS notification, Claude Desktop banner) depends on your Claude plan and current app behavior. Check current Claude Code docs — don't assume notification just because the routine fires. Adding one of the curl recipes above to the prompt guarantees delivery regardless of where the routine runs.
 
 ## Arguments
 

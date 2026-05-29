@@ -308,21 +308,33 @@ Heads up: <one-line>
 
 Stop after rendering.
 
-## Bake it into a Routine
+## Running it
 
-Pick a cadence — daily / weekly / summary. Each cadence is one scheduled job with its own prompt file and baseline file. The skill body is identical; the schedule changes.
+Two ways to use this skill — pick whichever suits your workflow.
 
-Cron expressions:
+### Manually, on demand
 
-| Cadence | Cron | When it fires |
-|---------|------|---------------|
-| Daily | `0 8 * * *` | 8am every day |
-| Weekly | `0 8 * * 1` | 8am every Monday |
-| Summary | `0 9 * * 1` | 9am every Monday (after weekly) |
+Invoke the skill directly any time:
 
-### Shared: prompt file
+| Command | What you get |
+|---------|--------------|
+| `/pipeline-snapshot` | Interactive table, current state, no deltas |
+| `/pipeline-snapshot daily` | Daily brief — activity, deltas, backlog |
+| `/pipeline-snapshot weekly` | Weekly brief — activity rolled to 7 days, flow, operator state |
+| `/pipeline-snapshot summary` | Weekly summary with Sell By Chat benchmarks + persistence + touch counts |
 
-Each cadence reads the same shape of prompt. Save as `~/.claude/routines/pipeline-<cadence>.prompt.md`:
+Deltas only appear from the second run onward — the first run for each cadence captures the baseline.
+
+### Scheduled — rig it however you like
+
+The skill is scheduler-agnostic. Feed the prompt below into whatever scheduler you already use (Claude Code `/schedule`, macOS launchd, Linux cron, GitHub Actions, a calendar reminder that pings you to type the command — your call).
+
+Suggested cron expressions:
+- Daily: `0 8 * * *` (8am every day)
+- Weekly: `0 8 * * 1` (8am Monday)
+- Summary: `0 9 * * 1` (9am Monday)
+
+The prompt your scheduler should fire (save as a file or paste directly):
 
 ```
 Run the /pipeline-snapshot skill in routine mode for cadence "<daily|weekly|summary>".
@@ -342,102 +354,20 @@ Steps:
 Read-only. Do not change stages, write drafts, or archive.
 ```
 
-### Option A — macOS launchd (local, verified)
+## Notification Options
 
-`~/Library/LaunchAgents/com.linkninja.pipeline-daily.plist`:
+The brief lands wherever your scheduler sends output (log file, conversation tab, terminal). If you want it pushed to a channel, append one line to the prompt's final step. The skill body stays the same.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key><string>com.linkninja.pipeline-daily</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/usr/bin/env</string>
-    <string>bash</string>
-    <string>-c</string>
-    <string>claude -p "$(cat ~/.claude/routines/pipeline-daily.prompt.md)" >> /tmp/pipeline-daily.log 2>&amp;1</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <dict>
-    <key>Hour</key><integer>8</integer>
-    <key>Minute</key><integer>0</integer>
-  </dict>
-  <key>StandardOutPath</key><string>/tmp/pipeline-daily.log</string>
-  <key>StandardErrorPath</key><string>/tmp/pipeline-daily.err</string>
-</dict>
-</plist>
-```
+| Channel | Add to the prompt | Setup |
+|---------|-------------------|-------|
+| **ntfy.sh** | `curl -d "<brief>" ntfy.sh/<your-topic>` | None — subscribe to the topic in the ntfy app or browser. Verify current syntax at ntfy.sh |
+| **macOS native notification** | `osascript -e 'display notification "<msg>" with title "LinkNinja"'` | Local only. Newer macOS may need notification permission for the parent process |
+| **Slack webhook** | `curl -X POST -H 'Content-type: application/json' --data '{"text":"<brief>"}' <webhook-url>` | Create incoming webhook in Slack first |
+| **Discord webhook** | `curl -X POST -H 'Content-type: application/json' --data '{"content":"<brief>"}' <webhook-url>` | Create webhook in Discord server Integrations |
+| **Email** | Pipe to `mail -s "Pipeline brief" you@example.com` | System mail must be configured |
+| **None — read it yourself** | Skip the notification step | `tail` the log or `cat` the baseline JSON when you want it |
 
-Load: `launchctl load ~/Library/LaunchAgents/com.linkninja.pipeline-daily.plist`
-
-For weekly / summary, copy the plist with the right label, prompt-file name, and add `<key>Weekday</key><integer>1</integer>` to `StartCalendarInterval` for Monday-only firing.
-
-### Option B — Linux cron (local, verified)
-
-`crontab -e`:
-
-```cron
-0 8 * * *   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-daily.prompt.md)" >> /tmp/pipeline-daily.log 2>&1'
-0 8 * * 1   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-weekly.prompt.md)" >> /tmp/pipeline-weekly.log 2>&1'
-0 9 * * 1   /usr/bin/env bash -c 'claude -p "$(cat ~/.claude/routines/pipeline-summary.prompt.md)" >> /tmp/pipeline-summary.log 2>&1'
-```
-
-### Option C — Claude Code's `/schedule` skill
-
-If you're on a Claude plan that includes scheduled routines, the `/schedule` skill registers them inside Claude itself (no OS-level cron needed). Invoke `/schedule` and follow its interview — point it at the prompt file from the shared step above. Check current Claude Code docs for what surface (Claude Desktop, web, etc.) the routine output shows up in for your plan.
-
-## Delivery Options
-
-By default a scheduled routine writes its output to a log file — it does not push to you. Pick a delivery channel and add one line to the routine prompt's final step.
-
-### Notification recipes
-
-Each recipe adds a single shell line to the routine prompt's last step. The skill body stays the same.
-
-**ntfy.sh** — lowest friction, no account, free. Subscribe to a topic in the ntfy iOS/Android app (or web) and the routine pushes to it:
-
-```
-curl -d "$(cat /tmp/pipeline-<cadence>.log | tail -n 50)" ntfy.sh/<your-topic>
-```
-
-Pick any topic string that's hard to guess (it's the URL — anyone with the topic can read it). Verify the exact current syntax at https://ntfy.sh.
-
-**macOS native notification** (local-only — routine runs via launchd):
-
-```
-osascript -e 'display notification "Pipeline brief ready — tail /tmp/pipeline-daily.log" with title "LinkNinja"'
-```
-
-Tap the notification to focus Terminal. Note: newer macOS may require granting notification permission to the parent process (Terminal / iTerm / Claude Code) before notifications show.
-
-**Slack incoming webhook** — create the webhook in Slack first (App settings → Incoming Webhooks):
-
-```
-curl -X POST -H 'Content-type: application/json' \
-  --data "$(jq -Rs '{text: .}' < /tmp/pipeline-<cadence>.log)" \
-  <your-webhook-url>
-```
-
-**Discord webhook** — same pattern, get the URL from server settings → Integrations → Webhooks:
-
-```
-curl -X POST -H 'Content-type: application/json' \
-  --data "$(jq -Rs '{content: .}' < /tmp/pipeline-<cadence>.log)" \
-  <your-webhook-url>
-```
-
-### Passive options (no push, you go look)
-
-| Option | How | When to choose |
-|--------|-----|----------------|
-| Tail the log | `tail -f /tmp/pipeline-<cadence>.log` | Spot-check from terminal |
-| Read the baseline | `cat ~/.linkninja/state/pipeline-snapshot-<cadence>.json` | Latest snapshot on demand without firing the skill |
-
-### Note on Claude Desktop / `/schedule`
-
-If you register the routine via Claude Code's `/schedule` instead of OS-native cron/launchd, whether you get a push notification (badge, OS notification, Claude Desktop banner) depends on your Claude plan and current app behavior. Check current Claude Code docs — don't assume notification just because the routine fires. Adding one of the curl recipes above to the prompt guarantees delivery regardless of where the routine runs.
+Whether Claude Code's `/schedule` surface shows a notification natively depends on your plan and the current app version — check live behavior rather than assuming. Adding one of the channels above to the prompt makes delivery guaranteed regardless of where the routine runs.
 
 ## Arguments
 

@@ -112,7 +112,7 @@ git clone https://github.com/stvbutlr/linkninja-skills.git
 
 | Skill | Description | Triggers |
 |-------|-------------|----------|
-| [pipeline-snapshot](skills/analysis/pipeline-snapshot/) | At-a-glance per-stage counts and progress deltas — bake-able into a daily/weekly Routine | "pipeline snapshot", "stage progress", "weekly brief" |
+| [pipeline-snapshot](skills/analysis/pipeline-snapshot/) | At-a-glance pipeline metrics with Sell By Chat benchmarks — daily / weekly / summary cadences, bake-able into a Routine | "pipeline snapshot", "daily brief", "weekly summary", "operator scorecard" |
 | [pipeline-health-check](skills/analysis/pipeline-health-check/) | Diagnose pipeline bottlenecks, conversion rates, and warning signs | "how is my pipeline", "pipeline health" |
 | [reply-rate-analysis](skills/analysis/reply-rate-analysis/) | Analyze opening-to-reply conversion rates and message patterns | "analyze my reply rate", "which openers worked" |
 | [stage-conversion-analysis](skills/analysis/stage-conversion-analysis/) | Stage-by-stage conversion funnel — find where deals stall and why | "stage conversion analysis", "where am I losing deals" |
